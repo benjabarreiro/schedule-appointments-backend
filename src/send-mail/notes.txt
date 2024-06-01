@@ -1,0 +1,4 @@
+POST /SEND
+    sends email from anyone to anyone that exist in DB
+
+Hacer esto un service only

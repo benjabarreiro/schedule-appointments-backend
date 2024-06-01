@@ -1,0 +1,26 @@
+POST /CREATE
+
+PUT /EDIT
+
+DELETE /CANCEL
+
+GET /GET-HISTORY
+
+POST /REMINDER-EMAIL
+
+POST /CONFIRMATION-EMAIL
+
+body:
+datetime
+doctorId
+userId
+healthcareId
+
+body:
+datetime
+userId
+doctorName
+doctorId
+healthCareName
+healthcareId
+location
