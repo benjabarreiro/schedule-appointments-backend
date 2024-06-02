@@ -3,6 +3,7 @@ import { CreateUserDto, LoginUserDto, UserDto } from './dtos';
 import { promises as fs } from 'fs';
 import * as path from 'path';
 import { JwtService } from '@nestjs/jwt';
+import { hashSync, compareSync } from 'bcrypt';
 
 @Injectable()
 export class AuthService {
@@ -20,7 +21,12 @@ export class AuthService {
     if (!this.validateExistingUser(body.userName, usersData)) {
       throw new HttpException('User already exists', HttpStatus.CONFLICT);
     }
-    const updateUsersData = [...usersData, body];
+
+    const hashedPassword = await this.hashPassword(body.password);
+    const updateUsersData = [
+      ...usersData,
+      { ...body, password: hashedPassword },
+    ];
 
     await this.writeJsonFile(updateUsersData);
     return 'User created!';
@@ -56,7 +62,7 @@ export class AuthService {
       throw new HttpException('User does not exist', HttpStatus.NOT_FOUND);
     }
 
-    if (user.password !== password) {
+    if (!compareSync(password, user.password)) {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
     }
 
@@ -65,5 +71,10 @@ export class AuthService {
 
   async generateToken(payload: any): Promise<string> {
     return this.jwtService.sign(payload);
+  }
+
+  async hashPassword(password: string): Promise<string> {
+    const hashedPassword = hashSync(password, 10);
+    return hashedPassword;
   }
 }
