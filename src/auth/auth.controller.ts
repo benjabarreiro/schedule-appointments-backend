@@ -12,7 +12,7 @@ import { CreateUserDto, LoginUserDto } from './dtos';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('/create')
+  @Post('/register')
   createUser(@Body() body: CreateUserDto): Promise<string> | string {
     if (!body || !Object.keys(body).length)
       throw new HttpException(
