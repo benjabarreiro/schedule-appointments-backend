@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Roles } from '../enums';
+import { Role } from './role.entity';
 
 @Entity()
 export class User {
@@ -26,13 +26,4 @@ export class User {
 
   @Column()
   password: string;
-}
-
-@Entity()
-export class Role {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
-  name: Roles;
 }
