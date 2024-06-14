@@ -1,9 +1,11 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { User } from './entities/user.entity';
+import { Role } from './entities/role.entity';
 
 @Module({
   imports: [
@@ -20,11 +22,17 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [],
-        synchronize: true,
+        entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+        synchronize: false,
+        migrations: [__dirname + '/../migrations/*{.ts,.js}'],
+        migrationsRun: true, // Automatically run migrations on app startup
+        cli: {
+          migrationsDir: 'src/migrations',
+        },
       }),
       inject: [ConfigService],
     }),
+    TypeOrmModule.forFeature([User, Role]),
   ],
   controllers: [AppController],
   providers: [AppService],
