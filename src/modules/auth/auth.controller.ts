@@ -55,6 +55,11 @@ const userSchema = JoiPipe.object({
   password: JoiPipe.string().required().not().empty().min(4),
 });
 
+const loginSchema = JoiPipe.object({
+  email: JoiPipe.string().email().required().not().empty(),
+  password: JoiPipe.string().required().not().empty(),
+});
+
 @Injectable()
 export class JoiValidationPipe implements PipeTransform {
   constructor(private schema: Joi.ObjectSchema) {}
@@ -90,7 +95,7 @@ export class AuthController {
   }
 
   @Post('/login')
-  @UsePipes(new JoiValidationPipe(userSchema))
+  @UsePipes(new JoiValidationPipe(loginSchema))
   login(@Body() body: LoginUserDto): Promise<string> | string {
     return this.authService.login(body);
   }
