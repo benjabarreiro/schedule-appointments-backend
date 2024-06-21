@@ -1,24 +1,29 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto, LoginUserDto } from './dtos';
-import * as path from 'path';
 import { JwtService } from '@nestjs/jwt';
-import { hashSync, compareSync } from 'bcrypt';
-import { Roles } from 'src/enums';
+import { compareSync } from 'bcrypt';
+import { Roles, Status } from 'src/enums';
 import { UsersService } from 'src/users/users.service';
+import { EmailsService } from 'src/emails/email.servicie';
+import { generateValidationCode, hashPassword } from './utils';
+
+interface ValidationRecord {
+  code: string;
+  expiresAt: Date;
+}
 
 @Injectable()
 export class AuthService {
-  private readonly filePath = path.join(__dirname, '..', 'users.json');
-  private readonly filePathSrc = path.join(
-    __dirname,
-    '../../src',
-    'users.json',
-  );
+  private validationRecords: ValidationRecord[] = [];
+  private readonly codeExpirationMinutes = 15;
 
   constructor(
     private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
-  ) {}
+    private readonly emailService: EmailsService,
+  ) {
+    this.startCleanupTask();
+  }
 
   async createUser(body: CreateUserDto): Promise<string> {
     const userExist = await this.usersService.findUserByEmail(body.email);
@@ -26,23 +31,72 @@ export class AuthService {
       throw new HttpException('User already exists', HttpStatus.CONFLICT);
     }
 
-    const hashedPassword = await this.hashPassword(body.password);
+    const hashedPassword = await hashPassword(body.password);
     const bodyWithHashedPassword = {
       ...body,
       password: hashedPassword,
       role: Number(Roles.Patient),
+      status: Status.Pending,
     };
 
     await this.usersService.createUser(bodyWithHashedPassword);
-    return 'User created!';
+    return await this.sendValidationCode(body.email);
   }
 
   async login(body: LoginUserDto): Promise<string> {
     const user = await this.validateUserPassword(body.email, body.password);
-    const token = await this.generateToken({
+    const token = await this.jwtService.sign({
       userName: user.email,
     });
     return token;
+  }
+
+  async sendValidationCode(email: string) {
+    const code = generateValidationCode();
+    const expiresAt = new Date();
+    expiresAt.setMinutes(expiresAt.getMinutes() + this.codeExpirationMinutes);
+
+    this.validationRecords.push({ code, expiresAt });
+
+    await this.emailService.sendEmail(
+      email,
+      'Email Validation Code',
+      `Your validation code is: ${code}`,
+    );
+
+    return 'Validation code sent';
+  }
+
+  validateCode(code: string): boolean {
+    const now = new Date();
+    this.validationRecords = this.validationRecords.filter(
+      (record) => record.expiresAt > now,
+    );
+
+    const record = this.validationRecords.find(
+      (record) => record.code === code,
+    );
+
+    if (record && record.expiresAt > now) {
+      this.removeRecord(record);
+      //update user in DB
+      return true;
+    }
+
+    return false;
+  }
+
+  private removeRecord(record: ValidationRecord) {
+    this.validationRecords = this.validationRecords.filter((r) => r !== record);
+  }
+
+  private startCleanupTask() {
+    setInterval(() => {
+      const now = new Date();
+      this.validationRecords = this.validationRecords.filter(
+        (record) => record.expiresAt > now,
+      );
+    }, 60000); // Run cleanup every minute
   }
 
   async validateUserPassword(email: string, password: string) {
@@ -57,14 +111,5 @@ export class AuthService {
     }
 
     return userExist;
-  }
-
-  async generateToken(payload: any): Promise<string> {
-    return this.jwtService.sign(payload);
-  }
-
-  async hashPassword(password: string): Promise<string> {
-    const hashedPassword = hashSync(password, 10);
-    return hashedPassword;
   }
 }
