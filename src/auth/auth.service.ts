@@ -3,7 +3,7 @@ import { CreateUserDto, LoginUserDto } from './dtos';
 import * as path from 'path';
 import { JwtService } from '@nestjs/jwt';
 import { hashSync, compareSync } from 'bcrypt';
-import { Roles } from 'src/enums';
+import { Roles, Status } from 'src/enums';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
@@ -31,6 +31,7 @@ export class AuthService {
       ...body,
       password: hashedPassword,
       role: Number(Roles.Patient),
+      status: Status.Pending,
     };
 
     await this.usersService.createUser(bodyWithHashedPassword);

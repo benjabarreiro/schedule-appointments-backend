@@ -1,4 +1,4 @@
-import { IsDate, IsString } from 'class-validator';
+import { IsDate, IsOptional, IsString } from 'class-validator';
 
 export class UserDto {
   @IsString()
@@ -17,3 +17,18 @@ export class CreateUserDto extends UserDto {
   birthDate: Date;
 }
 export class LoginUserDto extends UserDto {}
+
+export class UpdateUserDto {
+  @IsOptional()
+  @IsString()
+  firstName?: string;
+  @IsOptional()
+  @IsString()
+  lastName?: string;
+  @IsOptional()
+  @IsString()
+  phone?: string;
+  @IsOptional()
+  @IsDate()
+  birthDate?: Date;
+}

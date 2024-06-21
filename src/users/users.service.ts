@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from '../auth/dtos';
+import { CreateUserDto, UpdateUserDto } from '../auth/dtos';
 import { User } from 'src/entities/user.entity';
 import { Connection, Repository } from 'typeorm';
 import { convertKeysToSnakeCase } from 'src/lib/utils/parsers';
@@ -19,5 +19,14 @@ export class UsersService {
 
   async findUserByEmail(email: string): Promise<any | undefined> {
     return await this.userRepository.findOne({ where: { email } });
+  }
+
+  async updateUser(body: UpdateUserDto, id: number): Promise<any | undefined> {
+    const user = await this.userRepository.findOneBy({ id });
+    const parsedBody = convertKeysToSnakeCase(body);
+
+    const updatedUser = { ...user, parsedBody };
+
+    return await this.userRepository.save(updatedUser);
   }
 }
