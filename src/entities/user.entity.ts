@@ -1,3 +1,4 @@
+import { Status } from 'src/enums';
 import { Role } from './role.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -26,4 +27,7 @@ export class User {
 
   @Column()
   password: string;
+
+  @Column()
+  status: Status;
 }

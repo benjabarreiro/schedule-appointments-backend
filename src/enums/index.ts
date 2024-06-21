@@ -5,3 +5,9 @@ export enum Roles {
   Healthcare = '4',
   Administrator = '5',
 }
+
+export enum Status {
+  Disabled = 'D',
+  Pending = 'P',
+  Active = 'A',
+}
