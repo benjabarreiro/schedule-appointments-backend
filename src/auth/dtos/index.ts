@@ -1,4 +1,5 @@
 import { IsDate, IsOptional, IsString } from 'class-validator';
+import { Roles, Status } from 'src/enums';
 
 export class UserDto {
   @IsString()
@@ -15,6 +16,13 @@ export class CreateUserDto extends UserDto {
   phone: string;
   @IsDate()
   birthDate: Date;
+}
+
+export class ValidateCreateUserDto extends CreateUserDto {
+  @IsString()
+  role: Roles;
+  @IsString()
+  status: Status;
 }
 export class LoginUserDto extends UserDto {}
 

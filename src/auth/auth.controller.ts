@@ -2,6 +2,8 @@ import {
   BadRequestException,
   Body,
   Controller,
+  HttpCode,
+  HttpStatus,
   Injectable,
   PipeTransform,
   Post,
@@ -98,5 +100,22 @@ export class AuthController {
   @UsePipes(new JoiValidationPipe(loginSchema))
   login(@Body() body: LoginUserDto): Promise<string> | string {
     return this.authService.login(body);
+  }
+
+  @Post('validate-code')
+  @HttpCode(HttpStatus.OK)
+  async validateCode(@Body('code') code: string) {
+    const isValid = this.authService.validateCode(code);
+    if (!isValid) {
+      return {
+        message: 'Invalid or expired code',
+        statusCode: HttpStatus.UNAUTHORIZED,
+      };
+    }
+
+    return {
+      message: 'Email validated successfully',
+      statusCode: HttpStatus.OK,
+    };
   }
 }
