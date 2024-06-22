@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
 
 @Injectable()
@@ -18,13 +18,20 @@ export class EmailsService {
   }
 
   async sendEmail(to: string, subject: string, text: string) {
-    const info = await this.transporter.sendMail({
-      from: 'barreirobenjamin@gmail.com>',
-      to,
-      subject,
-      text,
-    });
+    try {
+      const info = await this.transporter.sendMail({
+        from: 'barreirobenjamin@gmail.com>',
+        to,
+        subject,
+        text,
+      });
 
-    console.log('Message sent: %s', info.messageId);
+      console.log('Message sent: %s', info.messageId);
+    } catch (err) {
+      throw new HttpException(
+        'There was an error sending the email',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
