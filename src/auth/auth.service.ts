@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateUserDto, LoginUserDto } from './dtos';
+import { CreateUserDto, LoginUserDto, ValidateCreateUserDto } from './dtos';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcrypt';
 import { Roles, Status } from 'src/enums';
@@ -10,12 +10,13 @@ import { generateValidationCode, hashPassword } from './utils';
 interface ValidationRecord {
   code: string;
   expiresAt: Date;
+  user: ValidateCreateUserDto;
 }
 
 @Injectable()
 export class AuthService {
   private validationRecords: ValidationRecord[] = [];
-  private readonly codeExpirationMinutes = 15;
+  private readonly codeExpirationMinutes = 5;
 
   constructor(
     private readonly jwtService: JwtService,
@@ -32,34 +33,31 @@ export class AuthService {
     }
 
     const hashedPassword = await hashPassword(body.password);
-    const bodyWithHashedPassword = {
+    const bodyWithHashedPassword: ValidateCreateUserDto = {
       ...body,
       password: hashedPassword,
-      role: Number(Roles.Patient),
+      role: Roles.Patient,
       status: Status.Pending,
     };
 
-    await this.usersService.createUser(bodyWithHashedPassword);
-    return await this.sendValidationCode(body.email);
+    return await this.sendValidationCode(bodyWithHashedPassword);
   }
 
   async login(body: LoginUserDto): Promise<string> {
     const user = await this.validateUserPassword(body.email, body.password);
-    const token = await this.jwtService.sign({
-      userName: user.email,
-    });
+    const token = await this.generateToken({ email: body.email });
     return token;
   }
 
-  async sendValidationCode(email: string) {
+  async sendValidationCode(user: ValidateCreateUserDto) {
     const code = generateValidationCode();
     const expiresAt = new Date();
     expiresAt.setMinutes(expiresAt.getMinutes() + this.codeExpirationMinutes);
 
-    this.validationRecords.push({ code, expiresAt });
+    this.validationRecords.push({ code, expiresAt, user });
 
     await this.emailService.sendEmail(
-      email,
+      user.email,
       'Email Validation Code',
       `Your validation code is: ${code}`,
     );
@@ -67,23 +65,37 @@ export class AuthService {
     return 'Validation code sent';
   }
 
-  validateCode(code: string): boolean {
+  async validateCode(code: string): Promise<string> {
     const now = new Date();
-    this.validationRecords = this.validationRecords.filter(
-      (record) => record.expiresAt > now,
-    );
 
     const record = this.validationRecords.find(
       (record) => record.code === code,
     );
 
-    if (record && record.expiresAt > now) {
-      this.removeRecord(record);
-      //update user in DB
-      return true;
+    if (!record) {
+      throw new HttpException('Invalid code', HttpStatus.BAD_REQUEST);
     }
 
-    return false;
+    if (record && record.expiresAt < now) {
+      throw new HttpException('Expired code', HttpStatus.UNAUTHORIZED);
+    }
+
+    try {
+      await this.usersService.createUser({
+        ...record.user,
+        status: Status.Active,
+      });
+      await this.emailService.sendEmail(
+        record.user.email,
+        'User created',
+        'Your user was created successfully',
+      );
+      return await this.generateToken({ email: record.user.email });
+    } catch (err) {
+      throw err;
+    } finally {
+      this.removeRecord(record);
+    }
   }
 
   private removeRecord(record: ValidationRecord) {
@@ -96,7 +108,7 @@ export class AuthService {
       this.validationRecords = this.validationRecords.filter(
         (record) => record.expiresAt > now,
       );
-    }, 60000); // Run cleanup every minute
+    }, 60000);
   }
 
   async validateUserPassword(email: string, password: string) {
@@ -111,5 +123,16 @@ export class AuthService {
     }
 
     return userExist;
+  }
+
+  async generateToken(payload: any): Promise<string> {
+    try {
+      return this.jwtService.sign(payload);
+    } catch (err) {
+      throw new HttpException(
+        'There was an error logging in the user',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
