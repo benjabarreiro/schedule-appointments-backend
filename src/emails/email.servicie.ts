@@ -1,18 +1,30 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class EmailsService {
   private transporter: nodemailer.Transporter;
+  private readonly host: string;
+  private readonly port: number;
+  private readonly secure: boolean;
+  private readonly user: string;
+  private readonly pass: string;
 
-  constructor() {
+  constructor(private readonly configService: ConfigService) {
+    this.host = this.configService.get<string>('email.host');
+    this.port = this.configService.get<number>('email.port');
+    this.secure = this.configService.get('email.secure') === 'true';
+    this.user = this.configService.get<string>('email.user');
+    this.pass = this.configService.get<string>('email.pass');
+
     this.transporter = nodemailer.createTransport({
-      host: 'smtp.example.com', // Replace with your SMTP server host
-      port: 587,
-      secure: false, // true for 465, false for other ports
+      host: this.host,
+      port: this.port,
+      secure: this.secure,
       auth: {
-        user: 'your-email@example.com', // Your email
-        pass: 'your-email-password', // Your email password
+        user: this.user,
+        pass: this.pass,
       },
     });
   }
