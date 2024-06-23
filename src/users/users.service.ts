@@ -32,7 +32,7 @@ export class UsersService {
     const user = await this.userRepository.findOneBy({ id });
     const parsedBody = convertKeysToSnakeCase(body);
 
-    const updatedUser = { ...user, parsedBody };
+    const updatedUser = { ...user, ...parsedBody };
 
     return await this.userRepository.save(updatedUser);
   }
