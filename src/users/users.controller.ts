@@ -79,8 +79,10 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Put('/:id')
-  @UsePipes(new JoiValidationPipe(updateUserSchema))
-  async updateUser(@Body('body') body: UpdateUserDto, @Param('id') id: string) {
+  async updateUser(
+    @Body(new JoiValidationPipe(updateUserSchema)) body: UpdateUserDto,
+    @Param('id') id: string,
+  ) {
     return this.usersService.updateUser(body, Number(id));
   }
 }
