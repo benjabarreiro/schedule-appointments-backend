@@ -22,14 +22,14 @@ export class AuthController {
   }
 
   @Post('/login')
-  @HttpCode(200)
+  @HttpCode(HttpStatus.OK)
   @UsePipes(new JoiValidationPipe(loginSchema))
   login(@Body() body: LoginUserDto): Promise<string> | string {
     return this.authService.login(body);
   }
 
   @Post('validate-code')
-  @HttpCode(HttpStatus.OK)
+  @HttpCode(HttpStatus.CREATED)
   async validateCode(@Body('code') code: string) {
     const isValid = this.authService.validateCode(code);
     if (!isValid) {
