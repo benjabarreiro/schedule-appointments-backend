@@ -22,6 +22,7 @@ export class AuthController {
   }
 
   @Post('/login')
+  @HttpCode(200)
   @UsePipes(new JoiValidationPipe(loginSchema))
   login(@Body() body: LoginUserDto): Promise<string> | string {
     return this.authService.login(body);
