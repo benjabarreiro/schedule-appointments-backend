@@ -78,16 +78,15 @@ export class AuthService {
     const record = this.validationRecords.find(
       (record) => record.code === code,
     );
-
-    if (!record) {
-      throw new HttpException('Invalid code', HttpStatus.BAD_REQUEST);
-    }
-
-    if (record && record.expiresAt < now) {
-      throw new HttpException('Expired code', HttpStatus.UNAUTHORIZED);
-    }
-
     try {
+      if (!record) {
+        throw new HttpException('Invalid code', HttpStatus.BAD_REQUEST);
+      }
+
+      if (record && record.expiresAt < now) {
+        throw new HttpException('Expired code', HttpStatus.UNAUTHORIZED);
+      }
+
       await this.usersService.createUser({
         ...record.user,
         status: Status.Active,
