@@ -28,20 +28,9 @@ export class AuthController {
     return this.authService.login(body);
   }
 
-  @Post('validate-code')
+  @Post('/validate-code')
   @HttpCode(HttpStatus.CREATED)
   async validateCode(@Body('code') code: string) {
-    const isValid = this.authService.validateCode(code);
-    if (!isValid) {
-      return {
-        message: 'Invalid or expired code',
-        statusCode: HttpStatus.UNAUTHORIZED,
-      };
-    }
-
-    return {
-      message: 'Email validated successfully',
-      statusCode: HttpStatus.OK,
-    };
+    return this.authService.validateCode(code);
   }
 }
