@@ -1,8 +1,16 @@
+import { HttpException, HttpStatus } from '@nestjs/common';
 import { hashSync } from 'bcrypt';
 
 export const hashPassword = async (password: string): Promise<string> => {
-  const hashedPassword = hashSync(password, 10);
-  return hashedPassword;
+  try {
+    const hashedPassword = hashSync(password, 10);
+    return hashedPassword;
+  } catch (err) {
+    throw new HttpException(
+      'There was an error hashing password',
+      HttpStatus.INTERNAL_SERVER_ERROR,
+    );
+  }
 };
 
 export const generateValidationCode = (): string => {

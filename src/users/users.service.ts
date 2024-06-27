@@ -25,7 +25,14 @@ export class UsersService {
   }
 
   async findUserByEmail(email: string): Promise<any | undefined> {
-    return await this.userRepository.findOne({ where: { email } });
+    try {
+      return await this.userRepository.findOne({ where: { email } });
+    } catch (err) {
+      throw new HttpException(
+        'There was an error checking the email in db',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async updateUser(body: UpdateUserDto, id: number): Promise<any | undefined> {
