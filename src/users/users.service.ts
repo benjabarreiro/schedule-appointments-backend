@@ -36,11 +36,28 @@ export class UsersService {
   }
 
   async updateUser(body: UpdateUserDto, id: number): Promise<any | undefined> {
-    const user = await this.userRepository.findOneBy({ id });
-    const parsedBody = convertKeysToSnakeCase(body);
+    try {
+      const user = await this.userRepository.findOneBy({ id });
 
-    const updatedUser = { ...user, ...parsedBody };
+      if (!user) {
+        throw new HttpException(
+          `User with id ${id} not found`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
 
-    return await this.userRepository.save(updatedUser);
+      const parsedBody = convertKeysToSnakeCase(body);
+
+      const updatedUser = { ...user, ...parsedBody };
+
+      return await this.userRepository.save(updatedUser);
+    } catch (err) {
+      if (err.status === 404) throw err;
+
+      throw new HttpException(
+        'There was an error updating the user with this id: ' + id,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 }
