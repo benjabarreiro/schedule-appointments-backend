@@ -9,21 +9,21 @@ import {
 import { AuthService } from './auth.service';
 import { CreateUserDto, LoginUserDto } from './dtos';
 import { loginSchema, userSchema } from './schemas';
-import { JoiValidationPipe } from './pipes';
+import { AuthPipe } from './pipes';
 
 @Controller('/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/register')
-  @UsePipes(new JoiValidationPipe(userSchema))
+  @UsePipes(new AuthPipe(userSchema))
   createUser(@Body() body: CreateUserDto): Promise<string> | string {
     return this.authService.createUser(body);
   }
 
   @Post('/login')
   @HttpCode(HttpStatus.OK)
-  @UsePipes(new JoiValidationPipe(loginSchema))
+  @UsePipes(new AuthPipe(loginSchema))
   login(@Body() body: LoginUserDto): Promise<string> | string {
     return this.authService.login(body);
   }

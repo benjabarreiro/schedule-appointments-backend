@@ -48,3 +48,38 @@ export const loginSchema = JoiPipe.object({
   email: JoiPipe.string().email().required().not().empty(),
   password: JoiPipe.string().required().not().empty(),
 });
+
+export const updateUserSchema = JoiPipe.object({
+  firstName: JoiPipe.string()
+    .pattern(/^[a-zA-Z]+$/)
+    .not()
+    .empty()
+    .min(2),
+  lastName: JoiPipe.string()
+    .pattern(/^[a-zA-Z]+$/)
+    .not()
+    .empty()
+    .min(2),
+  phone: JoiPipe.string()
+    .pattern(/^\+?[1-9]\d{9,14}$/)
+    .not()
+    .empty(),
+  birthDate: JoiPipe.date()
+    .format('YYYY-MM-DD')
+    .custom((value, helper) => {
+      const today = new Date();
+      const birthYear = value.getFullYear();
+      const ageDifference =
+        (today.getMonth() === value.getMonth() ? 0 : 1) +
+        (today.getDate() < value.getDate() ? 0 : -1);
+      const age = today.getFullYear() - birthYear - ageDifference;
+
+      if (age < 12) {
+        return helper.error(
+          'birth date must be for someone at least 12 years old',
+        );
+      }
+
+      return value;
+    }),
+});
