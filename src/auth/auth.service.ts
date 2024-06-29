@@ -6,12 +6,7 @@ import { Roles, Status } from 'src/enums';
 import { UsersService } from 'src/users/users.service';
 import { EmailsService } from 'src/emails/email.servicie';
 import { generateValidationCode, hashPassword } from './utils';
-
-interface ValidationRecord {
-  code: string;
-  expiresAt: Date;
-  user: ValidateCreateUserDto;
-}
+import { ValidationRecord } from './interfaces';
 
 @Injectable()
 export class AuthService {
@@ -27,42 +22,54 @@ export class AuthService {
   }
 
   async createUser(body: CreateUserDto): Promise<string> {
-    const userExist = await this.usersService.findUserByEmail(body.email);
-    if (userExist) {
-      throw new HttpException('User already exists', HttpStatus.CONFLICT);
+    try {
+      const userExist = await this.usersService.findUserByEmail(body.email);
+      if (userExist) {
+        throw new HttpException('User already exists', HttpStatus.CONFLICT);
+      }
+
+      const hashedPassword = await hashPassword(body.password);
+      const bodyWithHashedPassword: ValidateCreateUserDto = {
+        ...body,
+        password: hashedPassword,
+        role: Roles.Patient,
+        status: Status.Pending,
+      };
+
+      return await this.sendValidationCode(bodyWithHashedPassword);
+    } catch (err) {
+      throw err;
     }
-
-    const hashedPassword = await hashPassword(body.password);
-    const bodyWithHashedPassword: ValidateCreateUserDto = {
-      ...body,
-      password: hashedPassword,
-      role: Roles.Patient,
-      status: Status.Pending,
-    };
-
-    return await this.sendValidationCode(bodyWithHashedPassword);
   }
 
   async login(body: LoginUserDto): Promise<string> {
-    const user = await this.validateUserPassword(body.email, body.password);
-    const token = await this.generateToken({ email: body.email });
-    return token;
+    try {
+      const user = await this.validateUserPassword(body.email, body.password);
+      const token = await this.generateToken({ email: user.email });
+      return token;
+    } catch (err) {
+      throw err;
+    }
   }
 
   async sendValidationCode(user: ValidateCreateUserDto) {
-    const code = generateValidationCode();
-    const expiresAt = new Date();
-    expiresAt.setMinutes(expiresAt.getMinutes() + this.codeExpirationMinutes);
+    try {
+      const code = generateValidationCode();
+      const expiresAt = new Date();
+      expiresAt.setMinutes(expiresAt.getMinutes() + this.codeExpirationMinutes);
 
-    this.validationRecords.push({ code, expiresAt, user });
+      this.validationRecords.push({ code, expiresAt, user });
 
-    await this.emailService.sendEmail(
-      user.email,
-      'Email Validation Code',
-      `Your validation code is: ${code}`,
-    );
+      await this.emailService.sendEmail(
+        user.email,
+        'Email Validation Code',
+        `Your validation code is: ${code}`,
+      );
 
-    return 'Validation code sent';
+      return 'Validation code sent';
+    } catch (err) {
+      throw err;
+    }
   }
 
   async validateCode(code: string): Promise<string> {
@@ -71,16 +78,15 @@ export class AuthService {
     const record = this.validationRecords.find(
       (record) => record.code === code,
     );
-
-    if (!record) {
-      throw new HttpException('Invalid code', HttpStatus.BAD_REQUEST);
-    }
-
-    if (record && record.expiresAt < now) {
-      throw new HttpException('Expired code', HttpStatus.UNAUTHORIZED);
-    }
-
     try {
+      if (!record) {
+        throw new HttpException('Invalid code', HttpStatus.BAD_REQUEST);
+      }
+
+      if (record && record.expiresAt < now) {
+        throw new HttpException('Expired code', HttpStatus.UNAUTHORIZED);
+      }
+
       await this.usersService.createUser({
         ...record.user,
         status: Status.Active,
@@ -112,17 +118,21 @@ export class AuthService {
   }
 
   async validateUserPassword(email: string, password: string) {
-    const userExist = await this.usersService.findUserByEmail(email);
+    try {
+      const userExist = await this.usersService.findUserByEmail(email);
 
-    if (!userExist) {
-      throw new HttpException('User does not exist', HttpStatus.NOT_FOUND);
+      if (!userExist) {
+        throw new HttpException('User does not exist', HttpStatus.NOT_FOUND);
+      }
+
+      if (!compareSync(password, userExist.password)) {
+        throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
+      }
+
+      return userExist;
+    } catch (err) {
+      throw err;
     }
-
-    if (!compareSync(password, userExist.password)) {
-      throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
-    }
-
-    return userExist;
   }
 
   async generateToken(payload: any): Promise<string> {

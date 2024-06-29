@@ -31,8 +31,8 @@ export class EmailsService {
 
   async sendEmail(to: string, subject: string, text: string) {
     try {
+      console.log(to, subject, text);
       const info = await this.transporter.sendMail({
-        from: 'barreirobenjamin@gmail.com>',
         to,
         subject,
         text,
