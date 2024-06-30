@@ -1,6 +1,11 @@
-import { Status } from 'src/enums';
 import { Role } from './role.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('users')
 export class User {
@@ -23,11 +28,9 @@ export class User {
   birth_date: Date;
 
   @ManyToOne(() => Role, { eager: true })
+  @JoinColumn({ name: 'role_id' })
   role: Role;
 
   @Column()
   password: string;
-
-  @Column()
-  status: Status;
 }

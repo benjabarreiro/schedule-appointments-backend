@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto, LoginUserDto, ValidateCreateUserDto } from './dtos';
 import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcrypt';
-import { Roles, Status } from 'src/enums';
+import { RolesIds } from 'src/enums';
 import { UsersService } from 'src/users/users.service';
 import { EmailsService } from 'src/emails/email.servicie';
 import { generateValidationCode, hashPassword } from './utils';
@@ -32,8 +32,7 @@ export class AuthService {
       const bodyWithHashedPassword: ValidateCreateUserDto = {
         ...body,
         password: hashedPassword,
-        role: Roles.Patient,
-        status: Status.Pending,
+        role: RolesIds.user,
       };
 
       return await this.sendValidationCode(bodyWithHashedPassword);
@@ -89,7 +88,6 @@ export class AuthService {
 
       await this.usersService.createUser({
         ...record.user,
-        status: Status.Active,
       });
       await this.emailService.sendEmail(
         record.user.email,

@@ -1,13 +1,13 @@
 export enum Roles {
-  Patient = '1',
-  Secretary = '2',
-  Doctor = '3',
-  Healthcare = '4',
-  Administrator = '5',
+  USER = 'user',
+  EMPLOYEE = 'employee',
+  ADMIN = 'admin',
+  SUPER_ADMIN = 'super_admin',
 }
 
-export enum Status {
-  Disabled = 'D',
-  Pending = 'P',
-  Active = 'A',
+export enum RolesIds {
+  user = 1,
+  employee = 2,
+  admin = 3,
+  super_admin = 4,
 }
