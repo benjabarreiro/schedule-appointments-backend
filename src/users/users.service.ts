@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UpdateUserDto, ValidateCreateUserDto } from '../auth/dtos';
 import { User } from 'src/entities/user.entity';
 import { Connection, Repository } from 'typeorm';
@@ -55,7 +60,23 @@ export class UsersService {
       if (err.status === 404) throw err;
 
       throw new HttpException(
-        'There was an error updating the user with this id: ' + id,
+        'There was an error updating the user with id: ' + id,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async deleteUser(id: number) {
+    try {
+      const user = await this.userRepository.findOneBy({ id });
+      if (!user) {
+        throw new NotFoundException('No user exists with id: ' + id);
+      }
+      return await this.userRepository.delete(id);
+    } catch (err) {
+      if (err.status === 404) throw err;
+      throw new HttpException(
+        'There was an error deleting the user with id: ' + id,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
