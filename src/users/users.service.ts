@@ -4,10 +4,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UpdateUserDto, ValidateCreateUserDto } from '../auth/dtos';
-import { User } from 'src/entities/user.entity';
+import { UpdateUserDto, ValidateCreateUserDto } from '../common/dtos';
 import { Connection, Repository } from 'typeorm';
-import { convertKeysToSnakeCase } from 'src/lib/utils/parsers';
+import { convertKeysToSnakeCase } from 'src/common/utils/parsers';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UsersService {

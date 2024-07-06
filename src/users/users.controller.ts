@@ -7,10 +7,10 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { UpdateUserDto } from 'src/auth/dtos';
-import { updateUserSchema } from 'src/auth/schemas';
-import { UserPipe } from 'src/auth/pipes';
-import { UsersGuard } from 'src/guards/users.guard';
+import { UpdateUserDto } from 'src/common/dtos';
+import { updateUserSchema } from 'src/common/schemas';
+import { UserPipe } from 'src/common/pipes';
+import { UsersGuard } from 'src/common/guards/users.guard';
 
 @Controller('/users')
 export class UsersController {

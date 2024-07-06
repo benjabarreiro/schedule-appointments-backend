@@ -7,9 +7,9 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto, LoginUserDto } from './dtos';
-import { loginSchema, userSchema } from './schemas';
-import { AuthPipe } from './pipes';
+import { CreateUserDto, LoginUserDto } from '../common/dtos';
+import { loginSchema, userSchema } from '../common/schemas';
+import { AuthPipe } from '../common/pipes';
 
 @Controller('/auth')
 export class AuthController {
