@@ -31,14 +31,11 @@ export class EmailsService {
 
   async sendEmail(to: string, subject: string, text: string) {
     try {
-      console.log(to, subject, text);
       const info = await this.transporter.sendMail({
         to,
         subject,
         text,
       });
-
-      console.log('Message sent: %s', info.messageId);
     } catch (err) {
       throw new HttpException(
         'There was an error sending the email',

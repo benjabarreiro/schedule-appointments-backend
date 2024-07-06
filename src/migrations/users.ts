@@ -40,7 +40,7 @@ export class users1718187774943 implements MigrationInterface {
             type: 'date',
           },
           {
-            name: 'roleId',
+            name: 'role_id',
             type: 'int',
           },
           {
@@ -54,7 +54,7 @@ export class users1718187774943 implements MigrationInterface {
     await queryRunner.createForeignKey(
       'users',
       new TableForeignKey({
-        columnNames: ['roleId'],
+        columnNames: ['role_id'],
         referencedColumnNames: ['id'],
         referencedTableName: 'roles',
         onDelete: 'CASCADE',
@@ -65,7 +65,7 @@ export class users1718187774943 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
     const table = await queryRunner.getTable('users');
     const foreignKey = table.foreignKeys.find(
-      (fk) => fk.columnNames.indexOf('roleId') !== -1,
+      (fk) => fk.columnNames.indexOf('role_id') !== -1,
     );
     await queryRunner.dropForeignKey('users', foreignKey);
     await queryRunner.dropTable('users');

@@ -1,12 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateUserDto, LoginUserDto, ValidateCreateUserDto } from './dtos';
-import { JwtService } from '@nestjs/jwt';
 import { compareSync } from 'bcrypt';
-import { Roles, Status } from 'src/enums';
+import { RolesIds } from 'src/enums';
 import { UsersService } from 'src/users/users.service';
 import { EmailsService } from 'src/emails/email.servicie';
 import { generateValidationCode, hashPassword } from './utils';
 import { ValidationRecord } from './interfaces';
+import { JwtService } from 'src/jwt/jwt.service';
 
 @Injectable()
 export class AuthService {
@@ -32,8 +32,7 @@ export class AuthService {
       const bodyWithHashedPassword: ValidateCreateUserDto = {
         ...body,
         password: hashedPassword,
-        role: Roles.Patient,
-        status: Status.Pending,
+        role: RolesIds.user,
       };
 
       return await this.sendValidationCode(bodyWithHashedPassword);
@@ -45,7 +44,10 @@ export class AuthService {
   async login(body: LoginUserDto): Promise<string> {
     try {
       const user = await this.validateUserPassword(body.email, body.password);
-      const token = await this.generateToken({ email: user.email });
+      const token = await this.jwtService.generateToken({
+        email: user.email,
+        id: user.id,
+      });
       return token;
     } catch (err) {
       throw err;
@@ -89,14 +91,13 @@ export class AuthService {
 
       await this.usersService.createUser({
         ...record.user,
-        status: Status.Active,
       });
       await this.emailService.sendEmail(
         record.user.email,
         'User created',
         'Your user was created successfully',
       );
-      return await this.generateToken({ email: record.user.email });
+      return await this.jwtService.generateToken({ email: record.user.email });
     } catch (err) {
       throw err;
     } finally {
@@ -132,17 +133,6 @@ export class AuthService {
       return userExist;
     } catch (err) {
       throw err;
-    }
-  }
-
-  async generateToken(payload: any): Promise<string> {
-    try {
-      return this.jwtService.sign(payload);
-    } catch (err) {
-      throw new HttpException(
-        'There was an error logging in the user',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
     }
   }
 }

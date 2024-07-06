@@ -3,7 +3,6 @@ import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class roles1718187752537 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
-    console.log(Roles.Patient, process.env.Patient);
     await queryRunner.createTable(
       new Table({
         name: 'roles',
@@ -18,13 +17,7 @@ export class roles1718187752537 implements MigrationInterface {
           {
             name: 'name',
             type: 'enum',
-            enum: [
-              Roles.Patient,
-              Roles.Secretary,
-              Roles.Doctor,
-              Roles.Healthcare,
-              Roles.Administrator,
-            ],
+            enum: [Roles.USER, Roles.EMPLOYEE, Roles.ADMIN, Roles.SUPER_ADMIN],
           },
         ],
       }),
