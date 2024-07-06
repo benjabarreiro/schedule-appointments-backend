@@ -8,8 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import configuration from './config';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { UsersController } from './users/users.controller';
-import { User } from './users/entities/user.entity';
-import { Role } from './users/entities/role.entity';
+import { Role, User } from './users/entities';
 import { Plan } from './plans/plan.entity';
 
 @Module({
