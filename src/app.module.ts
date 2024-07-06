@@ -11,6 +11,7 @@ import { UsersController } from './users/users.controller';
 import { Role, User } from './users/entities';
 import { Plan } from './plans/plan.entity';
 import { PlansModule } from './plans/plans.module';
+import { Business } from './businesses/business.entity';
 
 @Module({
   imports: [
@@ -30,7 +31,7 @@ import { PlansModule } from './plans/plans.module';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [User, Role, Plan],
+        entities: [User, Role, Plan, Business],
         synchronize: false,
         migrations: [__dirname + '/../migrations/*{.ts,.js}'],
         migrationsRun: true, // Automatically run migrations on app startup
@@ -40,7 +41,7 @@ import { PlansModule } from './plans/plans.module';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User, Role, Plan]),
+    TypeOrmModule.forFeature([User, Role, Plan, Business]),
   ],
   controllers: [AppController],
   providers: [AppService],
