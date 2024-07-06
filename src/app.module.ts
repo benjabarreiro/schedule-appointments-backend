@@ -10,6 +10,7 @@ import { AuthMiddleware } from './auth/auth.middleware';
 import { UsersController } from './users/users.controller';
 import { Role, User } from './users/entities';
 import { Plan } from './plans/plan.entity';
+import { PlansModule } from './plans/plans.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { Plan } from './plans/plan.entity';
     }),
     AuthModule,
     UsersModule,
+    PlansModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
