@@ -1,7 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateUserDto, LoginUserDto, ValidateCreateUserDto } from './dtos';
+import {
+  CreateUserDto,
+  LoginUserDto,
+  ValidateCreateUserDto,
+} from '../common/dtos';
 import { compareSync } from 'bcrypt';
-import { RolesIds } from 'src/enums';
+import { RolesIds } from 'src/common/enums';
 import { UsersService } from 'src/users/users.service';
 import { EmailsService } from 'src/emails/email.servicie';
 import { generateValidationCode, hashPassword } from './utils';

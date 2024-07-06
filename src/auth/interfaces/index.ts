@@ -1,4 +1,4 @@
-import { ValidateCreateUserDto } from '../dtos';
+import { ValidateCreateUserDto } from '../../common/dtos';
 
 export interface ValidationRecord {
   code: string;

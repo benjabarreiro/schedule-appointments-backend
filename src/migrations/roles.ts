@@ -1,4 +1,4 @@
-import { Roles } from '../enums';
+import { Roles } from '../common/enums';
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
 export class roles1718187752537 implements MigrationInterface {
