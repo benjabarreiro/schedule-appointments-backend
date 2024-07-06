@@ -10,6 +10,7 @@ import { AuthMiddleware } from './auth/auth.middleware';
 import { UsersController } from './users/users.controller';
 import { User } from './users/entities/user.entity';
 import { Role } from './users/entities/role.entity';
+import { Plan } from './plans/plan.entity';
 
 @Module({
   imports: [
@@ -28,7 +29,7 @@ import { Role } from './users/entities/role.entity';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [User, Role],
+        entities: [User, Role, Plan],
         synchronize: false,
         migrations: [__dirname + '/../migrations/*{.ts,.js}'],
         migrationsRun: true, // Automatically run migrations on app startup
@@ -38,7 +39,7 @@ import { Role } from './users/entities/role.entity';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User, Role]),
+    TypeOrmModule.forFeature([User, Role, Plan]),
   ],
   controllers: [AppController],
   providers: [AppService],
