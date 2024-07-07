@@ -1,4 +1,4 @@
-import { Business } from 'src/businesses/business.entity';
+import { Business } from '../../businesses/business.entity';
 import { Role } from '../entities/role.entity';
 import {
   Column,
