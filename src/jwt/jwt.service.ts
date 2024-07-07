@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService as JwtNestService } from '@nestjs/jwt';
+import { IJwt } from './interfaces';
 
 @Injectable()
 export class JwtService {
@@ -16,7 +17,7 @@ export class JwtService {
     }
   }
 
-  async verifyToken(token) {
+  verifyToken(token: string): IJwt {
     try {
       return this.jwtService.verify(token, {
         secret: process.env.JWT_SECRET,
