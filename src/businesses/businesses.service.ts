@@ -95,20 +95,32 @@ export class BusinessesService {
       });
 
       if (!user) {
+        throw new HttpException(
+          `User with id ${userId} does not exits on the DB`,
+          HttpStatus.NOT_FOUND,
+        );
       }
 
       if (!business) {
+        throw new HttpException(
+          `Business with id ${businessId} does not exits on the DB`,
+          HttpStatus.NOT_FOUND,
+        );
       }
 
       const userBusiness = new UserBusiness();
       userBusiness.user_id = userId;
       userBusiness.business_id = businessId;
-      userBusiness.user = user;
-      userBusiness.business = business;
       await this.userBusinessRepository.save(userBusiness);
 
       return `Succesfully added ${user.first_name} ${user.last_name} to ${business.name}`;
-    } catch (err) {}
+    } catch (err) {
+      if (err === 404 || err === 500) throw err;
+      throw new HttpException(
+        `There was an error adding user with id ${userId} to business with id ${businessId}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
   async removeUserFromBusiness() {}
