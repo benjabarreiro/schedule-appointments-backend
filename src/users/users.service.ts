@@ -58,10 +58,7 @@ export class UsersService {
     }
   }
 
-  async updateUser(
-    body: UpdateUserDto,
-    id: number,
-  ): Promise<UserDto | undefined> {
+  async updateUser(body: UpdateUserDto, id: number): Promise<string> {
     try {
       const user = await this.findUserById(id);
 
@@ -76,7 +73,9 @@ export class UsersService {
 
       const updatedUser = { ...user, ...parsedBody };
 
-      return await this.userRepository.save(updatedUser);
+      await this.userRepository.save(updatedUser);
+
+      return `User with id ${id} was updated successfully`;
     } catch (err) {
       if (err.status === 404) throw err;
 
@@ -115,7 +114,7 @@ export class UsersService {
 
   async deleteUser(id: number): Promise<string> {
     try {
-      const user = await this.userRepository.findOneBy({ id });
+      const user = await this.findUserById(id);
       if (!user) {
         throw new NotFoundException('No user exists with id: ' + id);
       }
