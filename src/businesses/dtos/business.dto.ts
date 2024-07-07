@@ -1,9 +1,9 @@
-import { Plan } from 'src/plans/plan.entity';
+import { PlanDto } from '../../plans/dtos';
 
 export class BusinessDto {
   id: number;
   name: string;
   adminId: number;
-  plan: Plan;
+  plan: PlanDto;
   isActive: boolean;
 }
