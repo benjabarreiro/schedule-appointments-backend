@@ -3,15 +3,18 @@ import { Business } from './business.entity';
 import { Connection, Repository } from 'typeorm';
 import { RolesIds } from 'src/common/enums';
 import { UsersService } from 'src/users/users.service';
+import { UserBusiness } from 'src/users/entities/user-business.entity';
 
 @Injectable()
 export class BusinessesService {
   private businessesRepository: Repository<Business>;
+  private userBusinessRepository: Repository<UserBusiness>;
   constructor(
     private readonly connection: Connection,
     private readonly usersService: UsersService,
   ) {
     this.businessesRepository = this.connection.getRepository(Business);
+    this.userBusinessRepository = this.connection.getRepository(UserBusiness);
   }
 
   async findAllBusinesses() {
@@ -66,6 +69,25 @@ export class BusinessesService {
       throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  async addUserToBusiness(userId, businessId) {
+    try {
+      const user = await this.usersService.findUserById(userId);
+      const business = await this.businessesRepository.findOne(businessId);
+
+      if (user && business) {
+        const userBusiness = new UserBusiness();
+        userBusiness.user_id = userId;
+        userBusiness.business_id = businessId;
+        userBusiness.user = user;
+        userBusiness.business = business;
+
+        await this.userBusinessRepository.save(userBusiness);
+      }
+    } catch (err) {}
+  }
+
+  async removeUserFromBusiness() {}
 
   async editBusiness() {
     try {
