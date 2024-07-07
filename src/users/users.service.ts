@@ -20,11 +20,11 @@ export class UsersService {
     this.userRepository = this.connection.getRepository(User);
   }
 
-  async createUser(user: ValidateCreateUserDto) {
+  async createUser(user: ValidateCreateUserDto): Promise<UserAuthDto> {
     try {
       const parsedUser = convertKeysToSnakeCase(user);
       const newUser = await this.userRepository.create(parsedUser);
-      return await this.userRepository.save(newUser);
+      return await this.userRepository.save(newUser)[0];
     } catch (err) {
       throw new HttpException(
         'There was an error creating the user',
