@@ -6,14 +6,14 @@ import { AddUserToBusiness, CreateBusinessDto } from './dtos';
 export class BusinessesController {
   constructor(private readonly businessesService: BusinessesService) {}
   @Post('')
-  async createBusiness(@Body() body: CreateBusinessDto) {
+  async createBusiness(@Body() body: CreateBusinessDto): Promise<string> {
     try {
       return await this.businessesService.createBusiness(body);
     } catch (err) {}
   }
 
   @Post('/add-user')
-  async addUserToBusiness(@Body() body: AddUserToBusiness) {
+  async addUserToBusiness(@Body() body: AddUserToBusiness): Promise<string> {
     try {
       return await this.businessesService.addUserToBusiness(
         body.userId,

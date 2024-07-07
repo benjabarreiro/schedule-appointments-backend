@@ -4,7 +4,8 @@ import { Connection, Repository } from 'typeorm';
 import { RolesIds } from 'src/common/enums';
 import { UsersService } from 'src/users/users.service';
 import { UserBusiness } from 'src/users/entities/user-business.entity';
-import { CreateBusinessDto } from './dtos';
+import { BusinessDto, CreateBusinessDto } from './dtos';
+import { parseToCamelCase } from 'src/common/utils/parsers';
 
 @Injectable()
 export class BusinessesService {
@@ -18,9 +19,11 @@ export class BusinessesService {
     this.userBusinessRepository = this.connection.getRepository(UserBusiness);
   }
 
-  async findAllBusinesses() {
+  async findAllBusinesses(): Promise<BusinessDto[]> {
     try {
-      return await this.businessesRepository.find();
+      const businesses = await this.businessesRepository.find();
+
+      return parseToCamelCase(businesses);
     } catch (err) {
       throw new HttpException(
         'There was an error retriving businesses from DB',
@@ -29,9 +32,13 @@ export class BusinessesService {
     }
   }
 
-  async findBusinessById(id: number) {
+  async findBusinessById(id: number): Promise<BusinessDto> {
     try {
-      return await this.businessesRepository.findOne({ where: { id } });
+      const business = await this.businessesRepository.findOne({
+        where: { id },
+      });
+
+      return parseToCamelCase(business);
     } catch (err) {
       throw new HttpException(
         'There was an error retrieving business with id ' + id,
@@ -40,9 +47,13 @@ export class BusinessesService {
     }
   }
 
-  async findBusinessByName(name: string) {
+  async findBusinessByName(name: string): Promise<BusinessDto> {
     try {
-      return await this.businessesRepository.findOne({ where: { name } });
+      const business = await this.businessesRepository.findOne({
+        where: { name },
+      });
+
+      return parseToCamelCase(business);
     } catch (err) {
       throw new HttpException(
         'There was an error retrieving business with name ' + name,
@@ -51,7 +62,7 @@ export class BusinessesService {
     }
   }
 
-  async createBusiness(business: CreateBusinessDto) {
+  async createBusiness(business: CreateBusinessDto): Promise<string> {
     try {
       const existingBusiness = await this.findBusinessByName(business.name);
       if (existingBusiness)
@@ -65,28 +76,38 @@ export class BusinessesService {
         savedUser.admin_id,
       );
 
-      return savedUser;
+      return 'Business created succesfully';
     } catch (err) {
-      throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);
+      if ([409, 404].some((code) => code === err.status)) throw err;
+
+      throw new HttpException(
+        'There was an error creating business',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
-  async addUserToBusiness(userId: number, businessId: number) {
+  async addUserToBusiness(userId: number, businessId: number): Promise<string> {
     try {
       const user = await this.usersService.findUserById(userId);
       const business = await this.businessesRepository.findOne({
         where: { id: businessId },
       });
 
-      if (user && business) {
-        const userBusiness = new UserBusiness();
-        userBusiness.user_id = userId;
-        userBusiness.business_id = businessId;
-        userBusiness.user = user;
-        userBusiness.business = business;
-
-        await this.userBusinessRepository.save(userBusiness);
+      if (!user) {
       }
+
+      if (!business) {
+      }
+
+      const userBusiness = new UserBusiness();
+      userBusiness.user_id = userId;
+      userBusiness.business_id = businessId;
+      userBusiness.user = user;
+      userBusiness.business = business;
+      await this.userBusinessRepository.save(userBusiness);
+
+      return `Succesfully added ${user.first_name} ${user.last_name} to ${business.name}`;
     } catch (err) {}
   }
 
