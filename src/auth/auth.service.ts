@@ -94,7 +94,7 @@ export class AuthService {
         throw new HttpException('Expired code', HttpStatus.UNAUTHORIZED);
       }
 
-      await this.usersService.createUser({
+      const user = await this.usersService.createUser({
         ...record.user,
       });
       await this.emailService.sendEmail(
@@ -102,7 +102,10 @@ export class AuthService {
         'User created',
         'Your user was created successfully',
       );
-      return await this.jwtService.generateToken({ email: record.user.email });
+      return await this.jwtService.generateToken({
+        email: user.email,
+        id: user.id,
+      });
     } catch (err) {
       throw err;
     } finally {
