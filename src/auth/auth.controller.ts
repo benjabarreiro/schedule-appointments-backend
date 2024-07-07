@@ -17,20 +17,20 @@ export class AuthController {
 
   @Post('/register')
   @UsePipes(new AuthPipe(userSchema))
-  createUser(@Body() body: CreateUserDto): Promise<string> | string {
+  createUser(@Body() body: CreateUserDto): Promise<string> {
     return this.authService.createUser(body);
   }
 
   @Post('/login')
   @HttpCode(HttpStatus.OK)
   @UsePipes(new AuthPipe(loginSchema))
-  login(@Body() body: LoginUserDto): Promise<string> | string {
+  login(@Body() body: LoginUserDto): Promise<string> {
     return this.authService.login(body);
   }
 
   @Post('/validate-code')
   @HttpCode(HttpStatus.CREATED)
-  async validateCode(@Body('code') code: string) {
+  validateCode(@Body('code') code: string): Promise<string> {
     return this.authService.validateCode(code);
   }
 }
