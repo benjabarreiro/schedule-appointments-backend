@@ -6,8 +6,12 @@ import {
 } from '@nestjs/common';
 import { UpdateUserDto, ValidateCreateUserDto } from '../common/dtos';
 import { Connection, Repository } from 'typeorm';
-import { convertKeysToSnakeCase } from 'src/common/utils/parsers';
+import {
+  convertKeysToSnakeCase,
+  parseToCamelCase,
+} from 'src/common/utils/parsers';
 import { User } from './entities/user.entity';
+import { UserAuthDto, UserDto } from './dtos';
 
 @Injectable()
 export class UsersService {
@@ -29,15 +33,22 @@ export class UsersService {
     }
   }
 
-  async findUserById(id: number): Promise<User> {
+  async findUserById(id: number): Promise<UserDto | undefined> {
     try {
-      return await this.userRepository.findOne({ where: { id } });
-    } catch (err) {}
+      const user = await this.userRepository.findOne({ where: { id } });
+      return parseToCamelCase(user);
+    } catch (err) {
+      throw new HttpException(
+        'There was an error finding user with id ' + id,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
   }
 
-  async findUserByEmail(email: string): Promise<any | undefined> {
+  async findUserByEmail(email: string): Promise<UserAuthDto | undefined> {
     try {
-      return await this.userRepository.findOne({ where: { email } });
+      const user = await this.userRepository.findOne({ where: { email } });
+      return parseToCamelCase(user);
     } catch (err) {
       throw new HttpException(
         'There was an error checking the email in db',
@@ -46,9 +57,12 @@ export class UsersService {
     }
   }
 
-  async updateUser(body: UpdateUserDto, id: number): Promise<any | undefined> {
+  async updateUser(
+    body: UpdateUserDto,
+    id: number,
+  ): Promise<UserDto | undefined> {
     try {
-      const user = await this.userRepository.findOneBy({ id });
+      const user = await this.findUserById(id);
 
       if (!user) {
         throw new HttpException(
@@ -72,9 +86,9 @@ export class UsersService {
     }
   }
 
-  async updateUserRole(role_id, user_id) {
+  async updateUserRole(role_id, user_id): Promise<UserDto> {
     try {
-      const user = await this.userRepository.findOneBy({ id: user_id });
+      const user = await this.findUserById(user_id);
 
       if (!user) {
         throw new HttpException(
@@ -96,13 +110,15 @@ export class UsersService {
     }
   }
 
-  async deleteUser(id: number) {
+  async deleteUser(id: number): Promise<string> {
     try {
       const user = await this.userRepository.findOneBy({ id });
       if (!user) {
         throw new NotFoundException('No user exists with id: ' + id);
       }
-      return await this.userRepository.delete(id);
+      await this.userRepository.delete(id);
+
+      return `User with id ${id} has been successfully deleted`;
     } catch (err) {
       if (err.status === 404) throw err;
       throw new HttpException(
