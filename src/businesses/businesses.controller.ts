@@ -4,7 +4,7 @@ import { BusinessesService } from './businesses.service';
 @Controller('businesses')
 export class BusinessesController {
   constructor(private readonly businessesService: BusinessesService) {}
-  @Post('/create')
+  @Post('')
   async createBusiness(@Body() body: any) {
     try {
       return await this.businessesService.createBusiness(body);
