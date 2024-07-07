@@ -87,25 +87,27 @@ export class UsersService {
     }
   }
 
-  async updateUserRole(role_id, user_id): Promise<UserDto> {
+  async updateUserRole(roleId, userId): Promise<string> {
     try {
-      const user = await this.findUserById(user_id);
+      const user = await this.findUserById(userId);
 
       if (!user) {
         throw new HttpException(
-          `User with id ${user_id} not found`,
+          `User with id ${userId} not found`,
           HttpStatus.NOT_FOUND,
         );
       }
 
-      const updatedUser = { ...user, role_id };
+      const updatedUser = { ...user, roleId };
 
-      return await this.userRepository.save(updatedUser);
+      await this.userRepository.save(updatedUser);
+
+      return `User's role with id ${userId} has been updated to the role ${roleId}`;
     } catch (err) {
       if (err.status === 404) throw err;
 
       throw new HttpException(
-        'There was an error updating role of the user with id: ' + user_id,
+        'There was an error updating role of the user with id: ' + userId,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
