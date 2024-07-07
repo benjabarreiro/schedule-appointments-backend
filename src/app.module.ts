@@ -13,6 +13,7 @@ import { Plan } from './plans/plan.entity';
 import { PlansModule } from './plans/plans.module';
 import { Business } from './businesses/business.entity';
 import { UserBusiness } from './users/entities/user-business.entity';
+import { BusinessesModule } from './businesses/businesses.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { UserBusiness } from './users/entities/user-business.entity';
     AuthModule,
     UsersModule,
     PlansModule,
+    BusinessesModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
