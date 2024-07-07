@@ -59,7 +59,7 @@ export class AuthService {
     }
   }
 
-  async sendValidationCode(user: ValidateCreateUserDto) {
+  async sendValidationCode(user: ValidateCreateUserDto): Promise<string> {
     try {
       const code = generateValidationCode();
       const expiresAt = new Date();
