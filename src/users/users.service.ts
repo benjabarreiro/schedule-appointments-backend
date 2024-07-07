@@ -36,7 +36,8 @@ export class UsersService {
   async findUserById(id: number): Promise<UserDto | undefined> {
     try {
       const user = await this.userRepository.findOne({ where: { id } });
-      return parseToCamelCase(user);
+      const parsedUser = parseToCamelCase(user);
+      return parsedUser.map((user) => new UserDto(user));
     } catch (err) {
       throw new HttpException(
         'There was an error finding user with id ' + id,
