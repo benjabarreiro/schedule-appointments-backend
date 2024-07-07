@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Connection, Repository } from 'typeorm';
 import { Plan } from './plan.entity';
+import { PlanDto } from './dtos';
 
 @Injectable()
 export class PlansService {
@@ -9,7 +10,7 @@ export class PlansService {
     this.plansRepository = this.connection.getRepository(Plan);
   }
 
-  async findAll(): Promise<Plan[]> {
+  async findAll(): Promise<PlanDto[]> {
     try {
       return this.plansRepository.find();
     } catch (err) {
