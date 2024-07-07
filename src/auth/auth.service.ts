@@ -11,6 +11,7 @@ import { EmailsService } from 'src/emails/email.servicie';
 import { generateValidationCode, hashPassword } from './utils';
 import { ValidationRecord } from './interfaces';
 import { JwtService } from 'src/jwt/jwt.service';
+import { UserAuthDto } from 'src/users/dtos';
 
 @Injectable()
 export class AuthService {
@@ -122,7 +123,10 @@ export class AuthService {
     }, 60000);
   }
 
-  async validateUserPassword(email: string, password: string) {
+  async validateUserPassword(
+    email: string,
+    password: string,
+  ): Promise<UserAuthDto> {
     try {
       const userExist = await this.usersService.findUserByEmail(email);
 
