@@ -66,6 +66,30 @@ export class UsersService {
     }
   }
 
+  async updateUserRole(role_id, user_id) {
+    try {
+      const user = await this.userRepository.findOneBy({ id: user_id });
+
+      if (!user) {
+        throw new HttpException(
+          `User with id ${user_id} not found`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
+      const updatedUser = { ...user, role_id };
+
+      return await this.userRepository.save(updatedUser);
+    } catch (err) {
+      if (err.status === 404) throw err;
+
+      throw new HttpException(
+        'There was an error updating role of the user with id: ' + user_id,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async deleteUser(id: number) {
     try {
       const user = await this.userRepository.findOneBy({ id });
