@@ -4,6 +4,7 @@ import { Connection, Repository } from 'typeorm';
 import { RolesIds } from 'src/common/enums';
 import { UsersService } from 'src/users/users.service';
 import { UserBusiness } from 'src/users/entities/user-business.entity';
+import { CreateBusinessDto } from './dtos';
 
 @Injectable()
 export class BusinessesService {
@@ -50,7 +51,7 @@ export class BusinessesService {
     }
   }
 
-  async createBusiness(business: Business) {
+  async createBusiness(business: CreateBusinessDto) {
     try {
       const existingBusiness = await this.findBusinessByName(business.name);
       if (existingBusiness)
@@ -70,10 +71,12 @@ export class BusinessesService {
     }
   }
 
-  async addUserToBusiness(userId, businessId) {
+  async addUserToBusiness(userId: number, businessId: number) {
     try {
       const user = await this.usersService.findUserById(userId);
-      const business = await this.businessesRepository.findOne(businessId);
+      const business = await this.businessesRepository.findOne({
+        where: { id: businessId },
+      });
 
       if (user && business) {
         const userBusiness = new UserBusiness();
