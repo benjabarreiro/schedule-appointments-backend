@@ -8,8 +8,12 @@ import { AuthModule } from './auth/auth.module';
 import configuration from './config';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { UsersController } from './users/users.controller';
-import { User } from './users/entities/user.entity';
-import { Role } from './users/entities/role.entity';
+import { Role, User } from './users/entities';
+import { Plan } from './plans/plan.entity';
+import { PlansModule } from './plans/plans.module';
+import { Business } from './businesses/business.entity';
+import { UserBusiness } from './users/entities/user-business.entity';
+import { BusinessesModule } from './businesses/businesses.module';
 
 @Module({
   imports: [
@@ -19,6 +23,8 @@ import { Role } from './users/entities/role.entity';
     }),
     AuthModule,
     UsersModule,
+    PlansModule,
+    BusinessesModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -28,7 +34,7 @@ import { Role } from './users/entities/role.entity';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [User, Role],
+        entities: [User, Role, Plan, Business, UserBusiness],
         synchronize: false,
         migrations: [__dirname + '/../migrations/*{.ts,.js}'],
         migrationsRun: true, // Automatically run migrations on app startup
@@ -38,7 +44,7 @@ import { Role } from './users/entities/role.entity';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User, Role]),
+    TypeOrmModule.forFeature([User, Role, Plan, Business, UserBusiness]),
   ],
   controllers: [AppController],
   providers: [AppService],
