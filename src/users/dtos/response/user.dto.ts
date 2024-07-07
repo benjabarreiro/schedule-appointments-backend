@@ -6,6 +6,10 @@ export class UserDto {
   phone: string;
   role: any;
   birthDate: Date;
+
+  constructor(partial: Partial<UserDto>) {
+    Object.assign(this, partial);
+  }
 }
 
 export class UserAuthDto extends UserDto {
