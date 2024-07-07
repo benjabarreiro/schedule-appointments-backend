@@ -1,10 +1,13 @@
 export class UserDto {
   id: number;
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
   role: any;
-  birth_date: Date;
+  birthDate: Date;
+}
+
+export class UserAuthDto extends UserDto {
   password: string;
 }
