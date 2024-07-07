@@ -113,7 +113,7 @@ export class BusinessesService {
       userBusiness.business_id = businessId;
       await this.userBusinessRepository.save(userBusiness);
 
-      return `Succesfully added ${user.first_name} ${user.last_name} to ${business.name}`;
+      return `Succesfully added ${user.firstName} ${user.lastName} to ${business.name}`;
     } catch (err) {
       if (err === 404 || err === 500) throw err;
       throw new HttpException(
