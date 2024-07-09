@@ -16,7 +16,7 @@ import { UserAuthDto } from 'src/users/dtos';
 @Injectable()
 export class AuthService {
   private validationRecords: ValidationRecord[] = [];
-  private readonly codeExpirationMinutes = 5;
+  private readonly codeExpirationMinutes: number = 5;
 
   constructor(
     private readonly jwtService: JwtService,

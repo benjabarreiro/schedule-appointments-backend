@@ -12,7 +12,7 @@ export class PlansService {
 
   async findAll(): Promise<PlanDto[]> {
     try {
-      return this.plansRepository.find();
+      return await this.plansRepository.find();
     } catch (err) {
       throw new HttpException(
         'There was an error getting plans from the DB',

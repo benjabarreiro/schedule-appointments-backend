@@ -38,6 +38,13 @@ export class BusinessesService {
         where: { id },
       });
 
+      if (!business) {
+        throw new HttpException(
+          'There are no businesses with the id ' + id,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+
       return parseToCamelCase(business);
     } catch (err) {
       throw new HttpException(
@@ -93,13 +100,6 @@ export class BusinessesService {
       const business = await this.businessesRepository.findOne({
         where: { id: businessId },
       });
-
-      if (!user) {
-        throw new HttpException(
-          `User with id ${userId} does not exits on the DB`,
-          HttpStatus.NOT_FOUND,
-        );
-      }
 
       if (!business) {
         throw new HttpException(
