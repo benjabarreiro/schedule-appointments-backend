@@ -12,12 +12,15 @@ import {
 } from 'src/common/utils/parsers';
 import { User } from './entities/user.entity';
 import { UserAuthDto, UserDto } from './dtos';
+import { Employee } from './entities';
 
 @Injectable()
 export class UsersService {
   private userRepository: Repository<User>;
+  private employeeRepository: Repository<Employee>;
   constructor(private readonly connection: Connection) {
     this.userRepository = this.connection.getRepository(User);
+    this.employeeRepository = this.connection.getRepository(Employee);
   }
 
   async createUser(user: ValidateCreateUserDto): Promise<UserAuthDto> {
@@ -63,6 +66,17 @@ export class UsersService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  async createEmployee(userId): Promise<Employee> {
+    const newEmployee = await this.employeeRepository.create({
+      user_id: userId,
+    });
+    return await this.userRepository.save(newEmployee)[0];
+  }
+
+  async findEmployeeByUserId(userId: number): Promise<Employee> {
+    return this.employeeRepository.findOne({ where: { user_id: userId } });
   }
 
   async updateUser(body: UpdateUserDto, id: number): Promise<string> {
