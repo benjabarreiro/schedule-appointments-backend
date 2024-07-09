@@ -1,12 +1,12 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService as JwtNestService } from '@nestjs/jwt';
-import { IJwt, IJwtPayload } from './interfaces';
+import { IJwt } from './interfaces';
 
 @Injectable()
 export class JwtService {
   constructor(private readonly jwtService: JwtNestService) {}
 
-  async generateToken(payload: IJwtPayload): Promise<string> {
+  async generateToken(payload: IJwt): Promise<string> {
     try {
       return this.jwtService.sign(payload);
     } catch (err) {
