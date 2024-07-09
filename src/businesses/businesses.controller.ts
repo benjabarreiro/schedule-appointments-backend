@@ -5,7 +5,7 @@ import { AddUserToBusiness, CreateBusinessDto } from './dtos';
 @Controller('businesses')
 export class BusinessesController {
   constructor(private readonly businessesService: BusinessesService) {}
-  @Post('')
+  @Post()
   async createBusiness(@Body() body: CreateBusinessDto): Promise<string> {
     try {
       return await this.businessesService.createBusiness(body);
