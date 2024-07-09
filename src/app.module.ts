@@ -6,11 +6,10 @@ import { AuthModule } from './auth/auth.module';
 import configuration from './config';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { UsersController } from './users/users.controller';
-import { Role, User } from './users/entities';
+import { Employee, EmployeeBusiness, Role, User } from './users/entities';
 import { Plan } from './plans/plan.entity';
 import { PlansModule } from './plans/plans.module';
 import { Business } from './businesses/business.entity';
-import { UserBusiness } from './users/entities/user-business.entity';
 import { BusinessesModule } from './businesses/businesses.module';
 
 @Module({
@@ -32,7 +31,7 @@ import { BusinessesModule } from './businesses/businesses.module';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [User, Role, Plan, Business, UserBusiness],
+        entities: [User, Role, Plan, Business, EmployeeBusiness, Employee],
         synchronize: false,
         migrations: [__dirname + '/../migrations/*{.ts,.js}'],
         migrationsRun: true, // Automatically run migrations on app startup
@@ -42,7 +41,14 @@ import { BusinessesModule } from './businesses/businesses.module';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User, Role, Plan, Business, UserBusiness]),
+    TypeOrmModule.forFeature([
+      User,
+      Role,
+      Plan,
+      Business,
+      EmployeeBusiness,
+      Employee,
+    ]),
   ],
 })
 export class AppModule {
