@@ -10,13 +10,13 @@ import { parseToCamelCase } from 'src/common/utils/parsers';
 @Injectable()
 export class BusinessesService {
   private businessesRepository: Repository<Business>;
-  private userBusinessRepository: Repository<EmployeeBusiness>;
+  private employeeBusinessRepository: Repository<EmployeeBusiness>;
   constructor(
     private readonly connection: Connection,
     private readonly usersService: UsersService,
   ) {
     this.businessesRepository = this.connection.getRepository(Business);
-    this.userBusinessRepository =
+    this.employeeBusinessRepository =
       this.connection.getRepository(EmployeeBusiness);
   }
 
@@ -126,7 +126,7 @@ export class BusinessesService {
       const userBusiness = new EmployeeBusiness();
       userBusiness.employee_id = employee.id;
       userBusiness.business_id = businessId;
-      await this.userBusinessRepository.save(userBusiness);
+      await this.employeeBusinessRepository.save(userBusiness);
 
       return `Succesfully added ${user.firstName} ${user.lastName} to ${business.name}`;
     } catch (err) {
