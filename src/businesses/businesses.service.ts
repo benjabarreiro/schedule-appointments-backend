@@ -3,20 +3,21 @@ import { Business } from './business.entity';
 import { Connection, Repository } from 'typeorm';
 import { RolesIds } from 'src/common/enums';
 import { UsersService } from 'src/users/users.service';
-import { UserBusiness } from 'src/users/entities/user-business.entity';
+import { EmployeeBusiness } from 'src/users/entities';
 import { BusinessDto, CreateBusinessDto } from './dtos';
 import { parseToCamelCase } from 'src/common/utils/parsers';
 
 @Injectable()
 export class BusinessesService {
   private businessesRepository: Repository<Business>;
-  private userBusinessRepository: Repository<UserBusiness>;
+  private userBusinessRepository: Repository<EmployeeBusiness>;
   constructor(
     private readonly connection: Connection,
     private readonly usersService: UsersService,
   ) {
     this.businessesRepository = this.connection.getRepository(Business);
-    this.userBusinessRepository = this.connection.getRepository(UserBusiness);
+    this.userBusinessRepository =
+      this.connection.getRepository(EmployeeBusiness);
   }
 
   async findAllBusinesses(): Promise<BusinessDto[]> {
@@ -96,7 +97,20 @@ export class BusinessesService {
 
   async addUserToBusiness(userId: number, businessId: number): Promise<string> {
     try {
-      const user = await this.usersService.findUserById(userId);
+      //primero buscamos si existe el employee
+      let employee = await this.usersService.findEmployeeByUserId(userId);
+      let user;
+
+      //si no existe employee
+      if (!employee) {
+        //validamos que el user con userId exista
+        user = await this.usersService.findUserById(userId);
+        //creamos el employee
+        employee = await this.usersService.createEmployee(user.id);
+      }
+
+      //buscamos el business
+      //TO DO: Hay que validar que el usuario logueadso sea de la empresa
       const business = await this.businessesRepository.findOne({
         where: { id: businessId },
       });
@@ -108,8 +122,9 @@ export class BusinessesService {
         );
       }
 
-      const userBusiness = new UserBusiness();
-      userBusiness.user_id = userId;
+      //generamos relacion employee - empresa
+      const userBusiness = new EmployeeBusiness();
+      userBusiness.employee_id = employee.id;
       userBusiness.business_id = businessId;
       await this.userBusinessRepository.save(userBusiness);
 
