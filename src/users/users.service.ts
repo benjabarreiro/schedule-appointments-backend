@@ -33,9 +33,16 @@ export class UsersService {
     }
   }
 
-  async findUserById(id: number): Promise<UserDto | undefined> {
+  async findUserById(id: number): Promise<UserDto> {
     try {
       const user = await this.userRepository.findOne({ where: { id } });
+
+      if (!user) {
+        throw new HttpException(
+          `User with id ${id} not found`,
+          HttpStatus.NOT_FOUND,
+        );
+      }
       const parsedUser = parseToCamelCase(user);
       return parsedUser.map((user) => new UserDto(user));
     } catch (err) {
@@ -62,13 +69,6 @@ export class UsersService {
     try {
       const user = await this.findUserById(id);
 
-      if (!user) {
-        throw new HttpException(
-          `User with id ${id} not found`,
-          HttpStatus.NOT_FOUND,
-        );
-      }
-
       const parsedBody = convertKeysToSnakeCase(body);
 
       const updatedUser = { ...user, ...parsedBody };
@@ -86,22 +86,13 @@ export class UsersService {
     }
   }
 
-  async updateUserRole(roleId, userId): Promise<string> {
+  async updateUserRole(roleId, userId): Promise<void> {
     try {
       const user = await this.findUserById(userId);
-
-      if (!user) {
-        throw new HttpException(
-          `User with id ${userId} not found`,
-          HttpStatus.NOT_FOUND,
-        );
-      }
 
       const updatedUser = { ...user, roleId };
 
       await this.userRepository.save(updatedUser);
-
-      return `User's role with id ${userId} has been updated to the role ${roleId}`;
     } catch (err) {
       if (err.status === 404) throw err;
 
@@ -114,10 +105,7 @@ export class UsersService {
 
   async deleteUser(id: number): Promise<string> {
     try {
-      const user = await this.findUserById(id);
-      if (!user) {
-        throw new NotFoundException('No user exists with id: ' + id);
-      }
+      await this.findUserById(id);
       await this.userRepository.delete(id);
 
       return `User with id ${id} has been successfully deleted`;

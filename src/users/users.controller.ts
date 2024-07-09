@@ -22,7 +22,7 @@ export class UsersController {
     @Body(new UserPipe(updateUserSchema)) body: UpdateUserDto,
     @Param('id') id: string,
   ): Promise<string> {
-    return this.usersService.updateUser(body, Number(id));
+    return await this.usersService.updateUser(body, Number(id));
   }
 
   @Delete('/:id')
