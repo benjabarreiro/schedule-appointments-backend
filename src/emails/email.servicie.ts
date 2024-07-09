@@ -29,14 +29,13 @@ export class EmailsService {
     });
   }
 
-  async sendEmail(to: string, subject: string, text: string): Promise<string> {
+  async sendEmail(to: string, subject: string, text: string): Promise<void> {
     try {
       await this.transporter.sendMail({
         to,
         subject,
         text,
       });
-      return 'Email sent';
     } catch (err) {
       throw new HttpException(
         'There was an error sending the email',
