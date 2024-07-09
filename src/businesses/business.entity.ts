@@ -6,9 +6,11 @@ import {
   JoinColumn,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { Schedule } from '../schedules/schedule.entity';
 
 @Entity('businesses')
 export class Business {
@@ -31,4 +33,7 @@ export class Business {
   @ManyToMany(() => User, (user) => user.businesses)
   @Exclude()
   users: User[];
+
+  @OneToMany(() => Schedule, (schedule) => schedule.business)
+  schedules: Schedule[];
 }
