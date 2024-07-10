@@ -34,6 +34,6 @@ export class Employee {
   @Exclude()
   businesses: Business[];
 
-  @OneToMany(() => Schedule, (schedule) => schedule.business)
+  @OneToMany(() => Schedule, (schedule) => schedule.employee)
   schedules: Schedule[];
 }
