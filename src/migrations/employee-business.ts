@@ -5,16 +5,16 @@ import {
   TableForeignKey,
 } from 'typeorm';
 
-export class UserBusiness implements MigrationInterface {
-  name = 'UserBusiness1720371330206';
+export class EmployeeBusiness implements MigrationInterface {
+  name = 'EmployeeBusiness1720542486463';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'user_business',
+        name: 'employee_business',
         columns: [
           {
-            name: 'user_id',
+            name: 'employee_id',
             type: 'int',
             isPrimary: true,
           },
@@ -23,11 +23,11 @@ export class UserBusiness implements MigrationInterface {
       }),
     );
 
-    await queryRunner.createForeignKeys('user_business', [
+    await queryRunner.createForeignKeys('employee_business', [
       new TableForeignKey({
-        columnNames: ['user_id'],
+        columnNames: ['employee_id'],
         referencedColumnNames: ['id'],
-        referencedTableName: 'users',
+        referencedTableName: 'employees',
         onDelete: 'CASCADE',
       }),
       new TableForeignKey({
@@ -40,13 +40,13 @@ export class UserBusiness implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const table = await queryRunner.getTable('user_business');
+    const table = await queryRunner.getTable('employee_business');
     const foreignKeys = table.foreignKeys.filter(
       (fk) =>
-        fk.columnNames.indexOf('user_id') !== -1 ||
+        fk.columnNames.indexOf('employee_id') !== -1 ||
         fk.columnNames.indexOf('business_id') !== -1,
     );
-    await queryRunner.dropForeignKeys('user_business', foreignKeys);
-    await queryRunner.dropTable('user_business');
+    await queryRunner.dropForeignKeys('employee_business', foreignKeys);
+    await queryRunner.dropTable('employee_business');
   }
 }

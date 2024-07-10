@@ -18,6 +18,6 @@ export class UsersGuard implements CanActivate {
 
     const userIdFromParams = request.params.id;
 
-    return userIdFromJWT === userIdFromParams;
+    return userIdFromJWT === parseInt(userIdFromParams);
   }
 }

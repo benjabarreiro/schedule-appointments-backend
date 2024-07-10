@@ -1,9 +1,9 @@
 import { Entity, PrimaryColumn } from 'typeorm';
 
-@Entity('user_business')
-export class UserBusiness {
+@Entity('employee_business')
+export class EmployeeBusiness {
   @PrimaryColumn()
-  user_id: number;
+  employee_id: number;
 
   @PrimaryColumn()
   business_id: number;
