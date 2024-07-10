@@ -12,7 +12,7 @@ import { PlansModule } from './plans/plans.module';
 import { Business } from './businesses/business.entity';
 import { BusinessesModule } from './businesses/businesses.module';
 import { Schedule } from './schedules/schedule.entity';
-import { Employee, EmployeeBusiness } from './employees/entities';
+import { Employee } from './employees/entities';
 import { EmployeesModule } from './employees/employees.module';
 
 @Module({
@@ -35,15 +35,7 @@ import { EmployeesModule } from './employees/employees.module';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [
-          User,
-          Role,
-          Plan,
-          Business,
-          EmployeeBusiness,
-          Employee,
-          Schedule,
-        ],
+        entities: [User, Role, Plan, Business, Employee, Schedule],
         synchronize: false,
         migrations: [__dirname + '/../migrations/*{.ts,.js}'],
         migrationsRun: true, // Automatically run migrations on app startup
@@ -53,15 +45,7 @@ import { EmployeesModule } from './employees/employees.module';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([
-      User,
-      Role,
-      Plan,
-      Business,
-      EmployeeBusiness,
-      Employee,
-      Schedule,
-    ]),
+    TypeOrmModule.forFeature([User, Role, Plan, Business, Employee, Schedule]),
   ],
 })
 export class AppModule {
