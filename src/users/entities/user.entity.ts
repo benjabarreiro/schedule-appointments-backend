@@ -1,5 +1,5 @@
 import { Business } from '../../businesses/business.entity';
-import { Role } from '../entities/role.entity';
+import { Role } from './role.entity';
 import {
   Column,
   Entity,
