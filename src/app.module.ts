@@ -6,11 +6,13 @@ import { AuthModule } from './auth/auth.module';
 import configuration from './config';
 import { AuthMiddleware } from './auth/auth.middleware';
 import { UsersController } from './users/users.controller';
-import { Employee, EmployeeBusiness, Role, User } from './users/entities';
+import { Role, User } from './users/entities';
 import { Plan } from './plans/plan.entity';
 import { PlansModule } from './plans/plans.module';
 import { Business } from './businesses/business.entity';
 import { BusinessesModule } from './businesses/businesses.module';
+import { Employee, EmployeeBusiness } from './employees/entities';
+import { EmployeesModule } from './employees/employees.module';
 
 @Module({
   imports: [
@@ -22,6 +24,7 @@ import { BusinessesModule } from './businesses/businesses.module';
     UsersModule,
     PlansModule,
     BusinessesModule,
+    EmployeesModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({

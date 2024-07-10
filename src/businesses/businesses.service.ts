@@ -3,9 +3,10 @@ import { Business } from './business.entity';
 import { Connection, Repository } from 'typeorm';
 import { RolesIds } from 'src/common/enums';
 import { UsersService } from 'src/users/users.service';
-import { EmployeeBusiness } from 'src/users/entities';
 import { BusinessDto, CreateBusinessDto } from './dtos';
 import { parseToCamelCase } from 'src/common/utils/parsers';
+import { EmployeeBusiness } from 'src/employees/entities';
+import { EmployeesService } from 'src/employees/employees.service';
 
 @Injectable()
 export class BusinessesService {
@@ -14,6 +15,7 @@ export class BusinessesService {
   constructor(
     private readonly connection: Connection,
     private readonly usersService: UsersService,
+    private readonly employeesService: EmployeesService,
   ) {
     this.businessesRepository = this.connection.getRepository(Business);
     this.employeeBusinessRepository =
@@ -98,7 +100,7 @@ export class BusinessesService {
   async addUserToBusiness(userId: number, businessId: number): Promise<string> {
     try {
       //primero buscamos si existe el employee
-      let employee = await this.usersService.findEmployeeByUserId(userId);
+      let employee = await this.employeesService.findEmployeeByUserId(userId);
       let user;
 
       //si no existe employee
@@ -106,7 +108,7 @@ export class BusinessesService {
         //validamos que el user con userId exista
         user = await this.usersService.findUserById(userId);
         //creamos el employee
-        employee = await this.usersService.createEmployee(user.id);
+        employee = await this.employeesService.createEmployee(user.id);
       }
 
       //buscamos el business
