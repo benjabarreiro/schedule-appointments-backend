@@ -1,5 +1,5 @@
-import { Business } from 'src/businesses/business.entity';
-import { User } from 'src/users/entities';
+import { Business } from '../businesses/business.entity';
+import { Employee } from '../employees/entities';
 import {
   Column,
   Entity,
@@ -19,9 +19,9 @@ export class Schedule {
   @Column()
   description: string;
 
-  @ManyToOne(() => User, (user) => user.schedules, { nullable: true })
+  @ManyToOne(() => Employee, (employee) => employee.schedules)
   @JoinColumn({ name: 'employee_id' })
-  employee: User;
+  employee: Employee;
 
   @ManyToOne(() => Business, (business) => business.schedules)
   @JoinColumn({ name: 'business_id' })
