@@ -10,7 +10,7 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 import { Schedule } from '../schedules/schedule.entity';
-import { Employee } from 'src/employees/entities';
+import { Employee } from '../employees/entities';
 
 @Entity('businesses')
 export class Business {
