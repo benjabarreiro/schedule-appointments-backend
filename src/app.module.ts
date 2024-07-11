@@ -14,6 +14,7 @@ import { BusinessesModule } from './businesses/businesses.module';
 import { Schedule } from './schedules/schedule.entity';
 import { Employee } from './employees/entities';
 import { EmployeesModule } from './employees/employees.module';
+import { SchedulesModule } from './schedules/schedule.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { EmployeesModule } from './employees/employees.module';
     PlansModule,
     BusinessesModule,
     EmployeesModule,
+    SchedulesModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
