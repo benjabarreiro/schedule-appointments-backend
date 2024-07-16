@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Connection, Repository } from 'typeorm';
 import { Schedule } from './schedule.entity';
+import { CreateScheduleDto, UpdateScheduleDto } from './dtos';
 
 @Injectable()
 export class SchedulesService {
@@ -8,6 +9,12 @@ export class SchedulesService {
   constructor(private readonly connection: Connection) {
     this.schedulesRepository = connection.getRepository(Schedule);
   }
+
+  async createSchedule(body: CreateScheduleDto) {}
+
+  async updateSchedule(body: UpdateScheduleDto) {}
+
+  async deleteSchedule(id: number) {}
 
   async findAllSchedules(): Promise<Schedule[]> {
     try {
