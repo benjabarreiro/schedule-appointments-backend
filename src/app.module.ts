@@ -12,7 +12,7 @@ import { PlansModule } from './plans/plans.module';
 import { Business } from './businesses/business.entity';
 import { BusinessesModule } from './businesses/businesses.module';
 import { Schedule } from './schedules/schedule.entity';
-import { Employee } from './employees/entities';
+import { Employee, EmployeeBusiness } from './employees/entities';
 import { EmployeesModule } from './employees/employees.module';
 import { SchedulesModule } from './schedules/schedule.module';
 
@@ -27,6 +27,7 @@ import { SchedulesModule } from './schedules/schedule.module';
     PlansModule,
     BusinessesModule,
     EmployeesModule,
+    EmployeeBusiness,
     SchedulesModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -47,7 +48,15 @@ import { SchedulesModule } from './schedules/schedule.module';
       }),
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([User, Role, Plan, Business, Employee, Schedule]),
+    TypeOrmModule.forFeature([
+      User,
+      Role,
+      Plan,
+      Business,
+      Employee,
+      EmployeeBusiness,
+      Schedule,
+    ]),
   ],
 })
 export class AppModule {
