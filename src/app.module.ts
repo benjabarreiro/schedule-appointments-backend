@@ -27,7 +27,6 @@ import { SchedulesModule } from './schedules/schedule.module';
     PlansModule,
     BusinessesModule,
     EmployeesModule,
-    EmployeeBusiness,
     SchedulesModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -38,7 +37,15 @@ import { SchedulesModule } from './schedules/schedule.module';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [User, Role, Plan, Business, Employee, Schedule],
+        entities: [
+          User,
+          Role,
+          Plan,
+          Business,
+          Employee,
+          EmployeeBusiness,
+          Schedule,
+        ],
         synchronize: false,
         migrations: [__dirname + '/../migrations/*{.ts,.js}'],
         migrationsRun: true, // Automatically run migrations on app startup
