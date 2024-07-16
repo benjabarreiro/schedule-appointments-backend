@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { SchedulesService } from './schedule.service';
+import { SchedulesService } from './schedules.service';
 import { EmployeesModule } from 'src/employees/employees.module';
 import { BusinessesModule } from 'src/businesses/businesses.module';
 

@@ -14,7 +14,7 @@ import { BusinessesModule } from './businesses/businesses.module';
 import { Schedule } from './schedules/schedule.entity';
 import { Employee, EmployeeBusiness } from './employees/entities';
 import { EmployeesModule } from './employees/employees.module';
-import { SchedulesModule } from './schedules/schedule.module';
+import { SchedulesModule } from './schedules/schedules.module';
 
 @Module({
   imports: [
