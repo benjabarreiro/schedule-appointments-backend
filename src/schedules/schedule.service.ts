@@ -100,7 +100,7 @@ export class SchedulesService {
     }
   }
 
-  async findByEmployeeIdAndBusinessId(
+  async findScheduleByEmployeeIdAndBusinessId(
     employeeId?: number,
     businessId?: number,
   ): Promise<Schedule[]> {
