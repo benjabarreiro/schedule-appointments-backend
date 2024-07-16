@@ -17,7 +17,7 @@ export class SchedulesService {
     this.schedulesRepository = connection.getRepository(Schedule);
   }
 
-  async createSchedule(body: CreateScheduleDto) {
+  async createSchedule(body: CreateScheduleDto): Promise<string> {
     try {
       await this.businessesService.findBusinessById(body.businessId);
       await this.employeesService.findEmployeeById(body.employeeId);
@@ -28,12 +28,14 @@ export class SchedulesService {
       //TO DO: validate he can create a new schedule with current plan
       const newSchedule = await this.schedulesRepository.create(parsedBody);
       await this.schedulesRepository.save(newSchedule);
+
+      return 'Schedule created succesfully';
     } catch (err) {
       throw err;
     }
   }
 
-  async updateSchedule(id: number, body: UpdateScheduleDto) {
+  async updateSchedule(id: number, body: UpdateScheduleDto): Promise<string> {
     try {
       const schedule = await this.findScheduleById(id);
 
@@ -54,10 +56,12 @@ export class SchedulesService {
     }
   }
 
-  async deleteSchedule(id: number) {
+  async deleteSchedule(id: number): Promise<string> {
     try {
       await this.findScheduleById(id);
       await this.schedulesRepository.delete(id);
+
+      return `Schedule with id ${id} was deleted succesfully`;
     } catch (err) {
       if (err.status === 404) throw err;
 
