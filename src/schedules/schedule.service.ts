@@ -4,6 +4,7 @@ import { Schedule } from './schedule.entity';
 import { CreateScheduleDto, UpdateScheduleDto } from './dtos';
 import { BusinessesService } from 'src/businesses/businesses.service';
 import { EmployeesService } from 'src/employees/employees.service';
+import { convertKeysToSnakeCase } from 'src/common/utils/parsers';
 
 @Injectable()
 export class SchedulesService {
@@ -21,18 +22,51 @@ export class SchedulesService {
       await this.businessesService.findBusinessById(body.businessId);
       await this.employeesService.findEmployeeById(body.employeeId);
 
+      const parsedBody = convertKeysToSnakeCase(body);
+
       //TO DO: validate admin is creating this schedule
       //TO DO: validate he can create a new schedule with current plan
-      const newSchedule = await this.schedulesRepository.create(body);
+      const newSchedule = await this.schedulesRepository.create(parsedBody);
       await this.schedulesRepository.save(newSchedule);
     } catch (err) {
       throw err;
     }
   }
 
-  async updateSchedule(body: UpdateScheduleDto) {}
+  async updateSchedule(id: number, body: UpdateScheduleDto) {
+    try {
+      const schedule = await this.findScheduleById(id);
 
-  async deleteSchedule(id: number) {}
+      const parsedBody = convertKeysToSnakeCase(body);
+
+      const updatedSchedule = { ...schedule, ...parsedBody };
+
+      await this.schedulesRepository.save(updatedSchedule);
+
+      return `Schedule with id ${id} was updated successfully`;
+    } catch (err) {
+      if (err.status === 404) throw err;
+
+      throw new HttpException(
+        'There was an error updating schedule with id ' + id,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async deleteSchedule(id: number) {
+    try {
+      await this.findScheduleById(id);
+      await this.schedulesRepository.delete(id);
+    } catch (err) {
+      if (err.status === 404) throw err;
+
+      throw new HttpException(
+        'There was an error deleting schedule with id ' + id,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 
   async findAllSchedules(): Promise<Schedule[]> {
     try {
@@ -47,8 +81,18 @@ export class SchedulesService {
 
   async findScheduleById(id: number): Promise<Schedule> {
     try {
-      return await this.schedulesRepository.findOne({ where: { id } });
+      const schedule = await this.schedulesRepository.findOne({
+        where: { id },
+      });
+      if (!schedule) {
+        throw new HttpException(
+          'There is no schedule with id ' + id,
+          HttpStatus.NOT_FOUND,
+        );
+      }
+      return schedule;
     } catch (err) {
+      if (err.status === 404) throw err;
       throw new HttpException(
         'There was an error finding the schedule with id ' + id,
         HttpStatus.INTERNAL_SERVER_ERROR,
