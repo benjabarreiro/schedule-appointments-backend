@@ -21,9 +21,13 @@ export class SchedulesService {
       await this.businessesService.findBusinessById(body.businessId);
       await this.employeesService.findEmployeeById(body.employeeId);
 
+      //TO DO: validate admin is creating this schedule
+      //TO DO: validate he can create a new schedule with current plan
       const newSchedule = await this.schedulesRepository.create(body);
       await this.schedulesRepository.save(newSchedule);
-    } catch (err) {}
+    } catch (err) {
+      throw err;
+    }
   }
 
   async updateSchedule(body: UpdateScheduleDto) {}
