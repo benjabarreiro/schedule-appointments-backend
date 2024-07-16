@@ -2,15 +2,29 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Connection, Repository } from 'typeorm';
 import { Schedule } from './schedule.entity';
 import { CreateScheduleDto, UpdateScheduleDto } from './dtos';
+import { BusinessesService } from 'src/businesses/businesses.service';
+import { EmployeesService } from 'src/employees/employees.service';
 
 @Injectable()
 export class SchedulesService {
   private schedulesRepository: Repository<Schedule>;
-  constructor(private readonly connection: Connection) {
+  constructor(
+    private readonly connection: Connection,
+    private readonly businessesService: BusinessesService,
+    private readonly employeesService: EmployeesService,
+  ) {
     this.schedulesRepository = connection.getRepository(Schedule);
   }
 
-  async createSchedule(body: CreateScheduleDto) {}
+  async createSchedule(body: CreateScheduleDto) {
+    try {
+      await this.businessesService.findBusinessById(body.businessId);
+      await this.employeesService.findEmployeeById(body.employeeId);
+
+      const newSchedule = await this.schedulesRepository.create(body);
+      await this.schedulesRepository.save(newSchedule);
+    } catch (err) {}
+  }
 
   async updateSchedule(body: UpdateScheduleDto) {}
 
