@@ -1,5 +1,6 @@
-import { UpdateScheduleDto } from './update-schedule.dto';
-
-export class CreateScheduleDto extends UpdateScheduleDto {
+export class CreateScheduleDto {
+  name: string;
+  description: string;
+  employeeId: number;
   businessId: number;
 }
