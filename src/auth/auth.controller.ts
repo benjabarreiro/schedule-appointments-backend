@@ -7,23 +7,23 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto, LoginUserDto } from '../common/dtos';
+import { CreateUserDto, LoginUserDto, UserDto } from '../common/dtos';
 import { loginSchema, userSchema } from '../common/schemas';
-import { AuthPipe } from '../common/pipes';
+import { JoiValidationPie } from '../common/pipes';
 
 @Controller('/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/register')
-  @UsePipes(new AuthPipe(userSchema))
+  @UsePipes(new JoiValidationPie<UserDto>(userSchema))
   async createUser(@Body() body: CreateUserDto): Promise<string> {
     return await this.authService.createUser(body);
   }
 
   @Post('/login')
   @HttpCode(HttpStatus.OK)
-  @UsePipes(new AuthPipe(loginSchema))
+  @UsePipes(new JoiValidationPie<UserDto>(loginSchema))
   async login(@Body() body: LoginUserDto): Promise<string> {
     return await this.authService.login(body);
   }

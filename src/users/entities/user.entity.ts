@@ -1,15 +1,11 @@
-import { Business } from '../../businesses/business.entity';
 import { Role } from './role.entity';
 import {
   Column,
   Entity,
   JoinColumn,
-  JoinTable,
-  ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Exclude } from 'class-transformer';
 
 @Entity('users')
 export class User {
@@ -37,13 +33,4 @@ export class User {
 
   @Column()
   password: string;
-
-  @ManyToMany(() => Business, (business) => business.users)
-  @JoinTable({
-    name: 'user_business', // name of the junction table
-    joinColumn: { name: 'user_id', referencedColumnName: 'id' },
-    inverseJoinColumn: { name: 'business_id', referencedColumnName: 'id' },
-  })
-  @Exclude()
-  businesses: Business[];
 }

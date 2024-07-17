@@ -11,8 +11,10 @@ import { Plan } from './plans/plan.entity';
 import { PlansModule } from './plans/plans.module';
 import { Business } from './businesses/business.entity';
 import { BusinessesModule } from './businesses/businesses.module';
+import { Schedule } from './schedules/schedule.entity';
 import { Employee, EmployeeBusiness } from './employees/entities';
 import { EmployeesModule } from './employees/employees.module';
+import { SchedulesModule } from './schedules/schedules.module';
 
 @Module({
   imports: [
@@ -25,6 +27,7 @@ import { EmployeesModule } from './employees/employees.module';
     PlansModule,
     BusinessesModule,
     EmployeesModule,
+    SchedulesModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -34,7 +37,15 @@ import { EmployeesModule } from './employees/employees.module';
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [User, Role, Plan, Business, EmployeeBusiness, Employee],
+        entities: [
+          User,
+          Role,
+          Plan,
+          Business,
+          Employee,
+          EmployeeBusiness,
+          Schedule,
+        ],
         synchronize: false,
         migrations: [__dirname + '/../migrations/*{.ts,.js}'],
         migrationsRun: true, // Automatically run migrations on app startup
@@ -49,8 +60,9 @@ import { EmployeesModule } from './employees/employees.module';
       Role,
       Plan,
       Business,
-      EmployeeBusiness,
       Employee,
+      EmployeeBusiness,
+      Schedule,
     ]),
   ],
 })

@@ -8,5 +8,6 @@ import { EmployeesModule } from 'src/employees/employees.module';
   imports: [UsersModule, EmployeesModule],
   controllers: [BusinessesController],
   providers: [BusinessesService],
+  exports: [BusinessesService],
 })
 export class BusinessesModule {}

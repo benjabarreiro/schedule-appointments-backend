@@ -1,4 +1,3 @@
-import { User } from '../users/entities';
 import { Plan } from '../plans/plan.entity';
 import {
   Column,
@@ -6,9 +5,12 @@ import {
   JoinColumn,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { Schedule } from '../schedules/schedule.entity';
+import { Employee } from '../employees/entities';
 
 @Entity('businesses')
 export class Business {
@@ -28,7 +30,10 @@ export class Business {
   @Column()
   is_active: boolean;
 
-  @ManyToMany(() => User, (user) => user.businesses)
+  @ManyToMany(() => Employee, (employee) => employee.businesses)
   @Exclude()
-  users: User[];
+  employees: Employee[];
+
+  @OneToMany(() => Schedule, (schedule) => schedule.business)
+  schedules: Schedule[];
 }
