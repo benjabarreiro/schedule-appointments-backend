@@ -10,13 +10,18 @@ import {
 } from '@nestjs/common';
 import { SchedulesService } from './schedules.service';
 import { Schedule } from './schedule.entity';
+import { JoiValidationPie } from 'src/common/pipes';
+import { CreateScheduleDto } from './dtos';
+import { createScheduleschema } from './schemas';
 
 @Controller('/schedules')
 export class SchedulesController {
   constructor(private readonly schedulesService: SchedulesService) {}
 
   @Post()
-  async createScheule(@Body() body): Promise<String> {
+  async createScheule(
+    @Body(new JoiValidationPie<CreateScheduleDto>(createScheduleschema)) body,
+  ): Promise<String> {
     return await this.schedulesService.createSchedule(body);
   }
 
