@@ -11,8 +11,8 @@ import {
 import { SchedulesService } from './schedules.service';
 import { Schedule } from './schedule.entity';
 import { JoiValidationPie } from 'src/common/pipes';
-import { CreateScheduleDto } from './dtos';
-import { createScheduleschema } from './schemas';
+import { CreateScheduleDto, UpdateScheduleDto } from './dtos';
+import { createScheduleschema, updateScheduleschema } from './schemas';
 
 @Controller('/schedules')
 export class SchedulesController {
@@ -26,7 +26,10 @@ export class SchedulesController {
   }
 
   @Put(':id')
-  async updateScheule(@Param('id') id, @Body() body): Promise<String> {
+  async updateScheule(
+    @Param('id') id,
+    @Body(new JoiValidationPie<UpdateScheduleDto>(updateScheduleschema)) body,
+  ): Promise<String> {
     return await this.schedulesService.updateSchedule(id, body);
   }
 
