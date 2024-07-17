@@ -24,7 +24,7 @@ export class User {
   @Column()
   phone: string;
 
-  @Column()
+  @Column({ type: 'date' })
   birth_date: Date;
 
   @ManyToOne(() => Role, { eager: true })
