@@ -129,6 +129,8 @@ export class BusinessesService {
         user = await this.usersService.findUserById(userId);
         //creamos el employee
         employee = await this.employeesService.createEmployee(user.id);
+
+        await this.usersService.updateUserRole(2, userId);
       }
 
       //buscamos el business
