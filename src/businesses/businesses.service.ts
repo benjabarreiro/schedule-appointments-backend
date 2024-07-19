@@ -72,6 +72,26 @@ export class BusinessesService {
     }
   }
 
+  async findBusinessByAdminId(adminId: number): Promise<BusinessDto> {
+    try {
+      const business = await this.businessesRepository.findOne({
+        where: { admin_id: adminId },
+      });
+      if (!business)
+        throw new HttpException(
+          'The provided adminId ' + adminId + ' does not belong to a business.',
+          HttpStatus.NOT_FOUND,
+        );
+      return parseToCamelCase(business);
+    } catch (err) {
+      if (err.status === 404) throw err;
+      throw new HttpException(
+        'There was an error finding business with adminId ' + adminId,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async createBusiness(business: CreateBusinessDto): Promise<string> {
     try {
       const existingBusiness = await this.findBusinessByName(business.name);
