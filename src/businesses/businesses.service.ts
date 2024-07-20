@@ -106,6 +106,7 @@ export class BusinessesService {
         savedUser.admin_id,
       );
 
+      //we assume plan was purchased
       return 'Business created succesfully';
     } catch (err) {
       if ([409, 404].some((code) => code === err.status)) throw err;
