@@ -1,12 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Business } from './business.entity';
-import { Connection, Repository } from 'typeorm';
+import { Connection, EntityManager, Repository } from 'typeorm';
 import { RolesIds } from 'src/common/enums';
 import { UsersService } from 'src/users/users.service';
 import { BusinessDto, CreateBusinessDto } from './dtos';
 import { parseToCamelCase } from 'src/common/utils/parsers';
-import { EmployeeBusiness } from 'src/employees/entities';
+import { Employee, EmployeeBusiness } from 'src/employees/entities';
 import { EmployeesService } from 'src/employees/employees.service';
+import { InjectEntityManager } from '@nestjs/typeorm';
 
 @Injectable()
 export class BusinessesService {
@@ -16,6 +17,7 @@ export class BusinessesService {
     private readonly connection: Connection,
     private readonly usersService: UsersService,
     private readonly employeesService: EmployeesService,
+    @InjectEntityManager() private readonly entityManager: EntityManager,
   ) {
     this.businessesRepository = this.connection.getRepository(Business);
     this.employeeBusinessRepository =
@@ -90,6 +92,16 @@ export class BusinessesService {
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }
+  }
+
+  async findEmployeeInBusiness(adminId: number, employeeId: number) {
+    return this.entityManager
+      .createQueryBuilder('employee_business', 'eb')
+      .innerJoin(Employee, 'e', 'e.id = eb.employee_id')
+      .innerJoin(Business, 'b', 'b.id = eb.business_id')
+      .where('b.admin_id = :adminId', { adminId })
+      .andWhere('e.id = :employeeId', { employeeId })
+      .getOne();
   }
 
   async createBusiness(business: CreateBusinessDto): Promise<string> {
