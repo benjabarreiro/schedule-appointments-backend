@@ -4,7 +4,7 @@ import { RolesIds } from '../enums';
 import { BusinessesService } from 'src/businesses/businesses.service';
 
 @Injectable()
-export class UsersGuard implements CanActivate {
+export class AdminsGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
     private readonly businessesService: BusinessesService,
