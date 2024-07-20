@@ -1,6 +1,7 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Post, UseGuards } from '@nestjs/common';
 import { BusinessesService } from './businesses.service';
 import { AddUserToBusiness, CreateBusinessDto } from './dtos';
+import { AdminsGuard } from 'src/common/guards/admin.guard';
 
 @Controller('businesses')
 export class BusinessesController {
@@ -13,6 +14,7 @@ export class BusinessesController {
   }
 
   @Post('/add-user')
+  @UseGuards(AdminsGuard)
   async addUserToBusiness(@Body() body: AddUserToBusiness): Promise<string> {
     try {
       return await this.businessesService.addUserToBusiness(
