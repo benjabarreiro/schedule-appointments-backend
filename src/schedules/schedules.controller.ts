@@ -7,18 +7,22 @@ import {
   Post,
   Put,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { SchedulesService } from './schedules.service';
 import { Schedule } from './schedule.entity';
 import { JoiValidationPie } from 'src/common/pipes';
 import { CreateScheduleDto, UpdateScheduleDto } from './dtos';
 import { createScheduleschema, updateScheduleschema } from './schemas';
+import { AdminsGuard } from 'src/common/guards/admin.guard';
+import { EmployeesGuard } from 'src/common/guards/employee.guard';
 
 @Controller('/schedules')
 export class SchedulesController {
   constructor(private readonly schedulesService: SchedulesService) {}
 
   @Post()
+  @UseGuards(AdminsGuard, EmployeesGuard)
   async createScheule(
     @Body(new JoiValidationPie<CreateScheduleDto>(createScheduleschema)) body,
   ): Promise<String> {
@@ -26,7 +30,8 @@ export class SchedulesController {
   }
 
   @Put(':id')
-  async updateScheule(
+  @UseGuards(AdminsGuard, EmployeesGuard)
+  async updateSchedule(
     @Param('id') id,
     @Body(new JoiValidationPie<UpdateScheduleDto>(updateScheduleschema)) body,
   ): Promise<String> {
@@ -34,6 +39,7 @@ export class SchedulesController {
   }
 
   @Delete(':id')
+  @UseGuards(AdminsGuard)
   async deleteScheule(@Param('id') id): Promise<String> {
     return await this.schedulesService.deleteSchedule(id);
   }

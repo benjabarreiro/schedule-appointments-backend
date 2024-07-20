@@ -1,12 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Business } from './business.entity';
-import { Connection, Repository } from 'typeorm';
+import { Connection, EntityManager, Repository } from 'typeorm';
 import { RolesIds } from 'src/common/enums';
 import { UsersService } from 'src/users/users.service';
 import { BusinessDto, CreateBusinessDto } from './dtos';
 import { parseToCamelCase } from 'src/common/utils/parsers';
-import { EmployeeBusiness } from 'src/employees/entities';
+import { Employee, EmployeeBusiness } from 'src/employees/entities';
 import { EmployeesService } from 'src/employees/employees.service';
+import { InjectEntityManager } from '@nestjs/typeorm';
 
 @Injectable()
 export class BusinessesService {
@@ -16,6 +17,7 @@ export class BusinessesService {
     private readonly connection: Connection,
     private readonly usersService: UsersService,
     private readonly employeesService: EmployeesService,
+    @InjectEntityManager() private readonly entityManager: EntityManager,
   ) {
     this.businessesRepository = this.connection.getRepository(Business);
     this.employeeBusinessRepository =
@@ -72,6 +74,36 @@ export class BusinessesService {
     }
   }
 
+  async findBusinessByAdminId(adminId: number): Promise<BusinessDto> {
+    try {
+      const business = await this.businessesRepository.findOne({
+        where: { admin_id: adminId },
+      });
+      if (!business)
+        throw new HttpException(
+          'The provided adminId ' + adminId + ' does not belong to a business.',
+          HttpStatus.NOT_FOUND,
+        );
+      return parseToCamelCase(business);
+    } catch (err) {
+      if (err.status === 404) throw err;
+      throw new HttpException(
+        'There was an error finding business with adminId ' + adminId,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async findEmployeeInBusiness(adminId: number, employeeId: number) {
+    return this.entityManager
+      .createQueryBuilder('employee_business', 'eb')
+      .innerJoin(Employee, 'e', 'e.id = eb.employee_id')
+      .innerJoin(Business, 'b', 'b.id = eb.business_id')
+      .where('b.admin_id = :adminId', { adminId })
+      .andWhere('e.id = :employeeId', { employeeId })
+      .getOne();
+  }
+
   async createBusiness(business: CreateBusinessDto): Promise<string> {
     try {
       const existingBusiness = await this.findBusinessByName(business.name);
@@ -86,6 +118,7 @@ export class BusinessesService {
         savedUser.admin_id,
       );
 
+      //we assume plan was purchased
       return 'Business created succesfully';
     } catch (err) {
       if ([409, 404].some((code) => code === err.status)) throw err;
@@ -109,6 +142,8 @@ export class BusinessesService {
         user = await this.usersService.findUserById(userId);
         //creamos el employee
         employee = await this.employeesService.createEmployee(user.id);
+
+        await this.usersService.updateUserRole(2, userId);
       }
 
       //buscamos el business

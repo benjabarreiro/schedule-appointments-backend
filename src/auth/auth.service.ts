@@ -12,6 +12,8 @@ import { generateValidationCode, hashPassword } from './utils';
 import { ValidationRecord } from './interfaces';
 import { JwtService } from 'src/jwt/jwt.service';
 import { UserAuthDto } from 'src/users/dtos';
+import { BusinessesService } from 'src/businesses/businesses.service';
+import { EmployeesService } from 'src/employees/employees.service';
 
 @Injectable()
 export class AuthService {
@@ -22,6 +24,8 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
     private readonly emailService: EmailsService,
+    private readonly businessesService: BusinessesService,
+    private readonly employeesService: EmployeesService,
   ) {
     this.startCleanupTask();
   }
@@ -49,9 +53,27 @@ export class AuthService {
   async login(body: LoginUserDto): Promise<string> {
     try {
       const user = await this.validateUserPassword(body.email, body.password);
+      let businessId = null;
+      let employeeId = null;
+      if (user.role.id === RolesIds.admin) {
+        const business = await this.businessesService.findBusinessByAdminId(
+          user.id,
+        );
+        businessId = business.id;
+      }
+
+      const employee = await this.employeesService.findEmployeeByUserId(
+        user.id,
+      );
+
+      if (employee) employeeId = employee.id;
+
       const token = await this.jwtService.generateToken({
         email: user.email,
         id: user.id,
+        roleId: user.role.id,
+        businessId,
+        employeeId,
       });
       return token;
     } catch (err) {
