@@ -19,7 +19,9 @@ export class UsersService {
     try {
       const parsedUser = convertKeysToSnakeCase(user);
       const newUser = await this.userRepository.create(parsedUser);
-      return await this.userRepository.save(newUser)[0];
+      const savedUser = await this.userRepository.save(newUser);
+
+      return parseToCamelCase(savedUser);
     } catch (err) {
       throw new HttpException(
         'There was an error creating the user',
