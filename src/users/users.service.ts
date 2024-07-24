@@ -40,8 +40,7 @@ export class UsersService {
           HttpStatus.NOT_FOUND,
         );
       }
-      const parsedUser = parseToCamelCase(user);
-      return parsedUser.map((user) => new UserDto(user));
+      return new UserDto(user);
     } catch (err) {
       throw new HttpException(
         'There was an error finding user with id ' + id,
@@ -66,9 +65,12 @@ export class UsersService {
     try {
       const user = await this.findUserById(id);
 
+      //improve logic t not parse data here
+      const parsedUser = convertKeysToSnakeCase(user);
+
       const parsedBody = convertKeysToSnakeCase(body);
 
-      const updatedUser = { ...user, ...parsedBody };
+      const updatedUser = { ...parsedUser, ...parsedBody };
 
       await this.userRepository.save(updatedUser);
 
