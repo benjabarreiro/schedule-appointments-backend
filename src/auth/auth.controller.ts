@@ -16,7 +16,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/register')
-  @UsePipes(new JoiValidationPie<UserDto>(userSchema))
+  @UsePipes(new JoiValidationPie<CreateUserDto>(userSchema))
   async createUser(@Body() body: CreateUserDto): Promise<string> {
     return await this.authService.createUser(body);
   }
