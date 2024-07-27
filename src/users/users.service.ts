@@ -7,6 +7,7 @@ import {
 } from 'src/common/utils/parsers';
 import { User } from './entities/user.entity';
 import { UserAuthDto, UserDto } from './dtos';
+import { IJwt } from 'src/jwt/interfaces';
 
 @Injectable()
 export class UsersService {
@@ -15,11 +16,18 @@ export class UsersService {
     this.userRepository = this.connection.getRepository(User);
   }
 
-  async createUser(user: ValidateCreateUserDto): Promise<UserAuthDto> {
+  async createUser(user: ValidateCreateUserDto): Promise<IJwt> {
     try {
       const parsedUser = convertKeysToSnakeCase(user);
       const newUser = await this.userRepository.create(parsedUser);
-      return await this.userRepository.save(newUser)[0];
+      const createdUser = await this.userRepository.save(newUser);
+      return {
+        id: createdUser['id'],
+        email: createdUser['email'],
+        roleId: createdUser['id'],
+        businessId: null,
+        employeeId: null,
+      };
     } catch (err) {
       throw new HttpException(
         'There was an error creating the user',

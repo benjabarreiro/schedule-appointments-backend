@@ -127,6 +127,9 @@ export class AuthService {
       return await this.jwtService.generateToken({
         email: user.email,
         id: user.id,
+        roleId: user.roleId,
+        employeeId: user.employeeId,
+        businessId: user.businessId,
       });
     } catch (err) {
       throw err;
