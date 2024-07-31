@@ -70,7 +70,7 @@ export class UsersService {
 
   async updateUser(body: UpdateUserDto, id: number): Promise<string> {
     try {
-      const user = await this.findUserById(id);
+      const user = await this.userRepository.findOne({ where: { id } });
 
       const parsedBody = convertKeysToSnakeCase(body);
 
