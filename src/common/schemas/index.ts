@@ -70,6 +70,9 @@ export const updateUserSchema = JoiPipe.object({
   birthDate: JoiPipe.date()
     .format('YYYY-MM-DD')
     .custom((value, helper) => {
+      if (typeof helper.original !== 'string')
+        return helper.error('birth date value must be a string');
+
       const today = new Date();
       const birthYear = value.getFullYear();
       const ageDifference =
