@@ -15,6 +15,7 @@ import { Schedule } from './schedules/schedule.entity';
 import { Employee, EmployeeBusiness } from './employees/entities';
 import { EmployeesModule } from './employees/employees.module';
 import { SchedulesModule } from './schedules/schedules.module';
+import { JwtModule } from './jwt/jwt.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { SchedulesModule } from './schedules/schedules.module';
       isGlobal: true,
     }),
     AuthModule,
+    JwtModule,
     UsersModule,
     PlansModule,
     BusinessesModule,

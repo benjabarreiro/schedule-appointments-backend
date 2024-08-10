@@ -24,8 +24,8 @@ export class JwtService {
       });
     } catch (err) {
       throw new HttpException(
-        'There was an error verifying the token',
-        HttpStatus.INTERNAL_SERVER_ERROR,
+        'Unauthorized: Jwt expired',
+        HttpStatus.UNAUTHORIZED,
       );
     }
   }
