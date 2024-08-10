@@ -8,7 +8,7 @@ export class CreateBusinessDto {
   adminId: number;
 
   @IsNumber()
-  planId: number;
+  plan: number;
 
   @IsBoolean()
   isActive: boolean;

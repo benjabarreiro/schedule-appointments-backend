@@ -4,7 +4,10 @@ import { Connection, EntityManager, Repository } from 'typeorm';
 import { RolesIds } from 'src/common/enums';
 import { UsersService } from 'src/users/users.service';
 import { BusinessDto, CreateBusinessDto } from './dtos';
-import { parseToCamelCase } from 'src/common/utils/parsers';
+import {
+  convertKeysToSnakeCase,
+  parseToCamelCase,
+} from 'src/common/utils/parsers';
 import { Employee, EmployeeBusiness } from 'src/employees/entities';
 import { EmployeesService } from 'src/employees/employees.service';
 import { InjectEntityManager } from '@nestjs/typeorm';
@@ -110,12 +113,13 @@ export class BusinessesService {
       if (existingBusiness)
         throw new HttpException('Business already exists', HttpStatus.CONFLICT);
 
-      const newBusiness = await this.businessesRepository.create(business);
-      const savedUser = await this.businessesRepository.save(newBusiness);
+      const parsedBody = convertKeysToSnakeCase(business);
+      const newBusiness = await this.businessesRepository.create(parsedBody);
+      await this.businessesRepository.save(newBusiness);
 
       await this.usersService.updateUserRole(
         RolesIds.admin,
-        savedUser.admin_id,
+        newBusiness['admin_id'],
       );
 
       //we assume plan was purchased
