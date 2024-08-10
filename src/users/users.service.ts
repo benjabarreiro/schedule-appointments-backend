@@ -46,8 +46,10 @@ export class UsersService {
           HttpStatus.NOT_FOUND,
         );
       }
+
       const parsedUser = parseToCamelCase(user);
-      return parsedUser.map((user) => new UserDto(user));
+
+      return new UserDto(parsedUser);
     } catch (err) {
       throw new HttpException(
         'There was an error finding user with id ' + id,
@@ -70,13 +72,12 @@ export class UsersService {
 
   async updateUser(body: UpdateUserDto, id: number): Promise<string> {
     try {
-      const user = await this.userRepository.findOne({ where: { id } });
+      const user = await this.findUserById(id);
 
-      const parsedBody = convertKeysToSnakeCase(body);
+      const updatedUser = { ...user, ...body };
+      const parsedBody = convertKeysToSnakeCase(updatedUser);
 
-      const updatedUser = { ...user, ...parsedBody };
-
-      await this.userRepository.save(updatedUser);
+      await this.userRepository.save(parsedBody);
 
       return `User with id ${id} was updated successfully`;
     } catch (err) {
