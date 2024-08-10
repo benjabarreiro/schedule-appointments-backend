@@ -10,7 +10,9 @@ export class BusinessesController {
   async createBusiness(@Body() body: CreateBusinessDto): Promise<string> {
     try {
       return await this.businessesService.createBusiness(body);
-    } catch (err) {}
+    } catch (err) {
+      throw err;
+    }
   }
 
   @Post('/add-user')
