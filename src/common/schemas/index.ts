@@ -27,7 +27,7 @@ export const userSchema = JoiPipe.object({
     .required() // Make sure the date field is provided
     .custom((value, helper) => {
       if (typeof helper.original !== 'string')
-        return helper.error('birth date value must be a string');
+        return helper.error('Birth date value must be a string');
 
       const today = new Date();
       const birthYear = value.getFullYear();
