@@ -16,6 +16,7 @@ import { Employee, EmployeeBusiness } from './employees/entities';
 import { EmployeesModule } from './employees/employees.module';
 import { SchedulesModule } from './schedules/schedules.module';
 import { JwtModule } from './jwt/jwt.module';
+import { BusinessesController } from './businesses/businesses.controller';
 
 @Module({
   imports: [
@@ -70,6 +71,8 @@ import { JwtModule } from './jwt/jwt.module';
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware).forRoutes(UsersController);
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes(UsersController, BusinessesController);
   }
 }
