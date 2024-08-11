@@ -1,4 +1,13 @@
-import { Body, Controller, Headers, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Headers,
+  Post,
+  Put,
+  UseGuards,
+} from '@nestjs/common';
 import { BusinessesService } from './businesses.service';
 import { AddUserToBusiness, CreateBusinessDto } from './dtos';
 import { AdminsGuard } from 'src/common/guards/admin.guard';
@@ -23,7 +32,19 @@ export class BusinessesController {
     }
   }
 
-  @Post('/add-user')
+  @Get('/:id')
+  async getBusiness() {}
+
+  @Get()
+  async getBusinesses() {}
+
+  @Put('/:id')
+  async updateBusiness() {}
+
+  @Delete('/:id')
+  async deleteBusiness() {}
+
+  @Post('/user')
   @UseGuards(AdminsGuard)
   async addUserToBusiness(@Body() body: AddUserToBusiness): Promise<string> {
     try {
@@ -33,4 +54,7 @@ export class BusinessesController {
       );
     } catch (err) {}
   }
+
+  @Delete('/user')
+  async deleteUserFromBusiness() {}
 }

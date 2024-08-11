@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   HttpException,
   HttpStatus,
   Param,
@@ -17,6 +18,12 @@ import { UsersGuard } from 'src/common/guards/users.guard';
 @Controller('/users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
+
+  @Get()
+  async getUsers() {}
+
+  @Get('/:id')
+  async getUser() {}
 
   @Put('/:id')
   @UseGuards(UsersGuard)
