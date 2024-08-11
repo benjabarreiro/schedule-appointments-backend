@@ -16,7 +16,7 @@ export class UsersGuard implements CanActivate {
 
     const userIdFromJWT = decoded['id'];
 
-    const userIdFromParams = request.params.id || request.body.id;
+    const userIdFromParams = request.params.id;
 
     return userIdFromJWT === parseInt(userIdFromParams);
   }

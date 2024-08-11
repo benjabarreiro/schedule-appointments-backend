@@ -5,9 +5,6 @@ export class CreateBusinessDto {
   name: string;
 
   @IsNumber()
-  id: number;
-
-  @IsNumber()
   plan: number;
 
   @IsBoolean()

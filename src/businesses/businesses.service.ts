@@ -107,7 +107,10 @@ export class BusinessesService {
       .getOne();
   }
 
-  async createBusiness(business: CreateBusinessDto): Promise<string> {
+  async createBusiness(
+    business: CreateBusinessDto,
+    admin_id: number,
+  ): Promise<string> {
     try {
       const existingBusiness = await this.findBusinessByName(business.name);
       if (existingBusiness)
@@ -116,7 +119,7 @@ export class BusinessesService {
       const parsedBody = convertKeysToSnakeCase(business);
       const newBusiness = await this.businessesRepository.create({
         ...parsedBody,
-        admin_id: parsedBody.id,
+        admin_id,
       });
       await this.businessesRepository.save(newBusiness);
 
