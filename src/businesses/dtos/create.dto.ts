@@ -5,7 +5,7 @@ export class CreateBusinessDto {
   name: string;
 
   @IsNumber()
-  adminId: number;
+  id: number;
 
   @IsNumber()
   plan: number;

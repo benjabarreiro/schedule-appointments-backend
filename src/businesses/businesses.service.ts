@@ -114,7 +114,10 @@ export class BusinessesService {
         throw new HttpException('Business already exists', HttpStatus.CONFLICT);
 
       const parsedBody = convertKeysToSnakeCase(business);
-      const newBusiness = await this.businessesRepository.create(parsedBody);
+      const newBusiness = await this.businessesRepository.create({
+        ...parsedBody,
+        admin_id: parsedBody.id,
+      });
       await this.businessesRepository.save(newBusiness);
 
       await this.usersService.updateUserRole(
