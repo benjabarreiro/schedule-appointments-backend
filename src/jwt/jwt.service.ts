@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService as JwtNestService } from '@nestjs/jwt';
 import { IJwt } from './interfaces';
+import { Request } from 'express';
 
 @Injectable()
 export class JwtService {
@@ -28,5 +29,9 @@ export class JwtService {
         HttpStatus.UNAUTHORIZED,
       );
     }
+  }
+
+  getJwt(req: Request) {
+    return req.headers['authorization'].split(' ')[1];
   }
 }

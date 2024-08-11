@@ -12,6 +12,7 @@ import { BusinessesService } from './businesses.service';
 import { AddUserToBusiness, CreateBusinessDto } from './dtos';
 import { AdminsGuard } from 'src/common/guards/admin.guard';
 import { JwtService } from 'src/jwt/jwt.service';
+import { Request } from 'express';
 
 @Controller('businesses')
 export class BusinessesController {
@@ -22,10 +23,11 @@ export class BusinessesController {
   @Post()
   async createBusiness(
     @Body() body: CreateBusinessDto,
-    @Headers('Authorization') authHeader,
+    req: Request,
   ): Promise<string> {
     try {
-      const { userId: adminId } = this.jwtService.verifyToken(authHeader);
+      const jwt = this.jwtService.getJwt(req);
+      const { userId: adminId } = this.jwtService.verifyToken(jwt);
       return await this.businessesService.createBusiness(body, adminId);
     } catch (err) {
       throw err;

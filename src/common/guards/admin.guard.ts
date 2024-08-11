@@ -12,12 +12,12 @@ export class AdminsGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
-    const token = request.headers.authorization?.split(' ')[1];
-    if (!token) {
+    const jwt = this.jwtService.getJwt(request);
+    if (!jwt) {
       return false;
     }
 
-    const decoded = this.jwtService.verifyToken(token);
+    const decoded = this.jwtService.verifyToken(jwt);
 
     const { roleId, businessId, id } = decoded;
 

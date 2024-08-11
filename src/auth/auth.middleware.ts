@@ -7,13 +7,13 @@ import { JwtService } from 'src/jwt/jwt.service';
 export class AuthMiddleware implements NestMiddleware {
   constructor(private readonly jwtService: JwtService) {}
   use(req: Request, res: Response, next: NextFunction) {
-    const token = req.headers['authorization']?.split(' ')[1];
-    if (!token) {
+    const jwt = this.jwtService.getJwt(req);
+    if (!jwt) {
       return res.status(401).json({ message: 'Unauthorized' });
     }
 
     try {
-      this.jwtService.verifyToken(token);
+      this.jwtService.verifyToken(jwt);
       next();
     } catch (error) {
       return res
