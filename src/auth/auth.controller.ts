@@ -9,21 +9,21 @@ import {
 import { AuthService } from './auth.service';
 import { CreateUserDto, LoginUserDto, UserDto } from '../common/dtos';
 import { loginSchema, userSchema } from '../common/schemas';
-import { JoiValidationPie } from '../common/pipes';
+import { JoiValidationPipe } from '../common/pipes';
 
 @Controller('/auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('/register')
-  @UsePipes(new JoiValidationPie<CreateUserDto>(userSchema))
+  @UsePipes(new JoiValidationPipe<CreateUserDto>(userSchema))
   async createUser(@Body() body: CreateUserDto): Promise<string> {
     return await this.authService.createUser(body);
   }
 
   @Post('/login')
   @HttpCode(HttpStatus.OK)
-  @UsePipes(new JoiValidationPie<UserDto>(loginSchema))
+  @UsePipes(new JoiValidationPipe<UserDto>(loginSchema))
   async login(@Body() body: LoginUserDto): Promise<string> {
     return await this.authService.login(body);
   }

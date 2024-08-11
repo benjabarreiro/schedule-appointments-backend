@@ -12,7 +12,7 @@ import {
 import { UsersService } from './users.service';
 import { UpdateUserDto } from 'src/common/dtos';
 import { updateUserSchema } from 'src/common/schemas';
-import { JoiValidationPie } from 'src/common/pipes';
+import { JoiValidationPipe } from 'src/common/pipes';
 import { UsersGuard } from 'src/common/guards/users.guard';
 
 @Controller('/users')
@@ -28,7 +28,7 @@ export class UsersController {
   @Put('/:id')
   @UseGuards(UsersGuard)
   async updateUser(
-    @Body(new JoiValidationPie<UpdateUserDto>(updateUserSchema))
+    @Body(new JoiValidationPipe<UpdateUserDto>(updateUserSchema))
     body: UpdateUserDto,
     @Param('id') id: string,
   ): Promise<string> {

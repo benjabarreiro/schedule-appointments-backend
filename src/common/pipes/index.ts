@@ -1,7 +1,7 @@
 import { BadRequestException, PipeTransform } from '@nestjs/common';
 import Joi from 'joi';
 
-export class JoiValidationPie<T> implements PipeTransform {
+export class JoiValidationPipe<T> implements PipeTransform {
   constructor(private schema: Joi.ObjectSchema) {}
 
   transform(value: T) {
