@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { SchedulesService } from './schedules.service';
 import { Schedule } from './schedule.entity';
-import { JoiValidationPie } from 'src/common/pipes';
+import { JoiValidationPipe } from 'src/common/pipes';
 import { CreateScheduleDto, UpdateScheduleDto } from './dtos';
 import { createScheduleschema, updateScheduleschema } from './schemas';
 import { AdminsGuard } from 'src/common/guards/admin.guard';
@@ -24,7 +24,7 @@ export class SchedulesController {
   @Post()
   @UseGuards(AdminsGuard, EmployeesGuard)
   async createScheule(
-    @Body(new JoiValidationPie<CreateScheduleDto>(createScheduleschema)) body,
+    @Body(new JoiValidationPipe<CreateScheduleDto>(createScheduleschema)) body,
   ): Promise<String> {
     return await this.schedulesService.createSchedule(body);
   }
@@ -33,7 +33,7 @@ export class SchedulesController {
   @UseGuards(AdminsGuard, EmployeesGuard)
   async updateSchedule(
     @Param('id') id,
-    @Body(new JoiValidationPie<UpdateScheduleDto>(updateScheduleschema)) body,
+    @Body(new JoiValidationPipe<UpdateScheduleDto>(updateScheduleschema)) body,
   ): Promise<String> {
     return await this.schedulesService.updateSchedule(id, body);
   }
