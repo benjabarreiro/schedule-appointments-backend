@@ -32,7 +32,6 @@ export class JwtService {
   }
 
   getJwt(req: Request) {
-    const authorization = req.headers['authorization'];
-    return authorization ? authorization.split(' ')[1] : '';
+    return req.headers['authorization']?.split(' ')[1] || '';
   }
 }
