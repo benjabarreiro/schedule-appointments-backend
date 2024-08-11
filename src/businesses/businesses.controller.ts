@@ -3,9 +3,9 @@ import {
   Controller,
   Delete,
   Get,
-  Headers,
   Post,
   Put,
+  Request as RequestNest,
   UseGuards,
 } from '@nestjs/common';
 import { BusinessesService } from './businesses.service';
@@ -13,6 +13,8 @@ import { AddUserToBusiness, CreateBusinessDto } from './dtos';
 import { AdminsGuard } from 'src/common/guards/admin.guard';
 import { JwtService } from 'src/jwt/jwt.service';
 import { Request } from 'express';
+import { JoiValidationPipe } from 'src/common/pipes';
+import { createBusinessSchema } from './schemas/create-business.schema';
 
 @Controller('businesses')
 export class BusinessesController {
@@ -22,8 +24,9 @@ export class BusinessesController {
   ) {}
   @Post()
   async createBusiness(
-    @Body() body: CreateBusinessDto,
-    req: Request,
+    @Body(new JoiValidationPipe<CreateBusinessDto>(createBusinessSchema))
+    body: CreateBusinessDto,
+    @RequestNest() req: Request,
   ): Promise<string> {
     try {
       const jwt = this.jwtService.getJwt(req);
