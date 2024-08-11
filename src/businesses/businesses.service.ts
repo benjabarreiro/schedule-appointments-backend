@@ -11,6 +11,7 @@ import {
 import { Employee, EmployeeBusiness } from 'src/employees/entities';
 import { EmployeesService } from 'src/employees/employees.service';
 import { InjectEntityManager } from '@nestjs/typeorm';
+import { UpdateBusinessDto } from './dtos/update.dto';
 
 @Injectable()
 export class BusinessesService {
@@ -135,6 +136,23 @@ export class BusinessesService {
 
       throw new HttpException(
         'There was an error creating business',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async updateBusiness(body: UpdateBusinessDto, businessId) {
+    try {
+      const business = await this.findBusinessById(businessId);
+
+      const parsedBody = convertKeysToSnakeCase({ ...business, ...body });
+
+      await this.businessesRepository.save(parsedBody);
+    } catch (err) {
+      if (err.status === 404) throw err;
+
+      throw new HttpException(
+        'There was an error updating business with id ' + businessId,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
     }

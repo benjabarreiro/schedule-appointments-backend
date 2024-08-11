@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  Param,
   Post,
   Put,
   Request as RequestNest,
@@ -15,6 +16,8 @@ import { JwtService } from 'src/jwt/jwt.service';
 import { Request } from 'express';
 import { JoiValidationPipe } from 'src/common/pipes';
 import { createBusinessSchema } from './schemas/create-business.schema';
+import { UpdateBusinessDto } from './dtos/update.dto';
+import { updateBusinessSchema } from './schemas/update-buiness.schema';
 
 @Controller('businesses')
 export class BusinessesController {
@@ -44,7 +47,17 @@ export class BusinessesController {
   async getBusinesses() {}
 
   @Put('/:id')
-  async updateBusiness() {}
+  async updateBusiness(
+    @Param('id') id: string,
+    @Body(new JoiValidationPipe<UpdateBusinessDto>(updateBusinessSchema))
+    body: UpdateBusinessDto,
+  ) {
+    try {
+      return await this.businessesService.updateBusiness(body, Number(id));
+    } catch (err) {
+      throw err;
+    }
+  }
 
   @Delete('/:id')
   async deleteBusiness() {}
