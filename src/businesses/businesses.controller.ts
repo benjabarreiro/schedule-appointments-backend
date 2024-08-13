@@ -18,6 +18,7 @@ import { JoiValidationPipe } from 'src/common/pipes';
 import { createBusinessSchema } from './schemas/create-business.schema';
 import { UpdateBusinessDto } from './dtos/update.dto';
 import { updateBusinessSchema } from './schemas/update-buiness.schema';
+import { CreateBusinessGuards } from 'src/common/guards/business.guard';
 
 @Controller('businesses')
 export class BusinessesController {
@@ -26,6 +27,7 @@ export class BusinessesController {
     private readonly jwtService: JwtService,
   ) {}
   @Post()
+  @UseGuards(CreateBusinessGuards)
   async createBusiness(
     @Body(new JoiValidationPipe<CreateBusinessDto>(createBusinessSchema))
     body: CreateBusinessDto,
