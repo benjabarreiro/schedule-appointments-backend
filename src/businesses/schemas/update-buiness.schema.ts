@@ -1,8 +1,6 @@
 import * as Joi from 'joi';
 
 const validateIsNotString = (value, helper) => {
-  console.log(value);
-  console.log(helper);
   if (typeof helper.original === 'string') {
     throw Error(`it is not a ${helper.schema.type}`);
   }
