@@ -94,7 +94,7 @@ export class UsersService {
     try {
       const user = await this.findUserById(userId);
 
-      const updatedUser = { ...user, roleId };
+      const updatedUser = { ...user, role: roleId };
 
       await this.userRepository.save(updatedUser);
     } catch (err) {

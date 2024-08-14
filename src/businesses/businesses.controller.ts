@@ -35,8 +35,8 @@ export class BusinessesController {
   ): Promise<string> {
     try {
       const jwt = this.jwtService.getJwt(req);
-      const { userId: adminId } = this.jwtService.verifyToken(jwt);
-      return await this.businessesService.createBusiness(body, adminId);
+      const { id: userId } = this.jwtService.verifyToken(jwt);
+      return await this.businessesService.createBusiness(body, userId);
     } catch (err) {
       throw err;
     }

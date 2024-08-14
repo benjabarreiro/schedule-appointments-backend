@@ -110,24 +110,21 @@ export class BusinessesService {
 
   async createBusiness(
     business: CreateBusinessDto,
-    admin_id: number,
+    userId: number,
   ): Promise<string> {
     try {
       const existingBusiness = await this.findBusinessByName(business.name);
       if (existingBusiness)
         throw new HttpException('Business already exists', HttpStatus.CONFLICT);
 
-      const parsedBody = convertKeysToSnakeCase(business);
-      const newBusiness = await this.businessesRepository.create({
-        ...parsedBody,
-        admin_id,
+      const parsedBody = convertKeysToSnakeCase({
+        ...business,
+        adminId: userId,
       });
+      const newBusiness = await this.businessesRepository.create(parsedBody);
       await this.businessesRepository.save(newBusiness);
 
-      await this.usersService.updateUserRole(
-        RolesIds.admin,
-        newBusiness['admin_id'],
-      );
+      await this.usersService.updateUserRole(RolesIds.admin, userId);
 
       //we assume plan was purchased
       return 'Business created succesfully';
