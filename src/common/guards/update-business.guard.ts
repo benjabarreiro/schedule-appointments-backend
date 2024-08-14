@@ -17,7 +17,6 @@ export class UpdateBusinessGuards implements CanActivate {
     }
 
     const decoded = this.jwtService.verifyToken(jwt);
-    console.log(decoded);
 
     const { businessId } = decoded;
 
