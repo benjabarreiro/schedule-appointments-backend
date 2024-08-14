@@ -1,12 +1,12 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
-import { JwtService } from 'src/jwt/jwt.service';
 import { BusinessesService } from 'src/businesses/businesses.service';
+import { JwtService } from 'src/jwt/jwt.service';
 
 @Injectable()
-export class CreateBusinessGuards implements CanActivate {
+export class UpdateBusinessGuards implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly businessesService: BusinessesService,
+    private readonly businessService: BusinessesService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -17,11 +17,13 @@ export class CreateBusinessGuards implements CanActivate {
     }
 
     const decoded = this.jwtService.verifyToken(jwt);
+    console.log(decoded);
 
     const { businessId } = decoded;
 
-    // has business, can't create new business
-    if (businessId) return false;
+    await this.businessService.findBusinessById(businessId);
+
+    if (Number(request.params.id) !== businessId) return false;
 
     return true;
   }

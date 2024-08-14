@@ -18,7 +18,8 @@ import { JoiValidationPipe } from 'src/common/pipes';
 import { createBusinessSchema } from './schemas/create-business.schema';
 import { UpdateBusinessDto } from './dtos/update.dto';
 import { updateBusinessSchema } from './schemas/update-buiness.schema';
-import { CreateBusinessGuards } from 'src/common/guards/business.guard';
+import { CreateBusinessGuards } from 'src/common/guards/create-business.guard';
+import { UpdateBusinessGuards } from 'src/common/guards/update-business.guard';
 
 @Controller('businesses')
 export class BusinessesController {
@@ -49,6 +50,7 @@ export class BusinessesController {
   async getBusinesses() {}
 
   @Put('/:id')
+  @UseGuards(UpdateBusinessGuards)
   async updateBusiness(
     @Param('id') id: string,
     @Body(new JoiValidationPipe<UpdateBusinessDto>(updateBusinessSchema))
