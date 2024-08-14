@@ -1,23 +1,16 @@
 import * as Joi from 'joi';
 
+const validateIsNotString = (value, helper) => {
+  console.log(value);
+  console.log(helper);
+  if (typeof helper.original === 'string') {
+    throw Error(`it is not a ${helper.schema.type}`);
+  }
+  return value;
+};
+
 export const updateBusinessSchema = Joi.object({
   name: Joi.string().not().empty().min(10),
-  plan: Joi.number()
-    .not()
-    .empty()
-    .custom((value, helper) => {
-      if (typeof helper.original === 'string') {
-        throw Error('Plan must be a number');
-      }
-      return value;
-    }),
-  isActive: Joi.boolean()
-    .not()
-    .empty()
-    .custom((value, helper) => {
-      if (typeof helper.original === 'string') {
-        throw Error('isActive must be a boolean');
-      }
-      return value;
-    }),
+  plan: Joi.number().not().empty().custom(validateIsNotString),
+  isActive: Joi.boolean().not().empty().custom(validateIsNotString),
 });
