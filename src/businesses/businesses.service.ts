@@ -141,13 +141,15 @@ export class BusinessesService {
     }
   }
 
-  async updateBusiness(body: UpdateBusinessDto, businessId) {
+  async updateBusiness(body: UpdateBusinessDto, businessId): Promise<String> {
     try {
       const business = await this.findBusinessById(businessId);
 
       const parsedBody = convertKeysToSnakeCase({ ...business, ...body });
 
       await this.businessesRepository.save(parsedBody);
+
+      return `Business with id ${businessId} updated successfully`;
     } catch (err) {
       if (err.status === 404) throw err;
 

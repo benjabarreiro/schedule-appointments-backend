@@ -66,7 +66,7 @@ export class BusinessesController {
     @Param('id') id: string,
     @Body(new JoiValidationPipe<UpdateBusinessDto>(updateBusinessSchema))
     body: UpdateBusinessDto,
-  ) {
+  ): Promise<String> {
     try {
       return await this.businessesService.updateBusiness(body, Number(id));
     } catch (err) {
