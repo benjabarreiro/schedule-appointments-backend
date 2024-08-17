@@ -17,7 +17,7 @@ import { EmployeesModule } from './employees/employees.module';
 import { SchedulesModule } from './schedules/schedules.module';
 import { JwtModule } from './jwt/jwt.module';
 import { BusinessesController } from './businesses/businesses.controller';
-import { EmptyBodyMiddleware } from './middlewares/empty-body.middleware';
+import { EmptyBodyMiddleware } from './common/middlewares/empty-body.middleware';
 
 @Module({
   imports: [
