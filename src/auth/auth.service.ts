@@ -130,6 +130,7 @@ export class AuthService {
         roleId: user.roleId,
         employeeId: user.employeeId,
         businessId: user.businessId,
+        isFirstAccess: true,
       });
     } catch (err) {
       throw err;

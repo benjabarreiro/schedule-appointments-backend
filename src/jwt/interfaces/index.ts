@@ -6,4 +6,5 @@ export interface IJwt extends JwtPayload {
   roleId: number;
   businessId: number;
   employeeId: number;
+  isFirstAccess?: boolean;
 }
