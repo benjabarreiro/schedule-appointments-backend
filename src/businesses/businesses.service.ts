@@ -78,12 +78,15 @@ export class BusinessesService {
     }
   }
 
-  async findBusinessByAdminId(adminId: number): Promise<BusinessDto> {
+  async findBusinessByAdminId(
+    adminId: number,
+    isNewBusiness = false,
+  ): Promise<BusinessDto> {
     try {
       const business = await this.businessesRepository.findOne({
         where: { admin_id: adminId },
       });
-      if (!business)
+      if (!business && !isNewBusiness)
         throw new HttpException(
           'The provided adminId ' + adminId + ' does not belong to a business.',
           HttpStatus.NOT_FOUND,

@@ -37,10 +37,12 @@ export class BusinessesController {
       const jwt = this.jwtService.getJwt(req);
       const { id: userId } = this.jwtService.verifyToken(jwt);
 
-      const { id: businessId } =
-        await this.businessesService.findBusinessByAdminId(userId);
+      const business = await this.businessesService.findBusinessByAdminId(
+        userId,
+        true,
+      );
 
-      if (businessId)
+      if (business)
         throw new HttpException(
           'User already has a business',
           HttpStatus.CONFLICT,
