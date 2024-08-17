@@ -24,7 +24,7 @@ export class UsersService {
       return {
         id: createdUser['id'],
         email: createdUser['email'],
-        roleId: createdUser['id'],
+        roleId: createdUser['role_id'],
         businessId: null,
         employeeId: null,
       };
