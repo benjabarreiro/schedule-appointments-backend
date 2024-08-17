@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpException,
+  HttpStatus,
   Param,
   Post,
   Put,
@@ -18,8 +20,6 @@ import { JoiValidationPipe } from 'src/common/pipes';
 import { createBusinessSchema } from './schemas/create-business.schema';
 import { UpdateBusinessDto } from './dtos/update.dto';
 import { updateBusinessSchema } from './schemas/update-buiness.schema';
-import { CreateBusinessGuards } from 'src/common/guards/create-business.guard';
-import { UpdateBusinessGuards } from 'src/common/guards/update-business.guard';
 
 @Controller('businesses')
 export class BusinessesController {
@@ -28,7 +28,6 @@ export class BusinessesController {
     private readonly jwtService: JwtService,
   ) {}
   @Post()
-  @UseGuards(CreateBusinessGuards)
   async createBusiness(
     @Body(new JoiValidationPipe<CreateBusinessDto>(createBusinessSchema))
     body: CreateBusinessDto,
@@ -37,6 +36,16 @@ export class BusinessesController {
     try {
       const jwt = this.jwtService.getJwt(req);
       const { id: userId } = this.jwtService.verifyToken(jwt);
+
+      const { id: businessId } =
+        await this.businessesService.findBusinessByAdminId(userId);
+
+      if (businessId)
+        throw new HttpException(
+          'User already has a business',
+          HttpStatus.CONFLICT,
+        );
+
       return await this.businessesService.createBusiness(body, userId);
     } catch (err) {
       throw err;
@@ -50,7 +59,7 @@ export class BusinessesController {
   async getBusinesses() {}
 
   @Put('/:id')
-  @UseGuards(UpdateBusinessGuards)
+  @UseGuards(AdminsGuard)
   async updateBusiness(
     @Param('id') id: string,
     @Body(new JoiValidationPipe<UpdateBusinessDto>(updateBusinessSchema))
@@ -64,6 +73,7 @@ export class BusinessesController {
   }
 
   @Delete('/:id')
+  @UseGuards(AdminsGuard)
   async deleteBusiness() {}
 
   @Post('/user')
@@ -78,5 +88,6 @@ export class BusinessesController {
   }
 
   @Delete('/user')
+  @UseGuards(AdminsGuard)
   async deleteUserFromBusiness() {}
 }

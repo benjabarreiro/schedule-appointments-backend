@@ -19,14 +19,15 @@ export class AdminsGuard implements CanActivate {
 
     const decoded = this.jwtService.verifyToken(jwt);
 
-    const { roleId, businessId, id } = decoded;
+    const { roleId, id: userId } = decoded;
 
-    const business = await this.businessesService.findBusinessById(businessId);
+    if (roleId !== RolesIds.admin) return false;
 
-    return (
-      roleId === RolesIds.admin &&
-      business.id === businessId &&
-      business.adminId === id
-    );
+    const business = await this.businessesService.findBusinessByAdminId(userId);
+
+    const param = request.params.id;
+    if (!param) return false;
+
+    return Number(param) === business.id;
   }
 }
