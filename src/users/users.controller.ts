@@ -32,8 +32,6 @@ export class UsersController {
     body: UpdateUserDto,
     @Param('id') id: string,
   ): Promise<string> {
-    if (body && !Object.keys(body).length)
-      throw new HttpException('Body cannot be empty', HttpStatus.BAD_REQUEST);
     return await this.usersService.updateUser(body, Number(id));
   }
 
