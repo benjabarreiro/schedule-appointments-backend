@@ -1,14 +1,12 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { JwtService } from 'src/jwt/jwt.service';
 import { RolesIds } from '../enums';
-import { BusinessesService } from 'src/businesses/businesses.service';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
-export class AdminsGuard implements CanActivate {
+export class IsAdminGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly businessesService: BusinessesService,
     private readonly usersService: UsersService,
   ) {}
 
@@ -30,11 +28,6 @@ export class AdminsGuard implements CanActivate {
       if (user.role.id !== RolesIds.admin) return false;
     }
 
-    const business = await this.businessesService.findBusinessByAdminId(userId);
-
-    const param = request.params.id;
-    if (!param) return false;
-
-    return Number(param) === business.id;
+    return true;
   }
 }
