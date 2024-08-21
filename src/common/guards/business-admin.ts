@@ -12,9 +12,6 @@ export class BusinessAdminGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const jwt = this.jwtService.getJwt(request);
-    if (!jwt) {
-      return false;
-    }
 
     const decoded = this.jwtService.verifyToken(jwt);
 
