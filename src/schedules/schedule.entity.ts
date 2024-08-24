@@ -1,5 +1,5 @@
+import { User } from 'src/users/entities';
 import { Business } from '../businesses/business.entity';
-import { Employee } from '../employees/entities';
 import {
   Column,
   Entity,
@@ -19,11 +19,15 @@ export class Schedule {
   @Column()
   description: string;
 
-  @ManyToOne(() => Employee, (employee) => employee.schedules)
-  @JoinColumn({ name: 'employee_id' })
-  employee: Employee;
+  @ManyToOne(() => User, { nullable: false })
+  @JoinColumn({ name: 'patient_id' })
+  patient: User;
 
-  @ManyToOne(() => Business, (business) => business.schedules)
+  @ManyToOne(() => User, { nullable: false })
+  @JoinColumn({ name: 'employee_id' })
+  employee: User;
+
+  @ManyToOne(() => Business, { nullable: false })
   @JoinColumn({ name: 'business_id' })
   business: Business;
 }
