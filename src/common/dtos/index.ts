@@ -17,11 +17,6 @@ export class CreateUserDto extends UserDto {
   @IsDate()
   birthDate: Date;
 }
-
-export class ValidateCreateUserDto extends CreateUserDto {
-  @IsString()
-  role: RolesIds;
-}
 export class LoginUserDto extends UserDto {}
 
 export class UpdateUserDto {
