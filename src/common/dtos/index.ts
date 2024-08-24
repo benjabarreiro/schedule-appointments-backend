@@ -1,5 +1,4 @@
 import { IsDate, IsOptional, IsString } from 'class-validator';
-import { RolesIds } from 'src/common/enums';
 
 export class UserDto {
   @IsString()
