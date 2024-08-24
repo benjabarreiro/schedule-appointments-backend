@@ -1,19 +1,13 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import {
-  CreateUserDto,
-  LoginUserDto,
-  ValidateCreateUserDto,
-} from '../common/dtos';
+import { CreateUserDto, LoginUserDto } from '../common/dtos';
 import { compareSync } from 'bcrypt';
-import { RolesIds } from 'src/common/enums';
 import { UsersService } from 'src/users/users.service';
 import { EmailsService } from 'src/emails/email.servicie';
 import { generateValidationCode, hashPassword } from './utils';
 import { ValidationRecord } from './interfaces';
 import { JwtService } from 'src/jwt/jwt.service';
 import { UserAuthDto } from 'src/users/dtos';
-import { BusinessesService } from 'src/businesses/businesses.service';
-import { EmployeesService } from 'src/employees/employees.service';
+import { UserBusinessRoleService } from 'src/user-business-role/user-business-role.service';
 
 @Injectable()
 export class AuthService {
@@ -24,8 +18,7 @@ export class AuthService {
     private readonly jwtService: JwtService,
     private readonly usersService: UsersService,
     private readonly emailService: EmailsService,
-    private readonly businessesService: BusinessesService,
-    private readonly employeesService: EmployeesService,
+    private readonly userBusinessRoleService: UserBusinessRoleService,
   ) {
     this.startCleanupTask();
   }
@@ -38,10 +31,9 @@ export class AuthService {
       }
 
       const hashedPassword = await hashPassword(body.password);
-      const bodyWithHashedPassword: ValidateCreateUserDto = {
+      const bodyWithHashedPassword: CreateUserDto = {
         ...body,
         password: hashedPassword,
-        role: RolesIds.user,
       };
 
       return await this.sendValidationCode(bodyWithHashedPassword);
@@ -53,27 +45,15 @@ export class AuthService {
   async login(body: LoginUserDto): Promise<string> {
     try {
       const user = await this.validateUserPassword(body.email, body.password);
-      let businessId = null;
-      let employeeId = null;
-      if (user.role.id === RolesIds.admin) {
-        const business = await this.businessesService.findBusinessByAdminId(
-          user.id,
-        );
-        businessId = business.id;
-      }
 
-      const employee = await this.employeesService.findEmployeeByUserId(
+      const roles = await this.userBusinessRoleService.findAllUserRoles(
         user.id,
       );
-
-      if (employee) employeeId = employee.id;
 
       const token = await this.jwtService.generateToken({
         email: user.email,
         id: user.id,
-        roleId: user.role.id,
-        businessId,
-        employeeId,
+        roles,
       });
       return token;
     } catch (err) {
@@ -81,7 +61,7 @@ export class AuthService {
     }
   }
 
-  async sendValidationCode(user: ValidateCreateUserDto): Promise<string> {
+  async sendValidationCode(user: CreateUserDto): Promise<string> {
     try {
       const code = generateValidationCode();
       const expiresAt = new Date();
@@ -127,9 +107,7 @@ export class AuthService {
       return await this.jwtService.generateToken({
         email: user.email,
         id: user.id,
-        roleId: user.roleId,
-        employeeId: user.employeeId,
-        businessId: user.businessId,
+        roles: user.roles,
         isFirstAccess: true,
       });
     } catch (err) {

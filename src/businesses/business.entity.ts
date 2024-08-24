@@ -3,14 +3,12 @@ import {
   Column,
   Entity,
   JoinColumn,
-  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Exclude } from 'class-transformer';
 import { Schedule } from '../schedules/schedule.entity';
-import { Employee } from '../employees/entities';
+import { UserBusinessRole } from '../user-business-role/entities/user-business-role.entity';
 
 @Entity('businesses')
 export class Business {
@@ -30,10 +28,12 @@ export class Business {
   @Column()
   is_active: boolean;
 
-  @ManyToMany(() => Employee, (employee) => employee.businesses)
-  @Exclude()
-  employees: Employee[];
-
   @OneToMany(() => Schedule, (schedule) => schedule.business)
   schedules: Schedule[];
+
+  @OneToMany(
+    () => UserBusinessRole,
+    (userBusinessRole) => userBusinessRole.business,
+  )
+  userBusinessRoles: UserBusinessRole[];
 }

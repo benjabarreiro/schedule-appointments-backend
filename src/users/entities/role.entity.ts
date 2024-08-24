@@ -1,5 +1,6 @@
+import { UserBusinessRole } from '../../user-business-role/entities/user-business-role.entity';
 import { Roles } from '../../common/enums';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('roles')
 export class Role {
@@ -8,4 +9,10 @@ export class Role {
 
   @Column({ type: 'enum', enum: Roles })
   name: Roles;
+
+  @OneToMany(
+    () => UserBusinessRole,
+    (userBusinessRole) => userBusinessRole.role,
+  )
+  userBusinessRoles: UserBusinessRole[];
 }

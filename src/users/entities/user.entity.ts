@@ -1,11 +1,5 @@
-import { Role } from './role.entity';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { UserBusinessRole } from '../../user-business-role/entities/user-business-role.entity';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('users')
 export class User {
@@ -27,10 +21,12 @@ export class User {
   @Column({ type: 'date' })
   birth_date: Date;
 
-  @ManyToOne(() => Role, { eager: true })
-  @JoinColumn({ name: 'role_id' })
-  role: Role;
-
   @Column()
   password: string;
+
+  @OneToMany(
+    () => UserBusinessRole,
+    (userBusinessRole) => userBusinessRole.user,
+  )
+  userBusinessRoles: UserBusinessRole[];
 }

@@ -1,5 +1,5 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { UpdateUserDto, ValidateCreateUserDto } from '../common/dtos';
+import { CreateUserDto, UpdateUserDto } from '../common/dtos';
 import { Connection, Repository } from 'typeorm';
 import {
   convertKeysToSnakeCase,
@@ -8,6 +8,7 @@ import {
 import { User } from './entities/user.entity';
 import { UserAuthDto, UserDto } from './dtos';
 import { IJwt } from 'src/jwt/interfaces';
+import { RolesIds } from 'src/common/enums';
 
 @Injectable()
 export class UsersService {
@@ -16,7 +17,7 @@ export class UsersService {
     this.userRepository = this.connection.getRepository(User);
   }
 
-  async createUser(user: ValidateCreateUserDto): Promise<IJwt> {
+  async createUser(user: CreateUserDto): Promise<IJwt> {
     try {
       const parsedUser = convertKeysToSnakeCase(user);
       const newUser = await this.userRepository.create(parsedUser);
@@ -24,9 +25,7 @@ export class UsersService {
       return {
         id: createdUser['id'],
         email: createdUser['email'],
-        roleId: createdUser['role_id'],
-        businessId: null,
-        employeeId: null,
+        roles: [{ roleId: RolesIds.patient }],
       };
     } catch (err) {
       throw new HttpException(
