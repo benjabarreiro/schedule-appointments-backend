@@ -12,12 +12,12 @@ import { PlansModule } from './plans/plans.module';
 import { Business } from './businesses/business.entity';
 import { BusinessesModule } from './businesses/businesses.module';
 import { Schedule } from './schedules/schedule.entity';
-import { Employee, EmployeeBusiness } from './employees/entities';
 import { EmployeesModule } from './employees/employees.module';
 import { SchedulesModule } from './schedules/schedules.module';
 import { JwtModule } from './jwt/jwt.module';
 import { BusinessesController } from './businesses/businesses.controller';
 import { EmptyBodyMiddleware } from './common/middlewares/empty-body.middleware';
+import { UserBusinessRole } from './user-business-role/entities/user-business-role.entity';
 
 @Module({
   imports: [
@@ -41,15 +41,7 @@ import { EmptyBodyMiddleware } from './common/middlewares/empty-body.middleware'
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [
-          User,
-          Role,
-          Plan,
-          Business,
-          Employee,
-          EmployeeBusiness,
-          Schedule,
-        ],
+        entities: [User, Role, Plan, Business, Schedule, UserBusinessRole],
         synchronize: false,
         migrations: [__dirname + '/../migrations/*{.ts,.js}'],
         migrationsRun: true, // Automatically run migrations on app startup
@@ -64,9 +56,8 @@ import { EmptyBodyMiddleware } from './common/middlewares/empty-body.middleware'
       Role,
       Plan,
       Business,
-      Employee,
-      EmployeeBusiness,
       Schedule,
+      UserBusinessRole,
     ]),
   ],
 })
