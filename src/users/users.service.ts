@@ -89,23 +89,6 @@ export class UsersService {
     }
   }
 
-  async updateUserRole(roleId, userId): Promise<void> {
-    try {
-      const user = await this.findUserById(userId);
-
-      const updatedUser = { ...user, role: roleId };
-
-      await this.userRepository.save(updatedUser);
-    } catch (err) {
-      if (err.status === 404) throw err;
-
-      throw new HttpException(
-        'There was an error updating role of the user with id: ' + userId,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
   async deleteUser(id: number): Promise<string> {
     try {
       await this.findUserById(id);
