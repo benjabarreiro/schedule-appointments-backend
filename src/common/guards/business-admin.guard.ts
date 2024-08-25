@@ -1,12 +1,13 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { JwtService } from 'src/jwt/jwt.service';
-import { BusinessesService } from 'src/businesses/businesses.service';
+import { UserBusinessRoleService } from 'src/user-business-role/user-business-role.service';
+import { RolesIds } from '../enums';
 
 @Injectable()
 export class BusinessAdminGuard implements CanActivate {
   constructor(
     private readonly jwtService: JwtService,
-    private readonly businessesService: BusinessesService,
+    private readonly userBusinessRoleService: UserBusinessRoleService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -18,16 +19,19 @@ export class BusinessAdminGuard implements CanActivate {
     const requestId = request.params.id || request.body.businessId;
     if (!requestId) return false;
 
-    const { businessId, id: userId, isFirstAccess } = decoded;
+    const { id: userId, isFirstAccess, roles } = decoded;
 
-    if (businessId !== requestId && !isFirstAccess) return false;
+    let userRoles = roles;
 
     if (isFirstAccess) {
-      const business = await this.businessesService.findBusinessByAdminId(
-        userId,
-      );
-      if (business.id !== requestId) return false;
+      userRoles = await this.userBusinessRoleService.findAllUserRoles(userId);
     }
+
+    const isAdmin = userRoles.some(
+      (role) => role.roleId === RolesIds.admin && role.userId === userId,
+    );
+
+    if (!isAdmin) return false;
 
     return true;
   }

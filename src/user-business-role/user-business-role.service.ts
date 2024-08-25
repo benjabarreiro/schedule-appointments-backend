@@ -36,6 +36,7 @@ export class UserBusinessRoleService {
     try {
       const userBusinessRoles = await this.userBusinessRoleRepository
         .createQueryBuilder('user_business_role')
+        .leftJoinAndSelect('user_business_role.user', 'user')
         .leftJoinAndSelect('user_business_role.business', 'business')
         .leftJoinAndSelect('user_business_role.role', 'role')
         .where('user_business_role.user_id = :userId', { userId })
@@ -44,6 +45,7 @@ export class UserBusinessRoleService {
       const userRoles = userBusinessRoles.map((ubr) => ({
         roleId: ubr.role.id,
         businessId: ubr.business.id,
+        userId: ubr.user.id,
       }));
 
       if (userRoles.length) return userRoles;

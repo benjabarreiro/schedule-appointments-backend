@@ -14,16 +14,15 @@ import { Schedule } from './schedule.entity';
 import { JoiValidationPipe } from 'src/common/pipes';
 import { CreateScheduleDto, UpdateScheduleDto } from './dtos';
 import { createScheduleschema, updateScheduleschema } from './schemas';
-import { IsAdminGuard } from 'src/common/guards/is-admin.guard';
 import { EmployeesGuard } from 'src/common/guards/employee.guard';
-import { BusinessAdminGuard } from 'src/common/guards/business-admin';
+import { BusinessAdminGuard } from 'src/common/guards/business-admin.guard';
 
 @Controller('/schedules')
 export class SchedulesController {
   constructor(private readonly schedulesService: SchedulesService) {}
 
   @Post()
-  @UseGuards(IsAdminGuard, BusinessAdminGuard, EmployeesGuard)
+  @UseGuards(BusinessAdminGuard, EmployeesGuard)
   async createScheule(
     @Body(new JoiValidationPipe<CreateScheduleDto>(createScheduleschema)) body,
   ): Promise<String> {
@@ -31,7 +30,7 @@ export class SchedulesController {
   }
 
   @Put(':id')
-  @UseGuards(IsAdminGuard, BusinessAdminGuard, EmployeesGuard)
+  @UseGuards(BusinessAdminGuard, EmployeesGuard)
   async updateSchedule(
     @Param('id') id,
     @Body(new JoiValidationPipe<UpdateScheduleDto>(updateScheduleschema)) body,
@@ -40,7 +39,7 @@ export class SchedulesController {
   }
 
   @Delete(':id')
-  @UseGuards(IsAdminGuard, BusinessAdminGuard)
+  @UseGuards(BusinessAdminGuard)
   async deleteScheule(@Param('id') id): Promise<String> {
     return await this.schedulesService.deleteSchedule(id);
   }

@@ -13,14 +13,13 @@ import {
 } from '@nestjs/common';
 import { BusinessesService } from './businesses.service';
 import { AddUserToBusiness, CreateBusinessDto } from './dtos';
-import { IsAdminGuard } from 'src/common/guards/is-admin.guard';
 import { JwtService } from 'src/jwt/jwt.service';
 import { Request } from 'express';
 import { JoiValidationPipe } from 'src/common/pipes';
 import { createBusinessSchema } from './schemas/create-business.schema';
 import { UpdateBusinessDto } from './dtos/update.dto';
 import { updateBusinessSchema } from './schemas/update-buiness.schema';
-import { BusinessAdminGuard } from 'src/common/guards/business-admin';
+import { BusinessAdminGuard } from 'src/common/guards/business-admin.guard';
 import { UserBusinessRoleService } from 'src/user-business-role/user-business-role.service';
 
 @Controller('businesses')
@@ -63,7 +62,7 @@ export class BusinessesController {
   async getBusinesses() {}
 
   @Put('/:id')
-  @UseGuards(IsAdminGuard, BusinessAdminGuard)
+  @UseGuards(BusinessAdminGuard)
   async updateBusiness(
     @Param('id') id: string,
     @Body(new JoiValidationPipe<UpdateBusinessDto>(updateBusinessSchema))
@@ -77,11 +76,11 @@ export class BusinessesController {
   }
 
   @Delete('/:id')
-  @UseGuards(IsAdminGuard, BusinessAdminGuard)
+  @UseGuards(BusinessAdminGuard)
   async deleteBusiness() {}
 
   @Post('/user')
-  @UseGuards(IsAdminGuard, BusinessAdminGuard)
+  @UseGuards(BusinessAdminGuard)
   async addUserToBusiness(@Body() body: AddUserToBusiness): Promise<string> {
     try {
       return await this.businessesService.addUserToBusiness(
@@ -94,6 +93,6 @@ export class BusinessesController {
   }
 
   @Delete('/user')
-  @UseGuards(IsAdminGuard, BusinessAdminGuard)
+  @UseGuards(BusinessAdminGuard)
   async deleteUserFromBusiness() {}
 }
