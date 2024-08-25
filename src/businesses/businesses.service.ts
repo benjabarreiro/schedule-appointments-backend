@@ -8,24 +8,20 @@ import {
   convertKeysToSnakeCase,
   parseToCamelCase,
 } from 'src/common/utils/parsers';
-import { Employee, EmployeeBusiness } from 'src/employees/entities';
 import { EmployeesService } from 'src/employees/employees.service';
-import { InjectEntityManager } from '@nestjs/typeorm';
 import { UpdateBusinessDto } from './dtos/update.dto';
+import { UserBusinessRoleService } from 'src/user-business-role/user-business-role.service';
 
 @Injectable()
 export class BusinessesService {
   private businessesRepository: Repository<Business>;
-  private employeeBusinessRepository: Repository<EmployeeBusiness>;
   constructor(
     private readonly connection: Connection,
     private readonly usersService: UsersService,
     private readonly employeesService: EmployeesService,
-    @InjectEntityManager() private readonly entityManager: EntityManager,
+    private readonly userBusinessRoleService: UserBusinessRoleService,
   ) {
     this.businessesRepository = this.connection.getRepository(Business);
-    this.employeeBusinessRepository =
-      this.connection.getRepository(EmployeeBusiness);
   }
 
   async findAllBusinesses(): Promise<BusinessDto[]> {
@@ -78,39 +74,6 @@ export class BusinessesService {
     }
   }
 
-  async findBusinessByAdminId(
-    adminId: number,
-    isNewBusiness = false,
-  ): Promise<BusinessDto> {
-    try {
-      const business = await this.businessesRepository.findOne({
-        where: { admin_id: adminId },
-      });
-      if (!business && !isNewBusiness)
-        throw new HttpException(
-          'The provided adminId ' + adminId + ' does not belong to a business.',
-          HttpStatus.NOT_FOUND,
-        );
-      return parseToCamelCase(business);
-    } catch (err) {
-      if (err.status === 404) throw err;
-      throw new HttpException(
-        'There was an error finding business with adminId ' + adminId,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  async findEmployeeInBusiness(adminId: number, employeeId: number) {
-    return this.entityManager
-      .createQueryBuilder('employee_business', 'eb')
-      .innerJoin(Employee, 'e', 'e.id = eb.employee_id')
-      .innerJoin(Business, 'b', 'b.id = eb.business_id')
-      .where('b.admin_id = :adminId', { adminId })
-      .andWhere('e.id = :employeeId', { employeeId })
-      .getOne();
-  }
-
   async createBusiness(
     business: CreateBusinessDto,
     userId: number,
@@ -120,14 +83,15 @@ export class BusinessesService {
       if (existingBusiness)
         throw new HttpException('Business already exists', HttpStatus.CONFLICT);
 
-      const parsedBody = convertKeysToSnakeCase({
-        ...business,
-        adminId: userId,
-      });
+      const parsedBody = convertKeysToSnakeCase(business);
       const newBusiness = await this.businessesRepository.create(parsedBody);
-      await this.businessesRepository.save(newBusiness);
 
-      await this.usersService.updateUserRole(RolesIds.admin, userId);
+      const createdBusiness = await this.businessesRepository.save(newBusiness);
+      await this.userBusinessRoleService.createUserBusinessRoleRelation(
+        userId,
+        createdBusiness['id'],
+        RolesIds.admin,
+      );
 
       //we assume plan was purchased
       return 'Business created succesfully';
@@ -173,7 +137,7 @@ export class BusinessesService {
         //creamos el employee
         employee = await this.employeesService.createEmployee(user.id);
 
-        await this.usersService.updateUserRole(2, userId);
+        //await this.usersService.updateUserRole(2, userId);
       }
 
       //buscamos el business
@@ -190,10 +154,11 @@ export class BusinessesService {
       }
 
       //generamos relacion employee - empresa
-      const userBusiness = new EmployeeBusiness();
+      /* const userBusiness = new EmployeeBusiness();
       userBusiness.employee_id = employee.id;
-      userBusiness.business_id = businessId;
-      await this.employeeBusinessRepository.save(userBusiness);
+      userBusiness.business_id = businessId; */
+
+      //await this.employeeBusinessRepository.save(userBusiness);
 
       return `Succesfully added ${user.firstName} ${user.lastName} to ${business.name}`;
     } catch (err) {

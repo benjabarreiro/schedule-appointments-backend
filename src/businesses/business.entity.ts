@@ -18,9 +18,6 @@ export class Business {
   @Column()
   name: string;
 
-  @Column()
-  admin_id: number;
-
   @ManyToOne(() => Plan, { eager: true })
   @JoinColumn({ name: 'plan_id' })
   plan: Plan;

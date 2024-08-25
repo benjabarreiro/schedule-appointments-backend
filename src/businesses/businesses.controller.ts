@@ -21,12 +21,14 @@ import { createBusinessSchema } from './schemas/create-business.schema';
 import { UpdateBusinessDto } from './dtos/update.dto';
 import { updateBusinessSchema } from './schemas/update-buiness.schema';
 import { BusinessAdminGuard } from 'src/common/guards/business-admin';
+import { UserBusinessRoleService } from 'src/user-business-role/user-business-role.service';
 
 @Controller('businesses')
 export class BusinessesController {
   constructor(
     private readonly businessesService: BusinessesService,
     private readonly jwtService: JwtService,
+    private readonly userBusinessRoleService: UserBusinessRoleService,
   ) {}
   @Post()
   async createBusiness(
@@ -38,12 +40,11 @@ export class BusinessesController {
       const jwt = this.jwtService.getJwt(req);
       const { id: userId } = this.jwtService.verifyToken(jwt);
 
-      const business = await this.businessesService.findBusinessByAdminId(
+      const response = await this.userBusinessRoleService.findBusinessByAdminId(
         userId,
-        true,
       );
 
-      if (business)
+      if (response)
         throw new HttpException(
           'User already has a business',
           HttpStatus.CONFLICT,
