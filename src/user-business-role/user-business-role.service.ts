@@ -12,10 +12,32 @@ export class UserBusinessRoleService {
       this.connection.getRepository(UserBusinessRole);
   }
 
+  async createUserBusinessRoleRelation(
+    userId: number,
+    businessId: number,
+    roleId: number,
+  ) {
+    try {
+      const newUserBusinessRole = await this.userBusinessRoleRepository.create({
+        user: { id: userId },
+        business: { id: businessId },
+        role: { id: roleId },
+      });
+      await this.userBusinessRoleRepository.save(newUserBusinessRole);
+    } catch (err) {
+      throw new HttpException(
+        'There was an error creating relation between admin and business',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async findAllUserRoles(userId: number): Promise<Roles[]> {
     try {
       const userBusinessRoles = await this.userBusinessRoleRepository
         .createQueryBuilder('user_business_role')
+        .leftJoinAndSelect('user_business_role.business', 'business')
+        .leftJoinAndSelect('user_business_role.role', 'role')
         .where('user_business_role.user_id = :userId', { userId })
         .getMany();
 
@@ -53,6 +75,16 @@ export class UserBusinessRoleService {
         );
 
       return employee;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async findBusinessByAdminId(adminId: number): Promise<UserBusinessRole> {
+    try {
+      return await this.userBusinessRoleRepository.findOne({
+        where: { user: { id: adminId }, role: { id: RolesIds.admin } },
+      });
     } catch (err) {
       throw err;
     }
