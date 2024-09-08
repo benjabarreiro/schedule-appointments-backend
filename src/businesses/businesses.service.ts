@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Business } from './business.entity';
-import { Connection, EntityManager, Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { RolesIds } from 'src/common/enums';
 import { UsersService } from 'src/users/users.service';
 import { BusinessDto, CreateBusinessDto } from './dtos';
@@ -8,7 +8,6 @@ import {
   convertKeysToSnakeCase,
   parseToCamelCase,
 } from 'src/common/utils/parsers';
-import { EmployeesService } from 'src/employees/employees.service';
 import { UpdateBusinessDto } from './dtos/update.dto';
 import { UserBusinessRoleService } from 'src/user-business-role/user-business-role.service';
 
@@ -18,7 +17,6 @@ export class BusinessesService {
   constructor(
     private readonly connection: Connection,
     private readonly usersService: UsersService,
-    private readonly employeesService: EmployeesService,
     private readonly userBusinessRoleService: UserBusinessRoleService,
   ) {
     this.businessesRepository = this.connection.getRepository(Business);

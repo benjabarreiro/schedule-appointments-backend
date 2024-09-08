@@ -3,7 +3,6 @@ import { Connection, Repository } from 'typeorm';
 import { Schedule } from './schedule.entity';
 import { CreateScheduleDto, UpdateScheduleDto } from './dtos';
 import { BusinessesService } from 'src/businesses/businesses.service';
-import { EmployeesService } from 'src/employees/employees.service';
 import { convertKeysToSnakeCase } from 'src/common/utils/parsers';
 
 @Injectable()
@@ -11,8 +10,7 @@ export class SchedulesService {
   private schedulesRepository: Repository<Schedule>;
   constructor(
     private readonly connection: Connection,
-    private readonly businessesService: BusinessesService,
-    private readonly employeesService: EmployeesService,
+    private readonly businessesService: BusinessesService, //private readonly employeesService: EmployeesService,
   ) {
     this.schedulesRepository = connection.getRepository(Schedule);
   }
@@ -20,7 +18,7 @@ export class SchedulesService {
   async createSchedule(body: CreateScheduleDto): Promise<string> {
     try {
       await this.businessesService.findBusinessById(body.businessId);
-      await this.employeesService.findEmployeeById(body.employeeId);
+      //await this.employeesService.findEmployeeById(body.employeeId);
 
       const parsedBody = convertKeysToSnakeCase(body);
 

@@ -14,7 +14,6 @@ import { Schedule } from './schedule.entity';
 import { JoiValidationPipe } from 'src/common/pipes';
 import { CreateScheduleDto, UpdateScheduleDto } from './dtos';
 import { createScheduleschema, updateScheduleschema } from './schemas';
-import { EmployeesGuard } from 'src/common/guards/employee.guard';
 import { BusinessAdminGuard } from 'src/common/guards/business-admin.guard';
 
 @Controller('/schedules')
@@ -22,7 +21,7 @@ export class SchedulesController {
   constructor(private readonly schedulesService: SchedulesService) {}
 
   @Post()
-  @UseGuards(BusinessAdminGuard, EmployeesGuard)
+  @UseGuards(BusinessAdminGuard)
   async createScheule(
     @Body(new JoiValidationPipe<CreateScheduleDto>(createScheduleschema)) body,
   ): Promise<String> {
@@ -30,7 +29,7 @@ export class SchedulesController {
   }
 
   @Put(':id')
-  @UseGuards(BusinessAdminGuard, EmployeesGuard)
+  @UseGuards(BusinessAdminGuard)
   async updateSchedule(
     @Param('id') id,
     @Body(new JoiValidationPipe<UpdateScheduleDto>(updateScheduleschema)) body,

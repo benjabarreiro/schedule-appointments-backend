@@ -12,7 +12,6 @@ import { PlansModule } from './plans/plans.module';
 import { Business } from './businesses/business.entity';
 import { BusinessesModule } from './businesses/businesses.module';
 import { Schedule } from './schedules/schedule.entity';
-import { EmployeesModule } from './employees/employees.module';
 import { SchedulesModule } from './schedules/schedules.module';
 import { JwtModule } from './jwt/jwt.module';
 import { BusinessesController } from './businesses/businesses.controller';
@@ -30,7 +29,6 @@ import { UserBusinessRole } from './user-business-role/entities/user-business-ro
     UsersModule,
     PlansModule,
     BusinessesModule,
-    EmployeesModule,
     SchedulesModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
