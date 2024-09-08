@@ -17,6 +17,7 @@ export class BusinessAdminGuard implements CanActivate {
     const decoded = this.jwtService.verifyToken(jwt);
 
     const requestId = request.params.id || request.body.businessId;
+
     if (!requestId) return false;
 
     const { id: userId, isFirstAccess, roles } = decoded;

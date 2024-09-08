@@ -60,6 +60,7 @@ export class UserBusinessRoleService {
     userId,
     businessId,
     roleId,
+    validation = true,
   ): Promise<UserBusinessRole> {
     try {
       const employee = await this.userBusinessRoleRepository.findOne({
@@ -70,7 +71,7 @@ export class UserBusinessRoleService {
         },
       });
 
-      if (!employee)
+      if (!employee && validation)
         throw new HttpException(
           `Business with id ${businessId} does not have an employee with id ${userId}`,
           HttpStatus.NOT_FOUND,

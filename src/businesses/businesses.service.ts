@@ -126,39 +126,28 @@ export class BusinessesService {
 
   async addUserToBusiness(userId: number, businessId: number): Promise<string> {
     try {
-      //primero buscamos si existe el employee
-      let employee = await this.employeesService.findEmployeeByUserId(userId);
+      const business = await this.findBusinessById(businessId);
+
+      const employee =
+        await this.userBusinessRoleService.findEmployeeInBusiness(
+          userId,
+          businessId,
+          2,
+          false,
+        );
       let user;
 
-      //si no existe employee
       if (!employee) {
-        //validamos que el user con userId exista
         user = await this.usersService.findUserById(userId);
-        //creamos el employee
-        employee = await this.employeesService.createEmployee(user.id);
-
-        //await this.usersService.updateUserRole(2, userId);
+      } else {
+        user = employee.user;
       }
 
-      //buscamos el business
-      //TO DO: Hay que validar que el usuario logueadso sea de la empresa
-      const business = await this.businessesRepository.findOne({
-        where: { id: businessId },
-      });
-
-      if (!business) {
-        throw new HttpException(
-          `Business with id ${businessId} does not exits on the DB`,
-          HttpStatus.NOT_FOUND,
-        );
-      }
-
-      //generamos relacion employee - empresa
-      /* const userBusiness = new EmployeeBusiness();
-      userBusiness.employee_id = employee.id;
-      userBusiness.business_id = businessId; */
-
-      //await this.employeeBusinessRepository.save(userBusiness);
+      await this.userBusinessRoleService.createUserBusinessRoleRelation(
+        userId,
+        businessId,
+        2,
+      );
 
       return `Succesfully added ${user.firstName} ${user.lastName} to ${business.name}`;
     } catch (err) {
