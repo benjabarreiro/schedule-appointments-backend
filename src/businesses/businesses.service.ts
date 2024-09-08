@@ -157,7 +157,27 @@ export class BusinessesService {
     }
   }
 
-  async removeUserFromBusiness() {}
+  async removeUserFromBusiness(userId: number, businessId: number) {
+    try {
+      const business = await this.findBusinessById(businessId);
+      console.log('business', business);
+      const employee =
+        await this.userBusinessRoleService.findEmployeeInBusiness(
+          userId,
+          businessId,
+          2,
+        );
+      console.log(employee);
+
+      await this.userBusinessRoleService.deleteUserBusinessRoleRelation(
+        employee.id,
+      );
+      return `Succesfully deleted ${employee.user.first_name} ${employee.user.last_name} from ${business.name}`;
+    } catch (err) {
+      if (err === 404 || err === 500) throw err;
+      throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 
   async editBusiness() {
     try {

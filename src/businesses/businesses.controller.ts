@@ -55,6 +55,34 @@ export class BusinessesController {
     }
   }
 
+  @Post('/user')
+  @UseGuards(BusinessAdminGuard)
+  async addUserToBusiness(@Body() body: AddUserToBusiness): Promise<string> {
+    try {
+      return await this.businessesService.addUserToBusiness(
+        body.userId,
+        body.businessId,
+      );
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Delete('/user')
+  @UseGuards(BusinessAdminGuard)
+  async removeUserFromBusiness(
+    @Body() body: AddUserToBusiness,
+  ): Promise<string> {
+    try {
+      return await this.businessesService.removeUserFromBusiness(
+        body.userId,
+        body.businessId,
+      );
+    } catch (err) {
+      throw err;
+    }
+  }
+
   @Get('/:id')
   async getBusiness() {}
 
@@ -78,21 +106,4 @@ export class BusinessesController {
   @Delete('/:id')
   @UseGuards(BusinessAdminGuard)
   async deleteBusiness() {}
-
-  @Post('/user')
-  @UseGuards(BusinessAdminGuard)
-  async addUserToBusiness(@Body() body: AddUserToBusiness): Promise<string> {
-    try {
-      return await this.businessesService.addUserToBusiness(
-        body.userId,
-        body.businessId,
-      );
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  @Delete('/user')
-  @UseGuards(BusinessAdminGuard)
-  async deleteUserFromBusiness() {}
 }

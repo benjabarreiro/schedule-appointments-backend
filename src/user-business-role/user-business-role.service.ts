@@ -32,6 +32,18 @@ export class UserBusinessRoleService {
     }
   }
 
+  async deleteUserBusinessRoleRelation(id: number) {
+    try {
+      return await this.userBusinessRoleRepository.delete(id);
+    } catch (err) {
+      if (err === 404) throw err;
+      throw new HttpException(
+        `There was an error deleting relation with id ${id}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async findAllUserRoles(userId: number): Promise<Roles[]> {
     try {
       const userBusinessRoles = await this.userBusinessRoleRepository
@@ -63,13 +75,15 @@ export class UserBusinessRoleService {
     validation = true,
   ): Promise<UserBusinessRole> {
     try {
-      const employee = await this.userBusinessRoleRepository.findOne({
-        where: {
-          user: { id: userId },
-          role: { id: roleId },
-          business: { id: businessId },
-        },
-      });
+      const employee = await this.userBusinessRoleRepository
+        .createQueryBuilder('user_business_role')
+        .leftJoinAndSelect('user_business_role.user', 'user')
+        .leftJoinAndSelect('user_business_role.business', 'business')
+        .leftJoinAndSelect('user_business_role.role', 'role')
+        .where('user_business_role.user_id = :userId', { userId })
+        .where('user_business_role.business_id = :businessId', { businessId })
+        .where('user_business_role.role_id = :roleId', { roleId })
+        .getOne();
 
       if (!employee && validation)
         throw new HttpException(
