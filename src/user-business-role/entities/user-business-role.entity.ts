@@ -11,7 +11,9 @@ export class UserBusinessRole {
   @JoinColumn({ name: 'user_id' })
   user: User;
 
-  @ManyToOne(() => Business, (business) => business.userBusinessRoles)
+  @ManyToOne(() => Business, (business) => business.userBusinessRoles, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'business_id' })
   business: Business;
 

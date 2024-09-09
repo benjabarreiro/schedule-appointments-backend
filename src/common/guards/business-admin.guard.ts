@@ -16,7 +16,9 @@ export class BusinessAdminGuard implements CanActivate {
 
     const decoded = this.jwtService.verifyToken(jwt);
 
-    const requestId = request.params.id || request.body.businessId;
+    const isNewBusiness = request.query?.['is-new'] === 'true' || false;
+
+    const requestId = Number(request.params.id) || request.body.businessId;
 
     if (!requestId) return false;
 
@@ -24,7 +26,7 @@ export class BusinessAdminGuard implements CanActivate {
 
     let userRoles = roles;
 
-    if (isFirstAccess) {
+    if (isFirstAccess || isNewBusiness) {
       userRoles = await this.userBusinessRoleService.findAllUserRoles(userId);
     }
 
