@@ -122,6 +122,15 @@ export class BusinessesService {
     }
   }
 
+  async deleteBusiness(id: number) {
+    try {
+      await this.businessesRepository.delete(id);
+      return `Business with id ${id} was deleted succesfully`;
+    } catch (err) {
+      throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
   async addUserToBusiness(userId: number, businessId: number): Promise<string> {
     try {
       const business = await this.findBusinessById(businessId);
@@ -175,20 +184,6 @@ export class BusinessesService {
       return `Succesfully deleted ${employee.user.first_name} ${employee.user.last_name} from ${business.name}`;
     } catch (err) {
       if (err === 404 || err === 500) throw err;
-      throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  async editBusiness() {
-    try {
-    } catch (err) {
-      throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
-
-  async deleteBusiness() {
-    try {
-    } catch (err) {
       throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }

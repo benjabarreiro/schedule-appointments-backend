@@ -31,6 +31,7 @@ export class Business {
   @OneToMany(
     () => UserBusinessRole,
     (userBusinessRole) => userBusinessRole.business,
+    { onDelete: 'CASCADE' },
   )
   userBusinessRoles: UserBusinessRole[];
 }

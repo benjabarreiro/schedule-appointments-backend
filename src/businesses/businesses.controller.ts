@@ -105,5 +105,11 @@ export class BusinessesController {
 
   @Delete('/:id')
   @UseGuards(BusinessAdminGuard)
-  async deleteBusiness() {}
+  async deleteBusiness(@Param('id') id: string) {
+    try {
+      return await this.businessesService.deleteBusiness(Number(id));
+    } catch (err) {
+      throw err;
+    }
+  }
 }
