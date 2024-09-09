@@ -127,7 +127,10 @@ export class BusinessesService {
       await this.businessesRepository.delete(id);
       return `Business with id ${id} was deleted succesfully`;
     } catch (err) {
-      throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        `There was an error deleting business with id ${id}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
