@@ -84,10 +84,22 @@ export class BusinessesController {
   }
 
   @Get('/:id')
-  async getBusiness() {}
+  async getBusiness(@Param('id') id) {
+    try {
+      return await this.businessesService.findBusinessById(Number(id));
+    } catch (err) {
+      throw err;
+    }
+  }
 
   @Get()
-  async getBusinesses() {}
+  async getBusinesses() {
+    try {
+      return await this.businessesService.findAllBusinesses();
+    } catch (err) {
+      throw err;
+    }
+  }
 
   @Put('/:id')
   @UseGuards(BusinessAdminGuard)
@@ -105,7 +117,7 @@ export class BusinessesController {
 
   @Delete('/:id')
   @UseGuards(BusinessAdminGuard)
-  async deleteBusiness(@Param('id') id: string) {
+  async deleteBusiness(@Param('id') id: string): Promise<String> {
     try {
       return await this.businessesService.deleteBusiness(Number(id));
     } catch (err) {
