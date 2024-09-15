@@ -1,6 +1,6 @@
 import { UserBusinessRole } from '../../user-business-role/entities/user-business-role.entity';
 import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Profession } from './profession.entity';
+import { Profession } from '../../professions/profession.entity';
 
 @Entity('employees_profession')
 export class UserBusinessRole_Profession {

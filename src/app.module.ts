@@ -17,7 +17,7 @@ import { JwtModule } from './jwt/jwt.module';
 import { BusinessesController } from './businesses/businesses.controller';
 import { EmptyBodyMiddleware } from './common/middlewares/empty-body.middleware';
 import { UserBusinessRole } from './user-business-role/entities/user-business-role.entity';
-import { Profession } from './employees-professions/entities/profession.entity';
+import { Profession } from './professions/profession.entity';
 import { UserBusinessRole_Profession } from './employees-professions/entities/user-business-role_profession.entity';
 import { EmployeesProfessionModule } from './employees-professions/employees-profession.module';
 
