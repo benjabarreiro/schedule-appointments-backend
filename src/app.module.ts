@@ -17,6 +17,9 @@ import { JwtModule } from './jwt/jwt.module';
 import { BusinessesController } from './businesses/businesses.controller';
 import { EmptyBodyMiddleware } from './common/middlewares/empty-body.middleware';
 import { UserBusinessRole } from './user-business-role/entities/user-business-role.entity';
+import { Profession } from './employees/entities/profession.entity';
+import { UserBusinessRole_Profession } from './employees/entities/user-business-role_profession.entity';
+import { EmployeesModule } from './employees/employees.module';
 
 @Module({
   imports: [
@@ -30,6 +33,7 @@ import { UserBusinessRole } from './user-business-role/entities/user-business-ro
     PlansModule,
     BusinessesModule,
     SchedulesModule,
+    EmployeesModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -39,7 +43,16 @@ import { UserBusinessRole } from './user-business-role/entities/user-business-ro
         username: configService.get<string>('DB_USER'),
         password: configService.get<string>('DB_PASSWORD'),
         database: configService.get<string>('DB_NAME'),
-        entities: [User, Role, Plan, Business, Schedule, UserBusinessRole],
+        entities: [
+          User,
+          Role,
+          Plan,
+          Business,
+          Schedule,
+          UserBusinessRole,
+          Profession,
+          UserBusinessRole_Profession,
+        ],
         synchronize: false,
         migrations: [__dirname + '/../migrations/*{.ts,.js}'],
         migrationsRun: true, // Automatically run migrations on app startup
@@ -56,6 +69,8 @@ import { UserBusinessRole } from './user-business-role/entities/user-business-ro
       Business,
       Schedule,
       UserBusinessRole,
+      Profession,
+      UserBusinessRole_Profession,
     ]),
   ],
 })
