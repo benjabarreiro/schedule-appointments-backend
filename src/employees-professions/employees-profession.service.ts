@@ -1,27 +1,30 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { UserBusinessRoleProfession } from 'src/user-business-role/entities/user-business-role-profession';
 import { Connection, Repository } from 'typeorm';
-import { UserBusinessRole_Profession } from './entities/user-business-role_profession.entity';
 
 @Injectable()
 export class EmployeesProfessionsService {
-  private employeesProfessionRepository: Repository<UserBusinessRole_Profession>;
+  private employeesProfessionRepository: Repository<UserBusinessRoleProfession>;
   constructor(private readonly connection: Connection) {
     this.employeesProfessionRepository = this.connection.getRepository(
-      UserBusinessRole_Profession,
+      UserBusinessRoleProfession,
     );
   }
 
-  async getEmployeeProfession(userBusinessRoleId: number) {
+  async getEmployeeProfession(
+    userBusinessRoleId: number,
+    professionId: number,
+  ) {
     try {
       return await this.employeesProfessionRepository.findOne({
-        where: { id: userBusinessRoleId },
+        where: { userBusinessRoleId, professionId },
       });
     } catch (err) {
       throw err;
     }
   }
 
-  async getAllEmployeeProfession(employeeId: number) {
+  async getAllProfessionsOfEmployee(employeeId: number) {
     try {
       return await this.employeesProfessionRepository.find({
         where: {
@@ -44,7 +47,7 @@ export class EmployeesProfessionsService {
   async getAllEmployeesByProfession(professionId: number) {
     try {
       return await this.employeesProfessionRepository.find({
-        where: { profession: { id: professionId } },
+        where: { professionId },
       });
     } catch (err) {
       throw err;
@@ -54,8 +57,8 @@ export class EmployeesProfessionsService {
   async addEmployeeProfession(body: any) {
     try {
       const newEmployeeProfession = this.employeesProfessionRepository.create({
-        userBusinessRole: body.userBusinessRoleId,
-        profession: body.professionId,
+        userBusinessRoleId: body.userBusinessRoleId,
+        professionId: body.professionId,
       });
 
       return await this.employeesProfessionRepository.save(
@@ -66,21 +69,38 @@ export class EmployeesProfessionsService {
     }
   }
 
-  async editEmployeeProfession(id: number, body: any) {
+  async editEmployeeProfession(
+    userBusinessRoleId: number,
+    professionId: number,
+    body: Partial<Pick<UserBusinessRoleProfession, 'professionId'>>,
+  ) {
     try {
-      const employeeProfession = await this.getEmployeeProfession(id);
-      const editedEmployeeProfessionBody = { ...employeeProfession, ...body };
-      return this.employeesProfessionRepository.save(
-        editedEmployeeProfessionBody,
-      );
+      const existingRecord = await this.employeesProfessionRepository.findOne({
+        where: { userBusinessRoleId, professionId },
+      });
+
+      if (!existingRecord) {
+        throw new NotFoundException('UserBusinessRoleProfession not found');
+      }
+
+      existingRecord.professionId =
+        body.professionId ?? existingRecord.professionId;
+
+      return this.employeesProfessionRepository.save(existingRecord);
     } catch (err) {
       throw err;
     }
   }
 
-  async deleteEmployeeProfession(id: number) {
+  async deleteEmployeeProfession(
+    userBusinessRoleId: number,
+    professionId: number,
+  ) {
     try {
-      return await this.employeesProfessionRepository.delete(id);
+      return await this.employeesProfessionRepository.delete({
+        userBusinessRoleId,
+        professionId,
+      });
     } catch (err) {
       throw err;
     }
