@@ -1,4 +1,3 @@
-import { UserBusinessRole_Profession } from '../../employees-professions/entities/user-business-role_profession.entity';
 import { Business } from '../../businesses/business.entity';
 import { Role, User } from '../../users/entities';
 import {
@@ -8,6 +7,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { UserBusinessRoleProfession } from './user-business-role-profession';
 
 @Entity()
 export class UserBusinessRole {
@@ -29,10 +29,8 @@ export class UserBusinessRole {
   role: Role;
 
   @OneToMany(
-    () => UserBusinessRole_Profession,
-    (userBusinessRole_Profession) =>
-      userBusinessRole_Profession.userBusinessRole,
-    { eager: true },
+    () => UserBusinessRoleProfession,
+    (userBusinessRoleProfession) => userBusinessRoleProfession.userBusinessRole,
   )
-  userBusinessRole_Profession: UserBusinessRole_Profession;
+  userBusinessRoleProfessions: UserBusinessRoleProfession[];
 }

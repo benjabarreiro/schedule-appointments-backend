@@ -18,9 +18,9 @@ import { BusinessesController } from './businesses/businesses.controller';
 import { EmptyBodyMiddleware } from './common/middlewares/empty-body.middleware';
 import { UserBusinessRole } from './user-business-role/entities/user-business-role.entity';
 import { Profession } from './professions/profession.entity';
-import { UserBusinessRole_Profession } from './employees-professions/entities/user-business-role_profession.entity';
 import { EmployeesProfessionModule } from './employees-professions/employees-profession.module';
 import { ProfessionsModule } from './professions/profession.module';
+import { UserBusinessRoleProfession } from './user-business-role/entities/user-business-role-profession';
 
 @Module({
   imports: [
@@ -53,7 +53,7 @@ import { ProfessionsModule } from './professions/profession.module';
           Schedule,
           UserBusinessRole,
           Profession,
-          UserBusinessRole_Profession,
+          UserBusinessRoleProfession,
         ],
         synchronize: false,
         migrations: [__dirname + '/../migrations/*{.ts,.js}'],
@@ -72,7 +72,7 @@ import { ProfessionsModule } from './professions/profession.module';
       Schedule,
       UserBusinessRole,
       Profession,
-      UserBusinessRole_Profession,
+      UserBusinessRoleProfession,
     ]),
   ],
 })
