@@ -19,6 +19,6 @@ export class UserBusinessRole_Profession {
     (employeeProfession) => employeeProfession.userBusinessRole_Profession,
     { eager: true },
   )
-  @JoinColumn({ name: 'employee_profession_id' })
+  @JoinColumn({ name: 'profession_id' })
   profession: Profession;
 }

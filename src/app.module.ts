@@ -17,9 +17,9 @@ import { JwtModule } from './jwt/jwt.module';
 import { BusinessesController } from './businesses/businesses.controller';
 import { EmptyBodyMiddleware } from './common/middlewares/empty-body.middleware';
 import { UserBusinessRole } from './user-business-role/entities/user-business-role.entity';
-import { Profession } from './employees/entities/profession.entity';
-import { UserBusinessRole_Profession } from './employees/entities/user-business-role_profession.entity';
-import { EmployeesModule } from './employees/employees.module';
+import { Profession } from './employees-professions/entities/profession.entity';
+import { UserBusinessRole_Profession } from './employees-professions/entities/user-business-role_profession.entity';
+import { EmployeesProfessionModule } from './employees-professions/employees-profession.module';
 
 @Module({
   imports: [
@@ -33,7 +33,7 @@ import { EmployeesModule } from './employees/employees.module';
     PlansModule,
     BusinessesModule,
     SchedulesModule,
-    EmployeesModule,
+    EmployeesProfessionModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({

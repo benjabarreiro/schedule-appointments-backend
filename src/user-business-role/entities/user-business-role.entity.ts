@@ -1,4 +1,4 @@
-import { UserBusinessRole_Profession } from '../../employees/entities/user-business-role_profession.entity';
+import { UserBusinessRole_Profession } from '../../employees-professions/entities/user-business-role_profession.entity';
 import { Business } from '../../businesses/business.entity';
 import { Role, User } from '../../users/entities';
 import {
