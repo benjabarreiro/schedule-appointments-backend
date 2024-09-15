@@ -1,6 +1,13 @@
+import { UserBusinessRole_Profession } from '../../employees/entities/user-business-role_profession.entity';
 import { Business } from '../../businesses/business.entity';
 import { Role, User } from '../../users/entities';
-import { Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class UserBusinessRole {
@@ -20,4 +27,12 @@ export class UserBusinessRole {
   @ManyToOne(() => Role, (role) => role.userBusinessRoles)
   @JoinColumn({ name: 'role_id' })
   role: Role;
+
+  @OneToMany(
+    () => UserBusinessRole_Profession,
+    (userBusinessRole_Profession) =>
+      userBusinessRole_Profession.userBusinessRole,
+    { eager: true },
+  )
+  userBusinessRole_Profession: UserBusinessRole_Profession;
 }
