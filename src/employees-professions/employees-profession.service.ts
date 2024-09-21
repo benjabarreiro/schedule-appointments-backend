@@ -54,11 +54,14 @@ export class EmployeesProfessionsService {
     }
   }
 
-  async addEmployeeProfession(body: any) {
+  async addEmployeeProfession(
+    userBusinessRoleId: number,
+    professionId: number,
+  ) {
     try {
       const newEmployeeProfession = this.employeesProfessionRepository.create({
-        userBusinessRoleId: body.userBusinessRoleId,
-        professionId: body.professionId,
+        userBusinessRoleId,
+        professionId,
       });
 
       return await this.employeesProfessionRepository.save(
