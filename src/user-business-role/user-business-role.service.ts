@@ -23,7 +23,7 @@ export class UserBusinessRoleService {
         business: { id: businessId },
         role: { id: roleId },
       });
-      await this.userBusinessRoleRepository.save(newUserBusinessRole);
+      return await this.userBusinessRoleRepository.save(newUserBusinessRole);
     } catch (err) {
       throw new HttpException(
         'There was an error creating relation between admin and business',
