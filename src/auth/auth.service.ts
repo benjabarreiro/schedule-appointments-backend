@@ -11,6 +11,7 @@ import { UserBusinessRoleService } from 'src/user-business-role/user-business-ro
 
 @Injectable()
 export class AuthService {
+  //move to no-sql DB
   private validationRecords: ValidationRecord[] = [];
   private readonly codeExpirationMinutes: number = 5;
 
@@ -36,6 +37,7 @@ export class AuthService {
         password: hashedPassword,
       };
 
+      //TO DO: validate if a code had already been sent to this email
       return await this.sendValidationCode(bodyWithHashedPassword);
     } catch (err) {
       throw err;
