@@ -1,9 +1,10 @@
 import { Module } from '@nestjs/common';
 import { EmployeesProfessionsService } from './employees-profession.service';
+import { EmployeesProfessionsController } from './employees-profession.controller';
 
 @Module({
   providers: [EmployeesProfessionsService],
-  controllers: [],
+  controllers: [EmployeesProfessionsController],
   imports: [],
   exports: [],
 })
