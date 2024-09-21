@@ -10,6 +10,7 @@ import {
 } from 'src/common/utils/parsers';
 import { UpdateBusinessDto } from './dtos/update.dto';
 import { UserBusinessRoleService } from 'src/user-business-role/user-business-role.service';
+import { EmployeesProfessionsService } from 'src/employees-professions/employees-profession.service';
 
 @Injectable()
 export class BusinessesService {
@@ -18,6 +19,7 @@ export class BusinessesService {
     private readonly connection: Connection,
     private readonly usersService: UsersService,
     private readonly userBusinessRoleService: UserBusinessRoleService,
+    private readonly employeesProfessionsService: EmployeesProfessionsService,
   ) {
     this.businessesRepository = this.connection.getRepository(Business);
   }
@@ -134,7 +136,11 @@ export class BusinessesService {
     }
   }
 
-  async addUserToBusiness(userId: number, businessId: number): Promise<string> {
+  async addUserToBusiness(
+    userId: number,
+    businessId: number,
+    professionId?: number,
+  ): Promise<string> {
     try {
       const business = await this.findBusinessById(businessId);
 
@@ -153,11 +159,18 @@ export class BusinessesService {
         user = employee.user;
       }
 
-      await this.userBusinessRoleService.createUserBusinessRoleRelation(
-        userId,
-        businessId,
-        2,
-      );
+      const userBusinessRole =
+        await this.userBusinessRoleService.createUserBusinessRoleRelation(
+          userId,
+          businessId,
+          2,
+        );
+
+      if (professionId)
+        await this.employeesProfessionsService.addEmployeeProfession(
+          userBusinessRole.id,
+          professionId,
+        );
 
       return `Succesfully added ${user.firstName} ${user.lastName} to ${business.name}`;
     } catch (err) {
@@ -179,7 +192,6 @@ export class BusinessesService {
           businessId,
           2,
         );
-      console.log(employee);
 
       await this.userBusinessRoleService.deleteUserBusinessRoleRelation(
         employee.id,
