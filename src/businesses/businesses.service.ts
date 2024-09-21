@@ -2,7 +2,6 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Business } from './business.entity';
 import { Connection, Repository } from 'typeorm';
 import { RolesIds } from 'src/common/enums';
-import { UsersService } from 'src/users/users.service';
 import { BusinessDto, CreateBusinessDto } from './dtos';
 import {
   convertKeysToSnakeCase,
@@ -10,16 +9,13 @@ import {
 } from 'src/common/utils/parsers';
 import { UpdateBusinessDto } from './dtos/update.dto';
 import { UserBusinessRoleService } from 'src/user-business-role/user-business-role.service';
-import { EmployeesProfessionsService } from 'src/employees-professions/employees-profession.service';
 
 @Injectable()
 export class BusinessesService {
   private businessesRepository: Repository<Business>;
   constructor(
     private readonly connection: Connection,
-    private readonly usersService: UsersService,
     private readonly userBusinessRoleService: UserBusinessRoleService,
-    private readonly employeesProfessionsService: EmployeesProfessionsService,
   ) {
     this.businessesRepository = this.connection.getRepository(Business);
   }
@@ -133,73 +129,6 @@ export class BusinessesService {
         `There was an error deleting business with id ${id}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
       );
-    }
-  }
-
-  async addUserToBusiness(
-    userId: number,
-    businessId: number,
-    professionId?: number,
-  ): Promise<string> {
-    try {
-      const business = await this.findBusinessById(businessId);
-
-      const employee =
-        await this.userBusinessRoleService.findEmployeeInBusiness(
-          userId,
-          businessId,
-          2,
-          false,
-        );
-      let user;
-
-      if (!employee) {
-        user = await this.usersService.findUserById(userId);
-      } else {
-        user = employee.user;
-      }
-
-      const userBusinessRole =
-        await this.userBusinessRoleService.createUserBusinessRoleRelation(
-          userId,
-          businessId,
-          2,
-        );
-
-      if (professionId)
-        await this.employeesProfessionsService.addEmployeeProfession(
-          userBusinessRole.id,
-          professionId,
-        );
-
-      return `Succesfully added ${user.firstName} ${user.lastName} to ${business.name}`;
-    } catch (err) {
-      if (err === 404 || err === 500) throw err;
-      throw new HttpException(
-        `There was an error adding user with id ${userId} to business with id ${businessId}`,
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
-  }
-
-  async removeUserFromBusiness(userId: number, businessId: number) {
-    try {
-      const business = await this.findBusinessById(businessId);
-      console.log('business', business);
-      const employee =
-        await this.userBusinessRoleService.findEmployeeInBusiness(
-          userId,
-          businessId,
-          2,
-        );
-
-      await this.userBusinessRoleService.deleteUserBusinessRoleRelation(
-        employee.id,
-      );
-      return `Succesfully deleted ${employee.user.first_name} ${employee.user.last_name} from ${business.name}`;
-    } catch (err) {
-      if (err === 404 || err === 500) throw err;
-      throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

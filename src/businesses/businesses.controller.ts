@@ -27,7 +27,6 @@ export class BusinessesController {
   constructor(
     private readonly businessesService: BusinessesService,
     private readonly jwtService: JwtService,
-    private readonly userBusinessRoleService: UserBusinessRoleService,
   ) {}
   @Post()
   async createBusiness(
@@ -39,45 +38,7 @@ export class BusinessesController {
       const jwt = this.jwtService.getJwt(req);
       const { id: userId } = this.jwtService.verifyToken(jwt);
 
-      const response = await this.userBusinessRoleService.findBusinessByAdminId(
-        userId,
-      );
-
-      if (response)
-        throw new HttpException(
-          'User already has a business',
-          HttpStatus.CONFLICT,
-        );
-
       return await this.businessesService.createBusiness(body, userId);
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  @Post('/user')
-  @UseGuards(BusinessAdminGuard)
-  async addUserToBusiness(@Body() body: AddUserToBusiness): Promise<string> {
-    try {
-      return await this.businessesService.addUserToBusiness(
-        body.userId,
-        body.businessId,
-      );
-    } catch (err) {
-      throw err;
-    }
-  }
-
-  @Delete('/user')
-  @UseGuards(BusinessAdminGuard)
-  async removeUserFromBusiness(
-    @Body() body: AddUserToBusiness,
-  ): Promise<string> {
-    try {
-      return await this.businessesService.removeUserFromBusiness(
-        body.userId,
-        body.businessId,
-      );
     } catch (err) {
       throw err;
     }

@@ -3,11 +3,15 @@ import { Roles } from './interfaces';
 import { Connection, Repository } from 'typeorm';
 import { UserBusinessRole } from './entities/user-business-role.entity';
 import { RolesIds } from 'src/common/enums';
+import { EmployeesProfessionsService } from 'src/employees-professions/employees-profession.service';
 
 @Injectable()
 export class UserBusinessRoleService {
   private userBusinessRoleRepository: Repository<UserBusinessRole>;
-  constructor(private readonly connection: Connection) {
+  constructor(
+    private readonly connection: Connection,
+    private readonly employeesProfessionsService: EmployeesProfessionsService,
+  ) {
     this.userBusinessRoleRepository =
       this.connection.getRepository(UserBusinessRole);
   }
@@ -104,6 +108,66 @@ export class UserBusinessRoleService {
       });
     } catch (err) {
       throw err;
+    }
+  }
+
+  async addUserToBusiness(
+    userId: number,
+    businessId: number,
+    professionId?: number,
+  ): Promise<string> {
+    try {
+      // we should only check business exist and should be done in a guard
+      //const business = await this.findBusinessById(businessId);
+
+      // Unnecesary call just to show the info in the return statement
+      /* const employee =
+        await this.userBusinessRoleService.findEmployeeInBusiness(
+          userId,
+          businessId,
+          2,
+          false,
+        );
+      let user;
+
+      if (!employee) {
+        user = await this.usersService.findUserById(userId);
+      } else {
+        user = employee.user;
+      } */
+
+      const userBusinessRole = await this.createUserBusinessRoleRelation(
+        userId,
+        businessId,
+        2,
+      );
+
+      // this is okey
+      if (professionId)
+        await this.employeesProfessionsService.addEmployeeProfession(
+          userBusinessRole.id,
+          professionId,
+        );
+
+      return `Succesfully added user with id ${userId} to business with id ${businessId}`;
+    } catch (err) {
+      if (err === 404 || err === 500) throw err;
+      throw new HttpException(
+        `There was an error adding user with id ${userId} to business with id ${businessId}`,
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async removeUserFromBusiness(userId: number, businessId: number) {
+    try {
+      const employee = await this.findEmployeeInBusiness(userId, businessId, 2);
+
+      await this.deleteUserBusinessRoleRelation(employee.id);
+      return `Succesfully deleted ${employee.user.first_name} ${employee.user.last_name} from business with id ${businessId}`;
+    } catch (err) {
+      if (err === 404 || err === 500) throw err;
+      throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }
