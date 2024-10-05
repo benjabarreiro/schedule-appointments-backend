@@ -10,6 +10,36 @@ export class PlansService {
     this.plansRepository = this.connection.getRepository(Plan);
   }
 
+  async createPlan(body) {
+    try {
+      const newPlan = await this.plansRepository.create(body);
+      return await this.plansRepository.save(newPlan);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async updatePlan(id, body) {
+    try {
+      const plan = await this.findPlanById(id);
+      return await this.plansRepository.save({ ...plan, ...body });
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async deletePlan(id) {
+    try {
+      return await this.plansRepository.delete(id);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async findPlanById(id: number) {
+    return await this.plansRepository.findOne({ where: { id } });
+  }
+
   async findAll(): Promise<PlanDto[]> {
     try {
       return await this.plansRepository.find();
