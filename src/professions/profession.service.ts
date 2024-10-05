@@ -34,6 +34,7 @@ export class ProfessionsService {
       throw err;
     }
   }
+
   async editProfession(id, body) {
     try {
       const profession = await this.getProfession(id);
@@ -43,6 +44,7 @@ export class ProfessionsService {
       throw err;
     }
   }
+
   async deleteProfession(id: number) {
     try {
       return await this.professionsRepository.delete(id);
