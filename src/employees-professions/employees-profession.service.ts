@@ -78,12 +78,25 @@ export class EmployeesProfessionsService {
     body: Partial<Pick<UserBusinessRoleProfession, 'professionId'>>,
   ) {
     try {
-      const existingRecord = await this.employeesProfessionRepository.findOne({
-        where: { userBusinessRoleId, professionId },
-      });
+      const existingRecord = await this.getEmployeeProfession(
+        userBusinessRoleId,
+        professionId,
+      );
 
       if (!existingRecord) {
         throw new NotFoundException('UserBusinessRoleProfession not found');
+      }
+
+      const existValueToBeEdited = await this.getEmployeeProfession(
+        userBusinessRoleId,
+        body.professionId,
+      );
+
+      if (existValueToBeEdited) {
+        return await this.deleteEmployeeProfession(
+          userBusinessRoleId,
+          professionId,
+        );
       }
 
       existingRecord.professionId =
