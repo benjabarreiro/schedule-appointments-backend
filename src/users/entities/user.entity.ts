@@ -1,3 +1,4 @@
+import { Appointment } from 'src/appointments/appointment.entity';
 import { UserBusinessRole } from '../../user-business-role/entities/user-business-role.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
@@ -30,4 +31,7 @@ export class User {
     { onDelete: 'CASCADE' },
   )
   userBusinessRoles: UserBusinessRole[];
+
+  @OneToMany(() => Appointment, (appointment) => appointment.user)
+  appointments: Appointment[];
 }

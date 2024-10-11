@@ -5,8 +5,10 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Appointment } from 'src/appointments/appointment.entity';
 
 @Entity('schedules')
 export class Schedule {
@@ -30,4 +32,7 @@ export class Schedule {
   @ManyToOne(() => Business, { nullable: false })
   @JoinColumn({ name: 'business_id' })
   business: Business;
+
+  @OneToMany(() => Appointment, (appointment) => appointment.schedule)
+  appointments: Appointment[];
 }
