@@ -21,6 +21,8 @@ import { Profession } from './professions/profession.entity';
 import { EmployeesProfessionModule } from './employees-professions/employees-profession.module';
 import { ProfessionsModule } from './professions/profession.module';
 import { UserBusinessRoleProfession } from './user-business-role/entities/user-business-role-profession';
+import { Appointment } from './appointments/appointment.entity';
+import { AppointmentsModule } from './appointments/appointments.module';
 
 @Module({
   imports: [
@@ -36,6 +38,7 @@ import { UserBusinessRoleProfession } from './user-business-role/entities/user-b
     SchedulesModule,
     EmployeesProfessionModule,
     ProfessionsModule,
+    AppointmentsModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: async (configService: ConfigService) => ({
@@ -54,6 +57,7 @@ import { UserBusinessRoleProfession } from './user-business-role/entities/user-b
           UserBusinessRole,
           Profession,
           UserBusinessRoleProfession,
+          Appointment,
         ],
         synchronize: false,
         migrations: [__dirname + '/../migrations/*{.ts,.js}'],
@@ -73,6 +77,7 @@ import { UserBusinessRoleProfession } from './user-business-role/entities/user-b
       UserBusinessRole,
       Profession,
       UserBusinessRoleProfession,
+      Appointment,
     ]),
   ],
 })
