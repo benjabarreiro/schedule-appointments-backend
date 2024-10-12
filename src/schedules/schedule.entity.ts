@@ -1,5 +1,3 @@
-import { User } from '../users/entities';
-import { Business } from '../businesses/business.entity';
 import {
   Column,
   Entity,
@@ -9,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Appointment } from 'src/appointments/appointment.entity';
+import { UserBusinessRole } from 'src/user-business-role/entities/user-business-role.entity';
 
 @Entity('schedules')
 export class Schedule {
@@ -21,17 +20,9 @@ export class Schedule {
   @Column()
   description: string;
 
-  @ManyToOne(() => User, { nullable: false })
-  @JoinColumn({ name: 'patient_id' })
-  patient: User;
-
-  @ManyToOne(() => User, { nullable: false })
+  @ManyToOne(() => UserBusinessRole, { nullable: false })
   @JoinColumn({ name: 'employee_id' })
-  employee: User;
-
-  @ManyToOne(() => Business, { nullable: false })
-  @JoinColumn({ name: 'business_id' })
-  business: Business;
+  employee: UserBusinessRole;
 
   @OneToMany(() => Appointment, (appointment) => appointment.schedule)
   appointments: Appointment[];
