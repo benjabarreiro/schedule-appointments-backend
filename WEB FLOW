@@ -1,0 +1,49 @@
+WEB FLOW
+
+!AUTH
+    create user
+    validate user code
+    login
+!USERS
+    update user
+    delete user
+!BUSINESSES
+    create business
+    update business
+    delete business
+    has FK to join BUSINESSES and PLANS  
+!PLANS
+    get plans list
+    get plan by id
+    create plan
+    update plan
+    delete plan  
+!USER-BUSINESS-ROLE
+    add user to business (employee)
+    remove user from business (employee)
+!PROFESSIONS
+    create profession
+    update profession
+    delete profession
+    get professions list
+!EMPLOYEES_PROFESSIONS
+    joins USER-BUSINESS-ROLE and PROFESSIONS
+    get employees with a specific profession
+    create employee profession relation
+    update employee profession relation
+    delete employee profession relation
+!SCHEDULES
+    has FK to join with USER-BUSINESS-ROLE-PROFESSIONS
+    get schedule by id
+    create schedule
+    update schedule
+    delete schedule
+APPOINTMENTS
+    !has FK to join with SCHEDULES
+    !has FK to join with USERS
+    !get appointment by id
+    get all upcoming appointments
+    get all appointments history
+    !create appointment
+    !update appointment
+    !delete appointment
