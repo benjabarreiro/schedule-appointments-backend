@@ -1,7 +1,8 @@
 import { Connection, Repository } from 'typeorm';
 import { Appointment } from './appointment.entity';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
+@Injectable()
 export class AppointmentsService {
   private appointmentsRepository: Repository<Appointment>;
   constructor(private readonly connection: Connection) {

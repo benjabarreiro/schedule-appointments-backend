@@ -6,6 +6,6 @@ import { EmployeesProfessionsController } from './employees-profession.controlle
   providers: [EmployeesProfessionsService],
   controllers: [EmployeesProfessionsController],
   imports: [],
-  exports: [],
+  exports: [EmployeesProfessionsService],
 })
 export class EmployeesProfessionModule {}

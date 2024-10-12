@@ -7,7 +7,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Schedule } from '../schedules/schedule.entity';
 import { UserBusinessRole } from '../user-business-role/entities/user-business-role.entity';
 
 @Entity('businesses')
@@ -24,9 +23,6 @@ export class Business {
 
   @Column()
   is_active: boolean;
-
-  @OneToMany(() => Schedule, (schedule) => schedule.business)
-  schedules: Schedule[];
 
   @OneToMany(
     () => UserBusinessRole,

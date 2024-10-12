@@ -1,11 +1,13 @@
 import { Connection, Repository } from 'typeorm';
 import { Profession } from './profession.entity';
+import { Injectable } from '@nestjs/common';
 
+@Injectable()
 export class ProfessionsService {
   private professionsRepository: Repository<Profession>;
 
   constructor(private readonly connection: Connection) {
-    this.professionsRepository = connection.getRepository(Profession);
+    this.professionsRepository = this.connection.getRepository(Profession);
   }
 
   async getProfession(id: number) {
