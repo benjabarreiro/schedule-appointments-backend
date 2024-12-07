@@ -7,8 +7,17 @@ import {
   UsePipes,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto, LoginUserDto, UserDto } from '../common/dtos';
-import { loginSchema, userSchema } from '../common/schemas';
+import {
+  ChangeUserPassword,
+  CreateUserDto,
+  LoginUserDto,
+  UserDto,
+} from '../common/dtos';
+import {
+  changeUserPasswordSchema,
+  loginSchema,
+  userSchema,
+} from '../common/schemas';
 import { JoiValidationPipe } from '../common/pipes';
 
 @Controller('/auth')
@@ -32,5 +41,11 @@ export class AuthController {
   @HttpCode(HttpStatus.CREATED)
   async validateCode(@Body('code') code: string): Promise<string> {
     return await this.authService.validateCode(code);
+  }
+
+  @Post('/change-password')
+  @UsePipes(new JoiValidationPipe<UserDto>(changeUserPasswordSchema))
+  async changePassword(@Body() body: ChangeUserPassword): Promise<String> {
+    return await this.authService.changePassword(body);
   }
 }
