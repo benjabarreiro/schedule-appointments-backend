@@ -103,4 +103,16 @@ export class UsersService {
       );
     }
   }
+
+  async updateUserPassword(email: string, newPassword: string) {
+    try {
+      const userInfo = await this.findUserByEmail(email);
+      const userInfoWithNewPassword = { ...userInfo, password: newPassword };
+
+      await this.userRepository.save(userInfoWithNewPassword);
+      return 'Password changed correctly';
+    } catch (err) {
+      throw err;
+    }
+  }
 }

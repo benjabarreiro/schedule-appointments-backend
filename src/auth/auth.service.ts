@@ -1,5 +1,9 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { CreateUserDto, LoginUserDto } from '../common/dtos';
+import {
+  ChangeUserPassword,
+  CreateUserDto,
+  LoginUserDto,
+} from '../common/dtos';
 import { compareSync } from 'bcrypt';
 import { UsersService } from 'src/users/users.service';
 import { EmailsService } from 'src/emails/email.servicie';
@@ -148,6 +152,15 @@ export class AuthService {
       }
 
       return userExist;
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  async changePassword(body: ChangeUserPassword): Promise<String> {
+    try {
+      await this.validateUserPassword(body.email, body.password);
+      return this.usersService.updateUserPassword(body.email, body.newPassword);
     } catch (err) {
       throw err;
     }

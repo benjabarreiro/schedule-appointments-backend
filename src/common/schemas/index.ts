@@ -47,10 +47,12 @@ export const userSchema = JoiPipe.object({
   password: JoiPipe.string().required().not().empty().min(4),
 });
 
-export const loginSchema = JoiPipe.object({
+const loginSchemaObj = {
   email: JoiPipe.string().email().required().not().empty(),
   password: JoiPipe.string().required().not().empty(),
-});
+};
+
+export const loginSchema = JoiPipe.object(loginSchemaObj);
 
 export const updateUserSchema = JoiPipe.object({
   firstName: JoiPipe.string()
@@ -88,4 +90,9 @@ export const updateUserSchema = JoiPipe.object({
 
       return value;
     }),
+});
+
+export const changeUserPasswordSchema = JoiPipe.object({
+  ...loginSchema,
+  newPassword: JoiPipe.string().required().not().empty(),
 });

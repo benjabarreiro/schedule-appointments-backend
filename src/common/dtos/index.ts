@@ -32,3 +32,8 @@ export class UpdateUserDto {
   @IsDate()
   birthDate?: Date;
 }
+
+export class ChangeUserPassword extends UserDto {
+  @IsString()
+  newPassword: string;
+}
