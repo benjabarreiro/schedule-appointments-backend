@@ -160,7 +160,8 @@ export class AuthService {
   async changePassword(body: ChangeUserPassword): Promise<String> {
     try {
       await this.validateUserPassword(body.email, body.password);
-      return this.usersService.updateUserPassword(body.email, body.newPassword);
+      const hashedPassword = await hashPassword(body.newPassword);
+      return this.usersService.updateUserPassword(body.email, hashedPassword);
     } catch (err) {
       throw err;
     }
