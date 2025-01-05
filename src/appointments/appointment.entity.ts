@@ -1,5 +1,5 @@
-import { Schedule } from 'src/schedules/schedule.entity';
-import { User } from 'src/users/entities';
+import { Schedule } from '../schedules/schedule.entity';
+import { User } from '../users/entities';
 import {
   Column,
   Entity,

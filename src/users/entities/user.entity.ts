@@ -1,4 +1,4 @@
-import { Appointment } from 'src/appointments/appointment.entity';
+import { Appointment } from '../../appointments/appointment.entity';
 import { UserBusinessRole } from '../../user-business-role/entities/user-business-role.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 

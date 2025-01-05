@@ -13,6 +13,9 @@ export class UserBusinessRoleProfession {
   @ManyToOne(
     () => UserBusinessRole,
     (userBusinessRole) => userBusinessRole.userBusinessRoleProfessions,
+    {
+      onDelete: 'CASCADE',
+    },
   )
   userBusinessRole: UserBusinessRole;
 

@@ -7,14 +7,16 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { UserBusinessRoleProfession } from './user-business-role-profession';
+import { UserBusinessRoleProfession } from './user-business-role-profession.entity';
 
 @Entity()
 export class UserBusinessRole {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, (user) => user.userBusinessRoles)
+  @ManyToOne(() => User, (user) => user.userBusinessRoles, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'user_id' })
   user: User;
 

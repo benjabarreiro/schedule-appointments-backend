@@ -20,7 +20,7 @@ import { UserBusinessRole } from './user-business-role/entities/user-business-ro
 import { Profession } from './professions/profession.entity';
 import { EmployeesProfessionModule } from './employees-professions/employees-profession.module';
 import { ProfessionsModule } from './professions/profession.module';
-import { UserBusinessRoleProfession } from './user-business-role/entities/user-business-role-profession';
+import { UserBusinessRoleProfession } from './user-business-role/entities/user-business-role-profession.entity';
 import { Appointment } from './appointments/appointment.entity';
 import { AppointmentsModule } from './appointments/appointments.module';
 
