@@ -3,4 +3,5 @@ export class CreateScheduleDto {
   description: string;
   employeeId: number;
   businessId: number;
+  isActive: boolean;
 }
