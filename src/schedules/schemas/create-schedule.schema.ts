@@ -5,4 +5,5 @@ export const createScheduleschema = JoiPipe.object({
   description: JoiPipe.string(),
   employeeId: JoiPipe.number().required().not().empty(),
   businessId: JoiPipe.number().required().not().empty(),
+  isActive: JoiPipe.boolean().required().not().empty(),
 });

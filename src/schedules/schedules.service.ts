@@ -20,11 +20,14 @@ export class SchedulesService {
       await this.businessesService.findBusinessById(body.businessId);
       //await this.employeesService.findEmployeeById(body.employeeId);
 
-      const parsedBody = convertKeysToSnakeCase(body);
-
       //TO DO: validate admin is creating this schedule
       //TO DO: validate he can create a new schedule with current plan
-      const newSchedule = await this.schedulesRepository.create(parsedBody);
+      const newSchedule = await this.schedulesRepository.create({
+        name: body.name,
+        description: body.description,
+        employee: { id: body.employeeId },
+        is_active: body.isActive,
+      });
       await this.schedulesRepository.save(newSchedule);
 
       return 'Schedule created succesfully';

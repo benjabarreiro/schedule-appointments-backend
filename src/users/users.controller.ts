@@ -21,6 +21,7 @@ export class UsersController {
   async getUsers() {}
 
   @Get('/:id')
+  @UseGuards(UsersGuard)
   async getUser(@Param('id') id) {
     try {
       return await this.usersService.findUserById(Number(id));

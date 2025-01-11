@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { UserBusinessRoleProfession } from 'src/user-business-role/entities/user-business-role-profession';
+import { UserBusinessRoleProfession } from 'src/user-business-role/entities/user-business-role-profession.entity';
 import { Connection, Repository } from 'typeorm';
 
 @Injectable()

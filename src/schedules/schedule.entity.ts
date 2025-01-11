@@ -6,8 +6,8 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Appointment } from 'src/appointments/appointment.entity';
-import { UserBusinessRole } from 'src/user-business-role/entities/user-business-role.entity';
+import { Appointment } from '../appointments/appointment.entity';
+import { UserBusinessRole } from '../user-business-role/entities/user-business-role.entity';
 
 @Entity('schedules')
 export class Schedule {
@@ -26,4 +26,7 @@ export class Schedule {
 
   @OneToMany(() => Appointment, (appointment) => appointment.schedule)
   appointments: Appointment[];
+
+  @Column()
+  is_active: boolean;
 }

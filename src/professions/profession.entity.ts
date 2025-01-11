@@ -1,4 +1,4 @@
-import { UserBusinessRoleProfession } from '../user-business-role/entities/user-business-role-profession';
+import { UserBusinessRoleProfession } from '../user-business-role/entities/user-business-role-profession.entity';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('profession')
