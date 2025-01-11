@@ -1,17 +1,8 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Put,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UpdateUserDto } from 'src/common/dtos';
 import { updateUserSchema } from 'src/common/schemas';
 import { JoiValidationPipe } from 'src/common/pipes';
-import { UsersGuard } from 'src/common/guards/users.guard';
 
 @Controller('/users')
 export class UsersController {
@@ -21,7 +12,6 @@ export class UsersController {
   async getUsers() {}
 
   @Get('/:id')
-  @UseGuards(UsersGuard)
   async getUser(@Param('id') id) {
     try {
       return await this.usersService.findUserById(Number(id));
@@ -31,7 +21,6 @@ export class UsersController {
   }
 
   @Put('/:id')
-  @UseGuards(UsersGuard)
   async updateUser(
     @Body(new JoiValidationPipe<UpdateUserDto>(updateUserSchema))
     body: UpdateUserDto,
@@ -41,7 +30,6 @@ export class UsersController {
   }
 
   @Delete('/:id')
-  @UseGuards(UsersGuard)
   async deleteUser(@Param('id') id: string): Promise<string> {
     const parsedId = parseInt(id);
 
