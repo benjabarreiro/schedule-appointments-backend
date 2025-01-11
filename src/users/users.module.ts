@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 import { JwtModule } from 'src/jwt/jwt.module';
+import { MiddlewareBuilder } from '@nestjs/core';
+import { UsersMiddleware } from './users.middleware';
 
 @Module({
   imports: [JwtModule],
@@ -9,4 +11,8 @@ import { JwtModule } from 'src/jwt/jwt.module';
   controllers: [UsersController],
   providers: [UsersService],
 })
-export class UsersModule {}
+export class UsersModule {
+  configure(consumer: MiddlewareBuilder) {
+    consumer.apply(UsersMiddleware).forRoutes(UsersController);
+  }
+}
