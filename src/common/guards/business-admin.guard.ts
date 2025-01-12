@@ -24,16 +24,12 @@ export class BusinessAdminGuard implements CanActivate {
 
     let userRoles = await this.userBusinessRoleService.findAllUserRoles(userId);
 
-    console.log(userRoles);
-
     const isAdmin = userRoles.some(
       (role) =>
         role.roleId === RolesIds.admin &&
         role.userId === userId &&
         role.businessId === requestId,
     );
-
-    console.log(isAdmin);
 
     if (!isAdmin) return false;
 
