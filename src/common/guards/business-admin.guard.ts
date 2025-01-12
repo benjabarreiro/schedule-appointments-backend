@@ -16,19 +16,15 @@ export class BusinessAdminGuard implements CanActivate {
 
     const decoded = this.jwtService.verifyToken(jwt);
 
-    const isNewBusiness = request.query?.['is-new'] === 'true' || false;
-
     const requestId = Number(request.params.id) || request.body.businessId;
 
     if (!requestId) return false;
 
-    const { id: userId, isFirstAccess, roles } = decoded;
+    const { id: userId } = decoded;
 
-    let userRoles = roles;
+    let userRoles = await this.userBusinessRoleService.findAllUserRoles(userId);
 
-    if (isFirstAccess || isNewBusiness) {
-      userRoles = await this.userBusinessRoleService.findAllUserRoles(userId);
-    }
+    console.log(userRoles);
 
     const isAdmin = userRoles.some(
       (role) =>
@@ -36,6 +32,8 @@ export class BusinessAdminGuard implements CanActivate {
         role.userId === userId &&
         role.businessId === requestId,
     );
+
+    console.log(isAdmin);
 
     if (!isAdmin) return false;
 
