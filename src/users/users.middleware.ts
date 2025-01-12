@@ -15,7 +15,6 @@ export class UsersMiddleware implements NestMiddleware {
 
       const userIdFromParams = parseInt(req.params.id, 10); // Parse user ID from route parameters
 
-      console.log(userIdFromJWT, userIdFromParams);
       if (userIdFromJWT !== userIdFromParams) {
         return res
           .status(403)
