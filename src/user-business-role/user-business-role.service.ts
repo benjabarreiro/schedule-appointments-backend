@@ -40,7 +40,7 @@ export class UserBusinessRoleService {
     try {
       return await this.userBusinessRoleRepository.delete(id);
     } catch (err) {
-      if (err === 404) throw err;
+      if (err.status === 404) throw err;
       throw new HttpException(
         `There was an error deleting relation with id ${id}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
@@ -164,7 +164,7 @@ export class UserBusinessRoleService {
       await this.deleteUserBusinessRoleRelation(employee.id);
       return `Succesfully deleted ${employee.user.first_name} ${employee.user.last_name} from business with id ${businessId}`;
     } catch (err) {
-      if (err === 404 || err === 500) throw err;
+      if (err.status === 404 || err.status === 500) throw err;
       throw new HttpException('', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
