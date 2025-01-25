@@ -85,8 +85,10 @@ export class UserBusinessRoleService {
         .leftJoinAndSelect('user_business_role.business', 'business')
         .leftJoinAndSelect('user_business_role.role', 'role')
         .where('user_business_role.user_id = :userId', { userId })
-        .where('user_business_role.business_id = :businessId', { businessId })
-        .where('user_business_role.role_id = :roleId', { roleId })
+        .andWhere('user_business_role.business_id = :businessId', {
+          businessId,
+        })
+        .andWhere('user_business_role.role_id = :roleId', { roleId })
         .getOne();
 
       if (!employee && validation)
@@ -117,24 +119,19 @@ export class UserBusinessRoleService {
     professionId?: number,
   ): Promise<string> {
     try {
-      // we should only check business exist and should be done in a guard
-      //const business = await this.findBusinessById(businessId);
+      const employee = await this.findEmployeeInBusiness(
+        userId,
+        businessId,
+        2,
+        false,
+      );
 
-      // Unnecesary call just to show the info in the return statement
-      /* const employee =
-        await this.userBusinessRoleService.findEmployeeInBusiness(
-          userId,
-          businessId,
-          2,
-          false,
+      if (employee) {
+        throw new HttpException(
+          'User is already an employee in the business',
+          HttpStatus.CONFLICT,
         );
-      let user;
-
-      if (!employee) {
-        user = await this.usersService.findUserById(userId);
-      } else {
-        user = employee.user;
-      } */
+      }
 
       const userBusinessRole = await this.createUserBusinessRoleRelation(
         userId,
@@ -151,7 +148,8 @@ export class UserBusinessRoleService {
 
       return `Succesfully added user with id ${userId} to business with id ${businessId}`;
     } catch (err) {
-      if (err === 404 || err === 500) throw err;
+      if (err.status === 404 || err.status === 500 || err.status === 409)
+        throw err;
       throw new HttpException(
         `There was an error adding user with id ${userId} to business with id ${businessId}`,
         HttpStatus.INTERNAL_SERVER_ERROR,
