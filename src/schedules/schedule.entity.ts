@@ -20,7 +20,7 @@ export class Schedule {
   @Column()
   description: string;
 
-  @ManyToOne(() => UserBusinessRole, { nullable: false })
+  @ManyToOne(() => UserBusinessRole, { nullable: false, onDelete: 'CASCADE' })
   @JoinColumn({ name: 'employee_id' })
   employee: UserBusinessRole;
 
