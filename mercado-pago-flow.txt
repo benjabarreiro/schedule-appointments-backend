@@ -1,0 +1,19 @@
+https://chatgpt.com/c/6773efa3-3258-8010-9ba8-ce22e1f72529
+
+user clicks links --> is redirected to mercado pago
+
+if user subscribe
+    --> on returning to site we save his subscription id on DB
+else
+    --> we should know we don't have to save an id
+
+if subcribed user cancel or pause plan
+    - we notify he will lose access to the plan perks
+    - we notify future plans will be canceled on the platform but he will receive the information
+    - we give him a file with past schedules and future schedules
+    - we cancel (di not delete) all his future schedules, notifying patient to contact the business to confirm their schedule remains
+    - we set a flag to false on all his data related to the subscription
+    - 6 months after subscription canceled we move all his business data to another DB
+
+if unsubscribed user subscribes again
+    - we fetch all his data in secondary DB so he has his history again if time of resubcription is more than 6 months
