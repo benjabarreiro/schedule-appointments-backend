@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { UserBusinessRoleProfession } from './user-business-role-profession.entity';
+import { Schedule } from 'src/schedules/schedule.entity';
 
 @Entity()
 export class UserBusinessRole {
@@ -35,4 +36,7 @@ export class UserBusinessRole {
     (userBusinessRoleProfession) => userBusinessRoleProfession.userBusinessRole,
   )
   userBusinessRoleProfessions: UserBusinessRoleProfession[];
+
+  @OneToMany(() => Schedule, (schedules) => schedules.employee)
+  schedules: Schedule[];
 }

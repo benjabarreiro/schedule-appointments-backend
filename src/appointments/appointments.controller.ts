@@ -14,7 +14,7 @@ export class AppointmentsController {
   constructor(private readonly appointmentsService: AppointmentsService) {}
 
   @Post()
-  async createAppointment(body) {
+  async createAppointment(@Body() body) {
     try {
       return await this.appointmentsService.createAppointment(body);
     } catch (err) {

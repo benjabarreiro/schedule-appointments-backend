@@ -4,28 +4,28 @@ import { Schedule } from './schedule.entity';
 import { CreateScheduleDto, UpdateScheduleDto } from './dtos';
 import { BusinessesService } from 'src/businesses/businesses.service';
 import { convertKeysToSnakeCase } from 'src/common/utils/parsers';
+import { UserBusinessRoleService } from 'src/user-business-role/user-business-role.service';
 
 @Injectable()
 export class SchedulesService {
   private schedulesRepository: Repository<Schedule>;
   constructor(
     private readonly connection: Connection,
-    private readonly businessesService: BusinessesService, //private readonly employeesService: EmployeesService,
+    private readonly userBusinessRoleService: UserBusinessRoleService,
   ) {
     this.schedulesRepository = connection.getRepository(Schedule);
   }
 
   async createSchedule(body: CreateScheduleDto): Promise<string> {
     try {
-      await this.businessesService.findBusinessById(body.businessId);
-      //await this.employeesService.findEmployeeById(body.employeeId);
+      //const ubr = await this.userBusinessRoleService.findUbrById(body.ubrId);
 
       //TO DO: validate admin is creating this schedule
       //TO DO: validate he can create a new schedule with current plan
       const newSchedule = await this.schedulesRepository.create({
         name: body.name,
         description: body.description,
-        employee: { id: body.employeeId },
+        employee: { id: body.ubrId },
         is_active: body.isActive,
       });
       await this.schedulesRepository.save(newSchedule);

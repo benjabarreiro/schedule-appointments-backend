@@ -48,6 +48,16 @@ export class UserBusinessRoleService {
     }
   }
 
+  async findAllUbr() {
+    return await this.userBusinessRoleRepository
+      .createQueryBuilder('user_business_role')
+      .leftJoinAndSelect('user_business_role.user', 'user')
+      .leftJoinAndSelect('user_business_role.business', 'business')
+      .leftJoinAndSelect('user_business_role.role', 'role')
+      .leftJoinAndSelect('user_business_role.schedules', 'schedules')
+      .getMany();
+  }
+
   async findAllUserRoles(userId: number): Promise<Roles[]> {
     try {
       const userBusinessRoles = await this.userBusinessRoleRepository
@@ -59,6 +69,7 @@ export class UserBusinessRoleService {
         .getMany();
 
       const userRoles = userBusinessRoles.map((ubr) => ({
+        id: ubr.id,
         roleId: ubr.role.id,
         businessId: ubr.business.id,
         userId: ubr.user.id,
@@ -70,6 +81,14 @@ export class UserBusinessRoleService {
     } catch (err) {
       throw err;
     }
+  }
+
+  async findUbrById(ubrId: number) {
+    try {
+      return await this.userBusinessRoleRepository.findOne({
+        where: { id: ubrId },
+      });
+    } catch {}
   }
 
   async findEmployeeInBusiness(

@@ -11,7 +11,8 @@ export class AppointmentsService {
 
   async createAppointment(body) {
     try {
-      await this.isAppointmentAlreadyTaken(body.scheduleId, body.dateTime);
+      console.log(body);
+      await this.isAppointmentAlreadyTaken(body.schedule, body.dateTime);
 
       const newAppointment = await this.appointmentsRepository.create(body);
 
@@ -27,7 +28,7 @@ export class AppointmentsService {
 
       await this.isAppointmentAlreadyTaken(body.scheduleId, body.dateTime);
 
-      const updatedAppointment = { ...appointment, body };
+      const updatedAppointment = { ...appointment, ...body };
 
       return await this.appointmentsRepository.save(updatedAppointment);
     } catch (err) {

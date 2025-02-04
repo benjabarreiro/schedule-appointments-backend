@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
 import { AddUserToBusiness } from 'src/businesses/dtos';
 import { BusinessAdminGuard } from 'src/common/guards/business-admin.guard';
 import { UserBusinessRoleService } from './user-business-role.service';
@@ -8,6 +8,11 @@ export class UserBusinessRoleController {
   constructor(
     private readonly userBusinessRoleService: UserBusinessRoleService,
   ) {}
+
+  @Get()
+  async getAllUbr() {
+    return this.userBusinessRoleService.findAllUbr();
+  }
 
   @Post('/business/user')
   @UseGuards(BusinessAdminGuard)
