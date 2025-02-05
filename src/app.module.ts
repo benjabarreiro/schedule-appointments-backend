@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
@@ -25,6 +25,7 @@ import { AppointmentsModule } from './appointments/appointments.module';
 import { SchedulesController } from './schedules/schedules.controller';
 import { AppointmentsController } from './appointments/appointments.controller';
 import { UserBusinessRoleController } from './user-business-role/user-business-role.controller';
+import { EmptyBodyMiddleware } from './common/middlewares/empty-body.middleware';
 
 @Module({
   imports: [
@@ -93,6 +94,12 @@ export class AppModule {
         SchedulesController,
         AppointmentsController,
         UserBusinessRoleController,
+      );
+    consumer
+      .apply(EmptyBodyMiddleware)
+      .forRoutes(
+        { path: '*', method: RequestMethod.POST },
+        { path: '*', method: RequestMethod.PUT },
       );
   }
 }
