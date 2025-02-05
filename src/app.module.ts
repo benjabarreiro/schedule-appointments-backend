@@ -26,6 +26,7 @@ import { SchedulesController } from './schedules/schedules.controller';
 import { AppointmentsController } from './appointments/appointments.controller';
 import { UserBusinessRoleController } from './user-business-role/user-business-role.controller';
 import { EmptyBodyMiddleware } from './common/middlewares/empty-body.middleware';
+import path from 'path';
 
 @Module({
   imports: [
@@ -97,6 +98,12 @@ export class AppModule {
       );
     consumer
       .apply(EmptyBodyMiddleware)
+      .exclude(
+        { path: 'user-business-role/*', method: RequestMethod.POST },
+        { path: 'user-business-role/*', method: RequestMethod.PUT },
+        { path: '*', method: RequestMethod.GET },
+        { path: '*', method: RequestMethod.DELETE },
+      )
       .forRoutes(
         { path: '*', method: RequestMethod.POST },
         { path: '*', method: RequestMethod.PUT },
