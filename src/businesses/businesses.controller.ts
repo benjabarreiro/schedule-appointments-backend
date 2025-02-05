@@ -59,25 +59,30 @@ export class BusinessesController {
     }
   }
 
-  @Put('/:id')
+  @Put('/:businessId')
   @UseGuards(BusinessAdminGuard)
   async updateBusiness(
-    @Param('id') id: string,
+    @Param('businessId') businessId: string,
     @Body(new JoiValidationPipe<UpdateBusinessDto>(updateBusinessSchema))
     body: UpdateBusinessDto,
   ): Promise<String> {
     try {
-      return await this.businessesService.updateBusiness(body, Number(id));
+      return await this.businessesService.updateBusiness(
+        body,
+        Number(businessId),
+      );
     } catch (err) {
       throw err;
     }
   }
 
-  @Delete('/:id')
+  @Delete('/:businessId')
   @UseGuards(BusinessAdminGuard)
-  async deleteBusiness(@Param('id') id: string): Promise<String> {
+  async deleteBusiness(
+    @Param('businessId') businessId: string,
+  ): Promise<String> {
     try {
-      return await this.businessesService.deleteBusiness(Number(id));
+      return await this.businessesService.deleteBusiness(Number(businessId));
     } catch (err) {
       throw err;
     }

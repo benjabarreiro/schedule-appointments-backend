@@ -1,9 +1,16 @@
-import { Body, Controller, Delete, Get, Post, UseGuards } from '@nestjs/common';
-import { AddUserToBusiness } from 'src/businesses/dtos';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { BusinessAdminGuard } from 'src/common/guards/business-admin.guard';
 import { UserBusinessRoleService } from './user-business-role.service';
 
 @Controller('user-business-role')
+@UseGuards(BusinessAdminGuard)
 export class UserBusinessRoleController {
   constructor(
     private readonly userBusinessRoleService: UserBusinessRoleService,
@@ -14,28 +21,31 @@ export class UserBusinessRoleController {
     return this.userBusinessRoleService.findAllUbr();
   }
 
-  @Post('/business/user')
-  @UseGuards(BusinessAdminGuard)
-  async addUserToBusiness(@Body() body: AddUserToBusiness): Promise<string> {
+  @Post('/:businessId/:userId')
+  async addUserToBusiness(
+    @Param('businessId') businessId,
+    @Param('userId') userId,
+  ): Promise<string> {
     try {
       return await this.userBusinessRoleService.addUserToBusiness(
-        body.userId,
-        body.businessId,
+        Number(userId),
+        Number(businessId),
       );
     } catch (err) {
       throw err;
     }
   }
 
-  @Delete('/business/user')
+  @Delete('/:businessId/:userId')
   @UseGuards(BusinessAdminGuard)
   async removeUserFromBusiness(
-    @Body() body: AddUserToBusiness,
+    @Param('businessId') businessId,
+    @Param('userId') userId,
   ): Promise<string> {
     try {
       return await this.userBusinessRoleService.removeUserFromBusiness(
-        body.userId,
-        body.businessId,
+        Number(userId),
+        Number(businessId),
       );
     } catch (err) {
       throw err;

@@ -22,14 +22,14 @@ import { JwtService } from 'src/jwt/jwt.service';
 import { Request } from 'express';
 
 @Controller('/schedules')
+@UseGuards(BusinessAdminGuard)
 export class SchedulesController {
   constructor(
     private readonly schedulesService: SchedulesService,
     private readonly jwtService: JwtService,
   ) {}
 
-  @Post()
-  //@UseGuards(BusinessAdminGuard)
+  @Post('/:businessId')
   async createScheule(
     @RequestNest() req: Request,
     @Body(new JoiValidationPipe<CreateScheduleDto>(createScheduleschema)) body,
@@ -47,19 +47,17 @@ export class SchedulesController {
     return await this.schedulesService.createSchedule(body);
   }
 
-  @Put(':id')
-  //@UseGuards(BusinessAdminGuard)
+  @Put('/:businessId/:scheduleId')
   async updateSchedule(
-    @Param('id') id,
+    @Param('scheduleId') scheduleId,
     @Body(new JoiValidationPipe<UpdateScheduleDto>(updateScheduleschema)) body,
   ): Promise<String> {
-    return await this.schedulesService.updateSchedule(id, body);
+    return await this.schedulesService.updateSchedule(Number(scheduleId), body);
   }
 
-  @Delete(':id')
-  //@UseGuards(BusinessAdminGuard)
-  async deleteScheule(@Param('id') id): Promise<String> {
-    return await this.schedulesService.deleteSchedule(id);
+  @Delete('/:businessId/:scheduleId')
+  async deleteScheule(@Param('scheduleId') scheduleId): Promise<String> {
+    return await this.schedulesService.deleteSchedule(Number(scheduleId));
   }
 
   @Get()
@@ -77,8 +75,8 @@ export class SchedulesController {
     return await this.schedulesService.findAllSchedules();
   }
 
-  @Get(':id')
-  async findScheduleById(@Param('id') id): Promise<Schedule> {
-    return await this.findScheduleById(id);
+  @Get(':scheduleId')
+  async findScheduleById(@Param('scheduleId') scheduleId): Promise<Schedule> {
+    return await this.findScheduleById(Number(scheduleId));
   }
 }

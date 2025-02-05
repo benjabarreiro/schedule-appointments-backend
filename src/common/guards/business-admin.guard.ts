@@ -1,37 +1,29 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { JwtService } from 'src/jwt/jwt.service';
-import { UserBusinessRoleService } from 'src/user-business-role/user-business-role.service';
 import { RolesIds } from '../enums';
 
 @Injectable()
 export class BusinessAdminGuard implements CanActivate {
-  constructor(
-    private readonly jwtService: JwtService,
-    private readonly userBusinessRoleService: UserBusinessRoleService,
-  ) {}
+  constructor(private readonly jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
+
+    if (request.method === 'GET') return true;
+
     const jwt = this.jwtService.getJwt(request);
 
-    const decoded = this.jwtService.verifyToken(jwt);
+    const { roles } = this.jwtService.verifyToken(jwt);
 
-    const requestId = Number(request.params.id) || request.body.businessId;
+    const businessIdFromParams = parseInt(request.params.businessId, 10); // Parse user ID from route parameters
 
-    if (!requestId) return false;
-
-    const { id: userId } = decoded;
-
-    let userRoles = await this.userBusinessRoleService.findAllUserRoles(userId);
-
-    const isAdmin = userRoles.some(
-      (role) =>
-        role.roleId === RolesIds.admin &&
-        role.userId === userId &&
-        role.businessId === requestId,
+    const userRole = roles.find(
+      (role) => role.businessId === businessIdFromParams,
     );
-
-    if (!isAdmin) return false;
+    const isUserAdmin = userRole?.roleId === RolesIds.admin || false;
+    if (!isUserAdmin) {
+      return false;
+    }
 
     return true;
   }

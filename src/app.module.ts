@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, RequestMethod } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
@@ -15,7 +15,6 @@ import { Schedule } from './schedules/schedule.entity';
 import { SchedulesModule } from './schedules/schedules.module';
 import { JwtModule } from './jwt/jwt.module';
 import { BusinessesController } from './businesses/businesses.controller';
-import { EmptyBodyMiddleware } from './common/middlewares/empty-body.middleware';
 import { UserBusinessRole } from './user-business-role/entities/user-business-role.entity';
 import { Profession } from './professions/profession.entity';
 import { EmployeesProfessionModule } from './employees-professions/employees-profession.module';
@@ -23,6 +22,9 @@ import { ProfessionsModule } from './professions/profession.module';
 import { UserBusinessRoleProfession } from './user-business-role/entities/user-business-role-profession.entity';
 import { Appointment } from './appointments/appointment.entity';
 import { AppointmentsModule } from './appointments/appointments.module';
+import { SchedulesController } from './schedules/schedules.controller';
+import { AppointmentsController } from './appointments/appointments.controller';
+import { UserBusinessRoleController } from './user-business-role/user-business-role.controller';
 
 @Module({
   imports: [
@@ -85,12 +87,12 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AuthMiddleware)
-      .forRoutes(UsersController, BusinessesController);
-    consumer
-      .apply(EmptyBodyMiddleware)
       .forRoutes(
-        { path: '*', method: RequestMethod.POST },
-        { path: '*', method: RequestMethod.PUT },
+        UsersController,
+        BusinessesController,
+        SchedulesController,
+        AppointmentsController,
+        UserBusinessRoleController,
       );
   }
 }
