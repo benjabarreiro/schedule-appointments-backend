@@ -98,12 +98,6 @@ export class AppModule {
       );
     consumer
       .apply(EmptyBodyMiddleware)
-      .exclude(
-        { path: 'user-business-role/*', method: RequestMethod.POST },
-        { path: 'user-business-role/*', method: RequestMethod.PUT },
-        { path: '*', method: RequestMethod.GET },
-        { path: '*', method: RequestMethod.DELETE },
-      )
       .forRoutes(
         { path: '*', method: RequestMethod.POST },
         { path: '*', method: RequestMethod.PUT },
