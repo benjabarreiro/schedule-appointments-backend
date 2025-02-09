@@ -3,7 +3,7 @@ import { JwtService } from 'src/jwt/jwt.service';
 import { RolesIds } from '../enums';
 
 @Injectable()
-export class BusinessAdminGuard implements CanActivate {
+export class BusinessAdminEmployeeGuard implements CanActivate {
   constructor(private readonly jwtService: JwtService) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {

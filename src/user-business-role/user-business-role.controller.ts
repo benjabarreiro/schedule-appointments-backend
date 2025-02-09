@@ -6,11 +6,11 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { BusinessAdminGuard } from 'src/common/guards/business-admin.guard';
+import { BusinessAdminEmployeeGuard } from 'src/common/guards/business-admin-employee.guard';
 import { UserBusinessRoleService } from './user-business-role.service';
 
 @Controller('user-business-role')
-@UseGuards(BusinessAdminGuard)
+@UseGuards(BusinessAdminEmployeeGuard)
 export class UserBusinessRoleController {
   constructor(
     private readonly userBusinessRoleService: UserBusinessRoleService,
@@ -37,7 +37,7 @@ export class UserBusinessRoleController {
   }
 
   @Delete('/:businessId/:userId')
-  @UseGuards(BusinessAdminGuard)
+  @UseGuards(BusinessAdminEmployeeGuard)
   async removeUserFromBusiness(
     @Param('businessId') businessId,
     @Param('userId') userId,

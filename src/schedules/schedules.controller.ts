@@ -15,13 +15,13 @@ import { Schedule } from './schedule.entity';
 import { JoiValidationPipe } from 'src/common/pipes';
 import { CreateScheduleDto, UpdateScheduleDto } from './dtos';
 import { createScheduleschema, updateScheduleschema } from './schemas';
-import { BusinessAdminGuard } from 'src/common/guards/business-admin.guard';
+import { BusinessAdminEmployeeGuard } from 'src/common/guards/business-admin-employee.guard';
 import { JwtService } from 'src/jwt/jwt.service';
 import { Request } from 'express';
 import { SchedulesGuard } from 'src/common/guards/schedules-guard';
 
 @Controller('/schedules')
-@UseGuards(BusinessAdminGuard)
+@UseGuards(BusinessAdminEmployeeGuard)
 @UseGuards(SchedulesGuard)
 export class SchedulesController {
   constructor(
