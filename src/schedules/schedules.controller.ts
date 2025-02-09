@@ -3,8 +3,6 @@ import {
   Controller,
   Delete,
   Get,
-  HttpException,
-  HttpStatus,
   Param,
   Post,
   Put,
@@ -20,9 +18,11 @@ import { createScheduleschema, updateScheduleschema } from './schemas';
 import { BusinessAdminGuard } from 'src/common/guards/business-admin.guard';
 import { JwtService } from 'src/jwt/jwt.service';
 import { Request } from 'express';
+import { SchedulesGuard } from 'src/common/guards/schedules-guard';
 
 @Controller('/schedules')
 @UseGuards(BusinessAdminGuard)
+@UseGuards(SchedulesGuard)
 export class SchedulesController {
   constructor(
     private readonly schedulesService: SchedulesService,
@@ -32,24 +32,8 @@ export class SchedulesController {
   @Post('/:businessId')
   async createScheule(
     @RequestNest() req: Request,
-    @Param('businessId') businessId,
     @Body(new JoiValidationPipe<CreateScheduleDto>(createScheduleschema)) body,
   ): Promise<String> {
-    const jwt = this.jwtService.getJwt(req);
-    const { roles } = this.jwtService.verifyToken(jwt);
-
-    if (
-      !roles.find(
-        (role) =>
-          role.id === body.ubrId && role.businessId === Number(businessId),
-      )
-    ) {
-      throw new HttpException(
-        'Employee does not belong to business',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
-
     return await this.schedulesService.createSchedule(body);
   }
 
