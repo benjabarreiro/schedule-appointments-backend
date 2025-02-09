@@ -1,10 +1,5 @@
 TO DO
 
-USER ACTIONS BASED ON ROLES
-- Admin can do anything within business (create/update/delete business/schedules) (add/remove user from business)
-- Employee can only update his schedules (cannot delete/create)
-- Regular user can update his personal info or delete his account
-
 ROLES
 - distinguish between original admin (owner) who is the one who subscribed to the plan, and an admin added by the owner of the business
 
