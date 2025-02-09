@@ -20,6 +20,11 @@ export class BusinessAdminGuard implements CanActivate {
     const userRole = roles.find(
       (role) => role.businessId === businessIdFromParams,
     );
+    const isUserEmployee = userRole?.roleId === RolesIds.employee || false;
+
+    if (isUserEmployee && request.method !== 'PUT') {
+      return false;
+    }
     const isUserAdmin = userRole?.roleId === RolesIds.admin || false;
     if (!isUserAdmin) {
       return false;
