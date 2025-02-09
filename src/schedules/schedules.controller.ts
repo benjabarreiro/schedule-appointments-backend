@@ -32,12 +32,18 @@ export class SchedulesController {
   @Post('/:businessId')
   async createScheule(
     @RequestNest() req: Request,
+    @Param('businessId') businessId,
     @Body(new JoiValidationPipe<CreateScheduleDto>(createScheduleschema)) body,
   ): Promise<String> {
     const jwt = this.jwtService.getJwt(req);
     const { roles } = this.jwtService.verifyToken(jwt);
 
-    if (!roles.find((role) => role.id === body.ubrId)) {
+    if (
+      !roles.find(
+        (role) =>
+          role.id === body.ubrId && role.businessId === Number(businessId),
+      )
+    ) {
       throw new HttpException(
         'Employee does not belong to business',
         HttpStatus.BAD_REQUEST,
