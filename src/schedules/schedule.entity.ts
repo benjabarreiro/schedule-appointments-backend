@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Appointment } from '../appointments/appointment.entity';
 import { UserBusinessRole } from '../user-business-role/entities/user-business-role.entity';
+import { ScheduleUnavailability } from 'src/schedule-unavailability/schedule-unavailability.entity';
 
 @Entity('schedules')
 export class Schedule {
@@ -38,4 +39,10 @@ export class Schedule {
 
   @Column()
   shift_end_time: string;
+
+  @OneToMany(
+    () => ScheduleUnavailability,
+    (unavailability) => unavailability.schedule,
+  )
+  unavailabilities: ScheduleUnavailability[];
 }

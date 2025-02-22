@@ -26,7 +26,7 @@ import { SchedulesController } from './schedules/schedules.controller';
 import { AppointmentsController } from './appointments/appointments.controller';
 import { UserBusinessRoleController } from './user-business-role/user-business-role.controller';
 import { EmptyBodyMiddleware } from './common/middlewares/empty-body.middleware';
-import path from 'path';
+import { ScheduleUnavailability } from './schedule-unavailability/schedule-unavailability.entity';
 
 @Module({
   imports: [
@@ -58,6 +58,7 @@ import path from 'path';
           Plan,
           Business,
           Schedule,
+          ScheduleUnavailability,
           UserBusinessRole,
           Profession,
           UserBusinessRoleProfession,
@@ -78,6 +79,7 @@ import path from 'path';
       Plan,
       Business,
       Schedule,
+      ScheduleUnavailability,
       UserBusinessRole,
       Profession,
       UserBusinessRoleProfession,
