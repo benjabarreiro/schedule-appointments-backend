@@ -3,4 +3,7 @@ export class CreateScheduleDto {
   description: string;
   ubrId: number;
   isActive: boolean;
+  appointmentDuration: number;
+  shiftStartTime: string;
+  shiftEndTime: string;
 }

@@ -27,6 +27,9 @@ export class SchedulesService {
         description: body.description,
         employee: { id: body.ubrId },
         is_active: body.isActive,
+        appointment_duration: body.appointmentDuration,
+        shift_start_time: body.shiftStartTime,
+        shift_end_time: body.shiftEndTime,
       });
       await this.schedulesRepository.save(newSchedule);
 

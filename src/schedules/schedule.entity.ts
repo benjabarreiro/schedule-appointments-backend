@@ -29,4 +29,13 @@ export class Schedule {
 
   @Column()
   is_active: boolean;
+
+  @Column()
+  appointment_duration: number;
+
+  @Column()
+  shift_start_time: string;
+
+  @Column()
+  shift_end_time: string;
 }
