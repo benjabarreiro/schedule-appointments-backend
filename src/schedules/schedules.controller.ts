@@ -24,10 +24,7 @@ import { SchedulesGuard } from 'src/common/guards/schedules-guard';
 @UseGuards(BusinessAdminEmployeeGuard)
 @UseGuards(SchedulesGuard)
 export class SchedulesController {
-  constructor(
-    private readonly schedulesService: SchedulesService,
-    private readonly jwtService: JwtService,
-  ) {}
+  constructor(private readonly schedulesService: SchedulesService) {}
 
   @Post('/:businessId')
   async createScheule(

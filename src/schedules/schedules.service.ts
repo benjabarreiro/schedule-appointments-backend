@@ -2,17 +2,12 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { Connection, Repository } from 'typeorm';
 import { Schedule } from './schedule.entity';
 import { CreateScheduleDto, UpdateScheduleDto } from './dtos';
-import { BusinessesService } from 'src/businesses/businesses.service';
 import { convertKeysToSnakeCase } from 'src/common/utils/parsers';
-import { UserBusinessRoleService } from 'src/user-business-role/user-business-role.service';
 
 @Injectable()
 export class SchedulesService {
   private schedulesRepository: Repository<Schedule>;
-  constructor(
-    private readonly connection: Connection,
-    private readonly userBusinessRoleService: UserBusinessRoleService,
-  ) {
+  constructor(private readonly connection: Connection) {
     this.schedulesRepository = connection.getRepository(Schedule);
   }
 
