@@ -27,6 +27,7 @@ import { AppointmentsController } from './appointments/appointments.controller';
 import { UserBusinessRoleController } from './user-business-role/user-business-role.controller';
 import { EmptyBodyMiddleware } from './common/middlewares/empty-body.middleware';
 import { ScheduleUnavailability } from './schedule-unavailability/schedule-unavailability.entity';
+import { ScheduleUnavailabilityModule } from './schedule-unavailability/schedule-unavailability.module';
 
 @Module({
   imports: [
@@ -40,6 +41,7 @@ import { ScheduleUnavailability } from './schedule-unavailability/schedule-unava
     PlansModule,
     BusinessesModule,
     SchedulesModule,
+    ScheduleUnavailabilityModule,
     EmployeesProfessionModule,
     ProfessionsModule,
     AppointmentsModule,
