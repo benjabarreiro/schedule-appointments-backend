@@ -32,9 +32,12 @@ export class AppointmentsService {
     }
   }
 
-  async updateAppointment(id, body, loggedUser) {
+  async updateAppointment(id, body, loggedUserData) {
     try {
-      const appointment = await this.getAppointmentByIdOrThrow(id, loggedUser);
+      const appointment = await this.getAppointmentByIdOrThrow(
+        id,
+        loggedUserData,
+      );
 
       await this.isAppointmentAlreadyTaken(body.scheduleId, body.dateTime);
 
@@ -51,9 +54,9 @@ export class AppointmentsService {
     }
   }
 
-  async cancelAppointment(id: number, loggedUser: number) {
+  async cancelAppointment(id: number, loggedUserData) {
     try {
-      await this.getAppointmentByIdOrThrow(id, loggedUser);
+      await this.getAppointmentByIdOrThrow(id, loggedUserData);
 
       return this.appointmentsRepository.delete(id);
     } catch (err) {
@@ -79,7 +82,7 @@ export class AppointmentsService {
     }
   }
 
-  async getAppointmentByIdOrThrow(id, loggedUser) {
+  async getAppointmentByIdOrThrow(id, loggedUserData) {
     try {
       const appointment = await this.getAppointmentById(id);
       if (!appointment)
@@ -88,7 +91,11 @@ export class AppointmentsService {
           HttpStatus.NOT_FOUND,
         );
 
-      await this.userCanDoAction(appointment.user.id, loggedUser);
+      await this.userCanDoAction(
+        appointment.user.id,
+        appointment.schedule.employee.business.id,
+        loggedUserData,
+      );
       return appointment;
     } catch (err) {
       throw err;
@@ -114,15 +121,24 @@ export class AppointmentsService {
     }
   }
 
-  async userCanDoAction(userId: number, loggedUser: number) {
-    if (userId !== loggedUser) {
+  async userCanDoAction(userId: number, businessId, loggedUserData) {
+    const { jwtUserId, roles } = loggedUserData;
+
+    const isValidUser = userId === jwtUserId;
+    const isValidEmployee = roles.some(
+      (role) => role.businessId === businessId,
+    );
+
+    const isValidAction = isValidUser || isValidEmployee;
+
+    if (!isValidAction) {
       throw new HttpException('Action not permitted', HttpStatus.FORBIDDEN);
     }
   }
 
   async getLoggedUser(req) {
     const jwt = this.jwtService.getJwt(req);
-    const { id: loggedUser } = this.jwtService.verifyToken(jwt);
-    return Number(loggedUser);
+    const { id, roles } = this.jwtService.verifyToken(jwt);
+    return { jwtUserId: Number(id), roles };
   }
 }

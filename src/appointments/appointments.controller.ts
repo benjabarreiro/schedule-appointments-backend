@@ -30,11 +30,11 @@ export class AppointmentsController {
     @RequestNest() req: Request,
   ) {
     try {
-      const loggedUser = await this.appointmentsService.getLoggedUser(req);
+      const loggedUserData = await this.appointmentsService.getLoggedUser(req);
       return await this.appointmentsService.updateAppointment(
         id,
         body,
-        loggedUser,
+        loggedUserData,
       );
     } catch (err) {
       throw err;
@@ -44,8 +44,11 @@ export class AppointmentsController {
   @Delete(':id')
   async cancelAppointment(@Param('id') id, @RequestNest() req: Request) {
     try {
-      const loggedUser = await this.appointmentsService.getLoggedUser(req);
-      return await this.appointmentsService.cancelAppointment(id, loggedUser);
+      const loggedUserData = await this.appointmentsService.getLoggedUser(req);
+      return await this.appointmentsService.cancelAppointment(
+        id,
+        loggedUserData,
+      );
     } catch (err) {
       throw err;
     }
@@ -54,10 +57,10 @@ export class AppointmentsController {
   @Get('id')
   async getAppointmentById(@Param('id') id, @RequestNest() req: Request) {
     try {
-      const loggedUser = await this.appointmentsService.getLoggedUser(req);
+      const loggedUserData = await this.appointmentsService.getLoggedUser(req);
       return await this.appointmentsService.getAppointmentByIdOrThrow(
         id,
-        loggedUser,
+        loggedUserData,
       );
     } catch (err) {
       throw err;
