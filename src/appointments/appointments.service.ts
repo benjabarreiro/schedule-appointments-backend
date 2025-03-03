@@ -1,18 +1,26 @@
 import { Connection, Repository } from 'typeorm';
 import { Appointment } from './appointment.entity';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { SchedulesService } from 'src/schedules/schedules.service';
 
 @Injectable()
 export class AppointmentsService {
   private appointmentsRepository: Repository<Appointment>;
-  constructor(private readonly connection: Connection) {
+  constructor(
+    private readonly connection: Connection,
+    private readonly schedulesService: SchedulesService,
+  ) {
     this.appointmentsRepository = connection.getRepository(Appointment);
   }
 
   async createAppointment(body) {
     try {
-      console.log(body);
       await this.isAppointmentAlreadyTaken(body.schedule, body.dateTime);
+
+      await this.schedulesService.checkScheduleConfigurationOrThrow(
+        body.schedule,
+        body.dateTime,
+      );
 
       const newAppointment = await this.appointmentsRepository.create(body);
 
@@ -27,6 +35,11 @@ export class AppointmentsService {
       const appointment = await this.getAppointmentByIdOrThrow(id);
 
       await this.isAppointmentAlreadyTaken(body.scheduleId, body.dateTime);
+
+      await this.schedulesService.checkScheduleConfigurationOrThrow(
+        body.scheduleId,
+        body.dateTime,
+      );
 
       const updatedAppointment = { ...appointment, ...body };
 
