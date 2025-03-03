@@ -1,5 +1,9 @@
 TO DO
 
+APPOINTMENTS
+- user can only see/update/delete his APPOINTMENTS
+- employee can see/delete everyones appointment within business
+
 ROLES
 - distinguish between original admin (owner) who is the one who subscribed to the plan, and an admin added by the owner of the business
 
